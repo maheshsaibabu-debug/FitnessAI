@@ -1,0 +1,79 @@
+name: fitness_companion
+description: "Offline-first AI fitness companion. Plan, do, track, check in, adapt, motivate, progress."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
+  # Routing
+  go_router: ^15.1.2
+
+  # Local database (offline source of truth)
+  drift: ^2.23.1
+  sqlite3_flutter_libs: ^0.5.28
+  path_provider: ^2.1.5
+  path: ^1.9.0
+
+  # Cloud sync + auth (Supabase)
+  supabase_flutter: ^2.9.0
+
+  # Immutable models / codegen
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
+
+  # Connectivity
+  connectivity_plus: ^6.1.3
+
+  # Notifications
+  flutter_local_notifications: ^18.0.1
+  timezone: ^0.9.4
+
+  # Health integrations (HealthKit / Health Connect)
+  health: ^12.2.0
+
+  # Secure local storage (session, tokens)
+  flutter_secure_storage: ^9.2.4
+
+  # IDs / time
+  uuid: ^4.5.1
+
+  # Env config
+  flutter_dotenv: ^5.2.1
+
+  # Charts
+  fl_chart: ^0.70.2
+
+  # Formatting
+  intl: ^0.20.2
+
+  # Logging
+  logging: ^1.3.0
+
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+  build_runner: ^2.4.15
+  drift_dev: ^2.23.1
+  freezed: ^2.5.8
+  json_serializable: ^6.9.5
+  riverpod_generator: ^2.6.3
+  mocktail: ^1.0.4
+
+flutter:
+  uses-material-design: true
+  assets:
+    - .env
+    - assets/data/
