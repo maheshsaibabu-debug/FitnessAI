@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-/// Entry point of the real onboarding flow. The multi-step data-collection
-/// flow (personal info, goals, equipment, baseline assessment — product
-/// spec §16-17) is implementation phase 5; this screen is the genuine
-/// first step (routing + shell), not a stand-in for it.
+/// Entry point of the onboarding flow (product spec §16-17) — leads into
+/// [OnboardingFlowScreen], the real multi-step data-collection wizard.
 class OnboardingWelcomeScreen extends StatelessWidget {
   const OnboardingWelcomeScreen({super.key});
 
@@ -33,7 +31,7 @@ class OnboardingWelcomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 40),
               FilledButton(
-                onPressed: () => context.go('/home'),
+                onPressed: () => context.push('/onboarding/flow'),
                 child: const Text('Get started'),
               ),
             ],

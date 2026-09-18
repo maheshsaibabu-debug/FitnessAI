@@ -102,11 +102,11 @@ Following the product spec's §51 process, in this exact codebase, committing at
 
 1. ✅ Discovery + this report
 2. ✅ Architecture docs
-3. Local Drift schema + Supabase schema/RLS/migrations
-4. Foundation: theme, routing, Riverpod setup, error handling, repository abstraction, connectivity monitor, sync engine skeleton
-5. Onboarding flow
-6. Deterministic fitness engines
-7. Workout generation + execution
+3. ✅ Local Drift schema + Supabase schema/RLS/migrations
+4. ✅ Foundation: theme, routing, Riverpod setup, error handling, repository abstraction, connectivity monitor, sync engine skeleton
+5. ✅ Onboarding flow — 7-step wizard, persists profile/goals/baseline/nutrition targets, verified live on iOS Simulator plus an integration test
+6. ✅ Deterministic fitness engines — all 9, 55 unit tests
+7. ⏳ Workout generation done (runs at onboarding completion, persisted, shown in Today/Plan); execution (starting a workout, logging sets) not yet built
 8. Health/steps integration
 9. Nutrition + meal tracking
 10. Accountability: daily tasks, check-ins, adaptive planning

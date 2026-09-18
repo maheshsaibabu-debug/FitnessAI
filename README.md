@@ -11,7 +11,9 @@ This is an independent, from-scratch codebase, built in phases (see [docs/ARCHIT
 - ✅ Supabase Postgres schema + RLS, verified against a scratch Postgres instance — [docs/SECURITY.md](docs/SECURITY.md)
 - ✅ Sync engine (outbox pattern, idempotent uploads, conflict policy) — [docs/SYNC_ENGINE.md](docs/SYNC_ENGINE.md), [docs/SYNC_CONFLICTS.md](docs/SYNC_CONFLICTS.md)
 - ✅ App shell: theme, routing (go_router + bottom nav), Riverpod DI, connectivity monitor, offline banner — verified running on iOS Simulator
-- ⏳ Everything feature-shaped (onboarding data collection, deterministic fitness engines, workout execution, health integrations, nutrition, accountability, AI coach, progress, notifications, community) is not yet built — see the phase list and the acceptance checklist in the product brief.
+- ✅ Deterministic fitness engines (all 9 from the product brief) — [docs/FITNESS_ENGINE.md](docs/FITNESS_ENGINE.md)
+- ✅ Onboarding: 7-step wizard → profile/goals/baseline/nutrition targets → first week of workouts generated and persisted, all offline. Verified live end-to-end on iOS Simulator and by an integration test.
+- ⏳ Workout execution (starting a workout, logging sets), health integrations, accountability/check-ins, AI coach, progress charts, notifications, and community are not yet built — see the phase list in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) §12 and the acceptance checklist in the product brief.
 
 Nothing in this repo fakes a feature that isn't built yet: unbuilt screens say so explicitly instead of showing mock data.
 
@@ -35,7 +37,7 @@ flutter analyze
 flutter test
 ```
 
-`test/unit/app_database_test.dart` exercises the local schema directly (round-trip, idempotency, append-only history). `test/widget_test.dart` exercises the app shell. See [docs/TEST_PLAN.md](docs/TEST_PLAN.md) for what's covered vs. still pending.
+`test/unit/` covers the local schema directly and all 9 domain engines (table-driven, several matching the product spec's own worked examples). `test/integration/onboarding_flow_integration_test.dart` drives the real onboarding controller against an in-memory database and asserts on the persisted profile/plan. `test/widget_test.dart` exercises the app shell and wizard navigation. See [docs/TEST_PLAN.md](docs/TEST_PLAN.md) for what's covered vs. still pending.
 
 ## Documentation
 
@@ -46,6 +48,7 @@ flutter test
 | [OFFLINE_FIRST.md](docs/OFFLINE_FIRST.md) | What must work with no network, and why it does |
 | [SYNC_ENGINE.md](docs/SYNC_ENGINE.md) | Outbox, retry/backoff, triggers |
 | [SYNC_CONFLICTS.md](docs/SYNC_CONFLICTS.md) | Per-entity conflict resolution policy |
+| [FITNESS_ENGINE.md](docs/FITNESS_ENGINE.md) | The 9 deterministic engines, and how onboarding wires them together |
 | [AI_ARCHITECTURE.md](docs/AI_ARCHITECTURE.md) | Provider abstraction, context resolver, fallback (design contract for phase 11) |
 | [SECURITY.md](docs/SECURITY.md) | Auth, secrets, RLS, verification results |
 | [PRIVACY.md](docs/PRIVACY.md) | Health-data handling rules |
