@@ -46,7 +46,7 @@ class _ReviewStepState extends ConsumerState<ReviewStep> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _SummaryRow(label: 'Name', value: draft.name),
-          _SummaryRow(label: 'Goal', value: draft.primaryGoal ?? '—'),
+          _SummaryRow(label: 'Goals', value: draft.goals.isEmpty ? '—' : draft.goals.join(', ')),
           _SummaryRow(label: 'Level', value: draft.fitnessLevel ?? '—'),
           _SummaryRow(label: 'Location', value: draft.trainingLocation ?? '—'),
           _SummaryRow(label: 'Equipment', value: draft.equipment.isEmpty ? 'None' : draft.equipment.join(', ')),

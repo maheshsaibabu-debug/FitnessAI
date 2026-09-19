@@ -87,13 +87,18 @@ class ProfileRepository {
             updatedAt: now,
           ));
 
-      await _db.into(_db.fitnessGoals).insert(FitnessGoalsCompanion.insert(
-            id: _uuid.v4(),
-            userId: profileId,
-            goalType: draft.primaryGoal!,
-            createdAt: now,
-            updatedAt: now,
-          ));
+      // One row per selected goal — the first one picked (see
+      // OnboardingDraft.goals doc comment) is flagged primary.
+      for (final goal in draft.goals) {
+        await _db.into(_db.fitnessGoals).insert(FitnessGoalsCompanion.insert(
+              id: _uuid.v4(),
+              userId: profileId,
+              goalType: goal,
+              isPrimary: Value(goal == draft.primaryGoal),
+              createdAt: now,
+              updatedAt: now,
+            ));
+      }
 
       if (draft.hasBaselineData) {
         await _db.into(_db.fitnessBaselines).insert(FitnessBaselinesCompanion.insert(

@@ -22,7 +22,11 @@ class OnboardingController extends _$OnboardingController {
 
   void updateWeightKg(double weightKg) => state = state.copyWith(weightKg: weightKg);
 
-  void updatePrimaryGoal(String goal) => state = state.copyWith(primaryGoal: goal);
+  void toggleGoal(String goal) {
+    final next = {...state.goals};
+    next.contains(goal) ? next.remove(goal) : next.add(goal);
+    state = state.copyWith(goals: next);
+  }
 
   void updateLevelAndLocation({required String fitnessLevel, required String trainingLocation}) {
     state = state.copyWith(fitnessLevel: fitnessLevel, trainingLocation: trainingLocation);
@@ -80,7 +84,7 @@ class OnboardingController extends _$OnboardingController {
         availableEquipment: state.equipment,
         daysPerWeek: state.availabilityDaysPerWeek,
         minutesPerSession: state.availabilityMinutesPerSession,
-        goals: {if (state.primaryGoal != null) state.primaryGoal!},
+        goals: state.goals,
       ),
       startDate: DateTime.now(),
     );

@@ -10,7 +10,7 @@ class OnboardingDraft {
     this.dateOfBirth,
     this.heightCm,
     this.weightKg,
-    this.primaryGoal,
+    this.goals = const {},
     this.fitnessLevel,
     this.trainingLocation,
     this.equipment = const {},
@@ -31,7 +31,13 @@ class OnboardingDraft {
   final double? heightCm;
   final double? weightKg;
 
-  final String? primaryGoal; // fat_loss|muscle_gain|weight_gain|maintain|strength|endurance|cardio|mobility|general|consistency
+  /// One or more of fat_loss|muscle_gain|weight_gain|maintain|strength|
+  /// endurance|cardio|mobility|general|consistency. Insertion order is
+  /// preserved (Dart's `Set` literal is a `LinkedHashSet`), so the first
+  /// one picked is treated as primary — the one nutrition calculation and
+  /// the workout-type split reason about — without needing a separate
+  /// "which is primary" control.
+  final Set<String> goals;
   final String? fitnessLevel; // beginner|intermediate|advanced (self-reported; refined by the baseline test if provided)
   final String? trainingLocation; // gym|home|outdoor|mixed
   final Set<String> equipment;
@@ -54,7 +60,10 @@ class OnboardingDraft {
   bool get isPersonalStepValid =>
       name.trim().isNotEmpty && sex != null && dateOfBirth != null && heightCm != null && weightKg != null;
 
-  bool get isGoalsStepValid => primaryGoal != null;
+  bool get isGoalsStepValid => goals.isNotEmpty;
+
+  /// The first-selected goal — see [goals] doc comment.
+  String? get primaryGoal => goals.isEmpty ? null : goals.first;
 
   bool get isLevelStepValid => fitnessLevel != null && trainingLocation != null;
 
@@ -68,7 +77,7 @@ class OnboardingDraft {
     DateTime? dateOfBirth,
     double? heightCm,
     double? weightKg,
-    String? primaryGoal,
+    Set<String>? goals,
     String? fitnessLevel,
     String? trainingLocation,
     Set<String>? equipment,
@@ -88,7 +97,7 @@ class OnboardingDraft {
       dateOfBirth: dateOfBirth ?? this.dateOfBirth,
       heightCm: heightCm ?? this.heightCm,
       weightKg: weightKg ?? this.weightKg,
-      primaryGoal: primaryGoal ?? this.primaryGoal,
+      goals: goals ?? this.goals,
       fitnessLevel: fitnessLevel ?? this.fitnessLevel,
       trainingLocation: trainingLocation ?? this.trainingLocation,
       equipment: equipment ?? this.equipment,
