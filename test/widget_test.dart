@@ -50,7 +50,7 @@ APP_ENV=development
   testWidgets('a fresh install with no profile lands on onboarding, not home', (tester) async {
     await pumpApp(tester);
 
-    expect(find.text('Fitness Companion'), findsOneWidget);
+    expect(find.text('Stronger\nHealthier\nHappier'), findsOneWidget);
     expect(find.text('Get started'), findsOneWidget);
 
     await unmountAndFlush(tester);

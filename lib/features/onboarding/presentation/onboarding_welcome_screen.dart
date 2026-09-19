@@ -8,26 +8,33 @@ class OnboardingWelcomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(28),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Icon(Icons.fitness_center, size: 56, color: Theme.of(context).colorScheme.primary),
-              const SizedBox(height: 24),
-              Text(
-                'Fitness Companion',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineMedium,
+              Container(
+                width: 120,
+                height: 120,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(color: scheme.primaryContainer, shape: BoxShape.circle),
+                child: Icon(Icons.fitness_center, size: 56, color: scheme.primary),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 32),
               Text(
-                'Plan. Do. Track. Check in. Adapt.\nWorks fully offline — sync is a bonus, not a requirement.',
+                'Stronger\nHealthier\nHappier',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: Theme.of(context).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w700, height: 1.15),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Your personal fitness companion — offline and online.',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: scheme.onSurfaceVariant),
               ),
               const SizedBox(height: 40),
               FilledButton(
