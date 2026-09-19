@@ -21,9 +21,12 @@ void main() {
     container = ProviderContainer(overrides: [appDatabaseProvider.overrideWithValue(db)]);
   });
 
-  tearDown(() {
+  tearDown(() async {
     container.dispose();
-    db.close();
+    // Must be awaited — see the comment in
+    // workout_execution_integration_test.dart's tearDown for why an
+    // unawaited close() here is a real cross-test race, not a nitpick.
+    await db.close();
   });
 
   testWidgets('completing onboarding persists a profile, nutrition targets, and a generated first week',
@@ -35,7 +38,7 @@ void main() {
     controller.updateDateOfBirth(DateTime(1995, 3, 10));
     controller.updateHeightCm(165);
     controller.updateWeightKg(62);
-    controller.updatePrimaryGoal('fat_loss');
+    controller.toggleGoal('fat_loss');
     controller.updateLevelAndLocation(fitnessLevel: 'beginner', trainingLocation: 'home');
     controller.toggleEquipment('none');
     controller.updateAvailability(daysPerWeek: 3, minutesPerSession: 30, preferredTimeOfDay: 'morning');

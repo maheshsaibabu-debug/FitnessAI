@@ -16,12 +16,22 @@ class ExerciseLibrarySeeder {
 
   final AppDatabase _db;
 
+  /// Cached at the process level (not per instance) once successfully
+  /// read. Besides the obvious "don't re-read a static file" win, this
+  /// also sidesteps a real flutter_test quirk: calling
+  /// `rootBundle.loadString` a second time from a *different*
+  /// `testWidgets` case in the same test file can hang indefinitely
+  /// (the asset channel doesn't round-trip cleanly across test
+  /// boundaries) — reading it once and reusing the string avoids that
+  /// entirely, in both tests and the real app.
+  static String? _cachedJson;
+
   Future<void> seedIfEmpty() async {
     final alreadySeeded = await (_db.select(_db.exercises)..limit(1)).get();
     if (alreadySeeded.isNotEmpty) return;
 
-    final raw = await rootBundle.loadString('assets/data/exercises.json');
-    final entries = (jsonDecode(raw) as List).cast<Map<String, dynamic>>();
+    _cachedJson ??= await rootBundle.loadString('assets/data/exercises.json');
+    final entries = (jsonDecode(_cachedJson!) as List).cast<Map<String, dynamic>>();
 
     await _db.batch((batch) {
       batch.insertAll(
