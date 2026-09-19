@@ -26,6 +26,10 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Fitness Companion reads your step count to track daily activity toward your goal. You can always log steps manually instead.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Fitness Companion does not write to Health data — this permission is requested by the underlying health framework but unused.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

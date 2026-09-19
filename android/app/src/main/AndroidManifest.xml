@@ -1,4 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Health Connect: steps only (product spec §22). Read-only — this
+         app never writes health data. -->
+    <uses-permission android:name="android.permission.health.READ_STEPS"/>
+
     <application
         android:label="fitness_companion"
         android:name="${applicationName}"
@@ -41,5 +45,8 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+        <!-- Lets the health plugin detect whether Health Connect is
+             installed (product spec §22); required on Android 11+. -->
+        <package android:name="com.google.android.apps.healthdata" />
     </queries>
 </manifest>
