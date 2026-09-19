@@ -11,7 +11,7 @@
 //                          (filter: prompt pricing $0) and override this
 //                          secret if the default below has been retired.
 
-const DEFAULT_MODEL = "meta-llama/llama-3.1-8b-instruct:free";
+const DEFAULT_MODEL = "z-ai/glm-5.2:free";
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 // Deliberately narrow: the LLM explains and motivates over numbers the
