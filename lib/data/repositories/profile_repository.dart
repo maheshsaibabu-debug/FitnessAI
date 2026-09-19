@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../core/database/app_database.dart';
 import '../../domain/fitness_engine/fitness_assessment_engine.dart';
 import '../../domain/nutrition_engine/nutrition_calculation_engine.dart';
+import '../../domain/workout_engine/workout_generation_engine.dart';
 import '../../features/onboarding/domain/onboarding_draft.dart';
+import 'workout_plan_repository.dart' show fitnessLevelFromString;
 
 const _uuid = Uuid();
 
@@ -30,6 +34,35 @@ class ProfileRepository {
 
   Future<UserProfile?> activeProfileOnce() {
     return (_db.select(_db.userProfiles)..limit(1)).getSingleOrNull();
+  }
+
+  Stream<Set<String>> watchGoals(String userId) {
+    return (_db.select(_db.fitnessGoals)..where((g) => g.userId.equals(userId)))
+        .watch()
+        .map((rows) => rows.map((r) => r.goalType).toSet());
+  }
+
+  /// Reassembles the engine's [TrainingProfile] input from what's already
+  /// on disk — used to regenerate a plan against the same profile the
+  /// user onboarded with, without asking them to redo onboarding.
+  Future<TrainingProfile?> currentTrainingProfile() async {
+    final profile = await activeProfileOnce();
+    if (profile == null) return null;
+
+    final goalRows = await (_db.select(_db.fitnessGoals)..where((g) => g.userId.equals(profile.id))).get();
+
+    return TrainingProfile(
+      fitnessLevel: fitnessLevelFromString(profile.fitnessLevel),
+      availableEquipment: _parseJsonList(profile.equipmentJson),
+      daysPerWeek: profile.availabilityDaysPerWeek ?? 3,
+      minutesPerSession: profile.availabilityMinutesPerSession ?? 30,
+      goals: goalRows.map((g) => g.goalType).toSet(),
+    );
+  }
+
+  Set<String> _parseJsonList(String json) {
+    if (json.isEmpty) return {};
+    return (jsonDecode(json) as List).map((v) => v.toString()).toSet();
   }
 
   Future<String> completeOnboarding(OnboardingDraft draft) async {

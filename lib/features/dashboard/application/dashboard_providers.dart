@@ -12,6 +12,16 @@ Stream<UserProfile?> activeProfile(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+Stream<Set<String>> activeGoals(Ref ref) async* {
+  final profile = await ref.watch(activeProfileProvider.future);
+  if (profile == null) {
+    yield const {};
+    return;
+  }
+  yield* ref.watch(profileRepositoryProvider).watchGoals(profile.id);
+}
+
+@Riverpod(keepAlive: true)
 Stream<Workout?> todaysWorkout(Ref ref) async* {
   final profile = await ref.watch(activeProfileProvider.future);
   if (profile == null) {

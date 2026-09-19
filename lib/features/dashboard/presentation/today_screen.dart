@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/database/app_database.dart';
 import '../../../data/repositories/repository_providers.dart';
+import '../../../domain/workout_engine/workout_generation_engine.dart';
 import '../../../shared/widgets/category_icon_badge.dart';
 import '../../../shared/widgets/offline_banner.dart';
 import '../../tracking/application/tracking_providers.dart';
@@ -38,6 +39,7 @@ class TodayScreen extends ConsumerWidget {
     final todaysWorkout = ref.watch(todaysWorkoutProvider);
     final todaysSteps = ref.watch(todaysStepsProvider);
     final profile = ref.watch(activeProfileProvider).valueOrNull;
+    final goals = ref.watch(activeGoalsProvider).valueOrNull ?? const {};
     final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
@@ -73,7 +75,7 @@ class TodayScreen extends ConsumerWidget {
                               child: LinearProgressIndicator(),
                             ),
                             error: (e, st) => Text('Could not load today\'s plan: $e'),
-                            data: (workout) => _WorkoutRow(workout: workout),
+                            data: (workout) => _WorkoutRow(workout: workout, goals: goals),
                           ),
                           const SizedBox(height: 14),
                           todaysSteps.when(
@@ -107,20 +109,38 @@ class TodayScreen extends ConsumerWidget {
 }
 
 class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.icon, required this.categoryKey, required this.label, required this.value});
+  const _InfoRow({required this.icon, required this.categoryKey, required this.label, required this.value, this.subtitle});
 
   final IconData icon;
   final String categoryKey;
   final String label;
   final String value;
+  final String? subtitle;
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CategoryIconBadge(icon: icon, categoryKey: categoryKey, size: 40),
         const SizedBox(width: 14),
-        Expanded(child: Text(label, style: Theme.of(context).textTheme.bodyLarge)),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: Theme.of(context).textTheme.bodyLarge),
+              if (subtitle != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Text(
+                    subtitle!,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                  ),
+                ),
+            ],
+          ),
+        ),
         Text(value, style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
       ],
     );
@@ -128,8 +148,9 @@ class _InfoRow extends StatelessWidget {
 }
 
 class _WorkoutRow extends StatelessWidget {
-  const _WorkoutRow({required this.workout});
+  const _WorkoutRow({required this.workout, required this.goals});
   final Workout? workout;
+  final Set<String> goals;
 
   @override
   Widget build(BuildContext context) {
@@ -141,6 +162,7 @@ class _WorkoutRow extends StatelessWidget {
       categoryKey: 'workout',
       label: workout!.title,
       value: '${workout!.estimatedMinutes ?? '—'} min',
+      subtitle: workoutFocusSummary(workoutType: workout!.workoutType, goals: goals),
     );
   }
 }

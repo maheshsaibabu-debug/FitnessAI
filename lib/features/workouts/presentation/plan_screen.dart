@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../data/repositories/repository_providers.dart';
+import '../../../domain/workout_engine/workout_generation_engine.dart';
 import '../../../shared/widgets/category_icon_badge.dart';
 import '../../dashboard/application/dashboard_providers.dart';
 
@@ -17,21 +19,65 @@ const Map<String, IconData> _workoutTypeIcons = {
   'cardio': Icons.directions_run,
 };
 
-/// Lists the generated plan's upcoming workouts. Editing/regenerating the
-/// plan, and the adaptive re-planning from actual adherence, are later
-/// phases (6/10 already provide the engines; the UI to drive them from
-/// here is not yet wired up) — this screen honestly shows what
-/// [WorkoutGenerationEngine] produced at onboarding, nothing invented.
-class PlanScreen extends ConsumerWidget {
+/// Lists the generated plan's upcoming workouts. The adaptive re-planning
+/// from actual adherence (phase 10) is still a later phase, but a manual
+/// "Regenerate" is available now — it re-runs [WorkoutGenerationEngine]
+/// against the same saved profile, e.g. after a fix to how session
+/// length or goal-matching is computed. Nothing here is invented: every
+/// row is still exactly what the engine produced.
+class PlanScreen extends ConsumerStatefulWidget {
   const PlanScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PlanScreen> createState() => _PlanScreenState();
+}
+
+class _PlanScreenState extends ConsumerState<PlanScreen> {
+  bool _regenerating = false;
+
+  Future<void> _regenerate() async {
+    setState(() => _regenerating = true);
+    try {
+      final profileRepository = ref.read(profileRepositoryProvider);
+      final profile = await profileRepository.activeProfileOnce();
+      final trainingProfile = await profileRepository.currentTrainingProfile();
+      if (profile == null || trainingProfile == null) return;
+
+      await ref.read(workoutPlanRepositoryProvider).regenerateUpcomingPlan(
+            userId: profile.id,
+            trainingProfile: trainingProfile,
+            from: DateTime.now(),
+          );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Plan regenerated from today onward.')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _regenerating = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final upcoming = ref.watch(upcomingWorkoutsProvider);
+    final goals = ref.watch(activeGoalsProvider).valueOrNull ?? const {};
     final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Plan')),
+      appBar: AppBar(
+        title: const Text('Plan'),
+        actions: [
+          IconButton(
+            tooltip: 'Regenerate plan',
+            icon: _regenerating
+                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                : const Icon(Icons.refresh),
+            onPressed: _regenerating ? null : _regenerate,
+          ),
+        ],
+      ),
       body: upcoming.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, st) => Center(child: Text('Could not load your plan: $e')),
@@ -72,6 +118,11 @@ class PlanScreen extends ConsumerWidget {
                               const SizedBox(height: 2),
                               Text(
                                 '${DateFormat.MMMEd().format(workout.scheduledDate)} · ${workout.estimatedMinutes ?? '—'} min',
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                workoutFocusSummary(workoutType: workout.workoutType, goals: goals),
                                 style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
                               ),
                             ],

@@ -20,72 +20,127 @@ class WorkoutPlanRepository {
     required TrainingProfile trainingProfile,
     required DateTime startDate,
   }) async {
-    await _exerciseLibrarySeeder.seedIfEmpty();
-    final library = await _exerciseLibrarySeeder.loadSummaries();
-
-    final generated = const WorkoutGenerationEngine().generateWeek(
-      profile: trainingProfile,
-      exerciseLibrary: library,
-    );
-
-    final now = DateTime.now().toUtc();
-    final planId = _uuid.v4();
+    final generated = await _generateWeek(trainingProfile);
     final startDay = DateTime(startDate.year, startDate.month, startDate.day);
 
-    await _db.transaction(() async {
-      await _db.into(_db.workoutPlans).insert(WorkoutPlansCompanion.insert(
-            id: planId,
+    return _db.transaction(() => _insertGeneratedWeek(
+          userId: userId,
+          planName: 'Week 1',
+          generated: generated,
+          startDay: startDay,
+        ));
+  }
+
+  /// Replaces the not-yet-done portion of the active plan with a fresh
+  /// week from the (possibly since-improved) generation engine — e.g.
+  /// after a fix to how session length or goal-matching is computed.
+  /// Workouts already completed, skipped, or in progress are untouched;
+  /// only 'scheduled' workouts from [from] onward are cleared to make
+  /// room, so history never disappears and an active session is never
+  /// pulled out from under the user.
+  Future<String> regenerateUpcomingPlan({
+    required String userId,
+    required TrainingProfile trainingProfile,
+    required DateTime from,
+  }) async {
+    final generated = await _generateWeek(trainingProfile);
+    final today = DateTime(from.year, from.month, from.day);
+
+    return _db.transaction(() async {
+      final todaysWorkout =
+          await (_db.select(_db.workouts)..where((w) => w.userId.equals(userId) & w.scheduledDate.equals(today)))
+              .getSingleOrNull();
+      final startDay =
+          (todaysWorkout != null && todaysWorkout.status != 'scheduled') ? today.add(const Duration(days: 1)) : today;
+
+      final staleWorkouts = await (_db.select(_db.workouts)
+            ..where((w) =>
+                w.userId.equals(userId) & w.scheduledDate.isBiggerOrEqualValue(startDay) & w.status.equals('scheduled')))
+          .get();
+      for (final stale in staleWorkouts) {
+        final staleExercises =
+            await (_db.select(_db.workoutExercises)..where((e) => e.workoutId.equals(stale.id))).get();
+        for (final ex in staleExercises) {
+          await (_db.delete(_db.workoutSets)..where((s) => s.workoutExerciseId.equals(ex.id))).go();
+        }
+        await (_db.delete(_db.workoutExercises)..where((e) => e.workoutId.equals(stale.id))).go();
+        await (_db.delete(_db.workouts)..where((w) => w.id.equals(stale.id))).go();
+      }
+
+      await (_db.update(_db.workoutPlans)..where((p) => p.userId.equals(userId) & p.isActive.equals(true)))
+          .write(const WorkoutPlansCompanion(isActive: Value(false)));
+
+      return _insertGeneratedWeek(userId: userId, planName: 'Refreshed plan', generated: generated, startDay: startDay);
+    });
+  }
+
+  Future<GeneratedPlan> _generateWeek(TrainingProfile trainingProfile) async {
+    await _exerciseLibrarySeeder.seedIfEmpty();
+    final library = await _exerciseLibrarySeeder.loadSummaries();
+    return const WorkoutGenerationEngine().generateWeek(profile: trainingProfile, exerciseLibrary: library);
+  }
+
+  Future<String> _insertGeneratedWeek({
+    required String userId,
+    required String planName,
+    required GeneratedPlan generated,
+    required DateTime startDay,
+  }) async {
+    final now = DateTime.now().toUtc();
+    final planId = _uuid.v4();
+
+    await _db.into(_db.workoutPlans).insert(WorkoutPlansCompanion.insert(
+          id: planId,
+          userId: userId,
+          name: planName,
+          isActive: const Value(true),
+          startDate: startDay,
+          createdAt: now,
+          updatedAt: now,
+        ));
+
+    for (final workout in generated.workouts) {
+      final workoutId = _uuid.v4();
+      await _db.into(_db.workouts).insert(WorkoutsCompanion.insert(
+            id: workoutId,
+            planId: Value(planId),
             userId: userId,
-            name: 'Week 1',
-            isActive: const Value(true),
-            startDate: startDay,
+            title: workout.title,
+            workoutType: workout.workoutType,
+            scheduledDate: startDay.add(Duration(days: workout.dayOffset)),
+            estimatedMinutes: Value(workout.estimatedMinutes),
             createdAt: now,
             updatedAt: now,
           ));
 
-      for (final workout in generated.workouts) {
-        final workoutId = _uuid.v4();
-        await _db.into(_db.workouts).insert(WorkoutsCompanion.insert(
-              id: workoutId,
-              planId: Value(planId),
-              userId: userId,
-              title: workout.title,
-              workoutType: workout.workoutType,
-              scheduledDate: startDay.add(Duration(days: workout.dayOffset)),
-              estimatedMinutes: Value(workout.estimatedMinutes),
-              createdAt: now,
-              updatedAt: now,
+      for (final exercise in workout.exercises) {
+        final workoutExerciseId = _uuid.v4();
+        await _db.into(_db.workoutExercises).insert(WorkoutExercisesCompanion.insert(
+              id: workoutExerciseId,
+              workoutId: workoutId,
+              exerciseId: exercise.exerciseId,
+              orderIndex: exercise.orderIndex,
+              targetSets: Value(exercise.targetSets),
+              targetReps: Value(exercise.targetReps),
+              targetDurationSeconds: Value(exercise.targetDurationSeconds),
+              restSeconds: Value(exercise.restSeconds),
             ));
 
-        for (final exercise in workout.exercises) {
-          final workoutExerciseId = _uuid.v4();
-          await _db.into(_db.workoutExercises).insert(WorkoutExercisesCompanion.insert(
-                id: workoutExerciseId,
-                workoutId: workoutId,
-                exerciseId: exercise.exerciseId,
-                orderIndex: exercise.orderIndex,
-                targetSets: Value(exercise.targetSets),
+        // Pre-create one WorkoutSets row per target set so the execution
+        // screen has something to fill in rather than materializing sets
+        // on the fly — the plan already decided how many sets there are.
+        final setCount = exercise.targetSets ?? 1;
+        for (var setIndex = 0; setIndex < setCount; setIndex++) {
+          await _db.into(_db.workoutSets).insert(WorkoutSetsCompanion.insert(
+                id: _uuid.v4(),
+                workoutExerciseId: workoutExerciseId,
+                setIndex: setIndex,
                 targetReps: Value(exercise.targetReps),
-                targetDurationSeconds: Value(exercise.targetDurationSeconds),
-                restSeconds: Value(exercise.restSeconds),
+                createdAt: now,
               ));
-
-          // Pre-create one WorkoutSets row per target set so the execution
-          // screen has something to fill in rather than materializing sets
-          // on the fly — the plan already decided how many sets there are.
-          final setCount = exercise.targetSets ?? 1;
-          for (var setIndex = 0; setIndex < setCount; setIndex++) {
-            await _db.into(_db.workoutSets).insert(WorkoutSetsCompanion.insert(
-                  id: _uuid.v4(),
-                  workoutExerciseId: workoutExerciseId,
-                  setIndex: setIndex,
-                  targetReps: Value(exercise.targetReps),
-                  createdAt: now,
-                ));
-          }
         }
       }
-    });
+    }
 
     return planId;
   }
