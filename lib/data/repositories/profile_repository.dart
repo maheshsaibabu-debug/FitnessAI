@@ -42,6 +42,16 @@ class ProfileRepository {
         .map((rows) => rows.map((r) => r.goalType).toSet());
   }
 
+  /// One-shot equivalent of [watchGoals] — for a caller that just needs
+  /// the current value once (e.g. FitnessContextResolver) rather than a
+  /// live subscription, this avoids `.watch().first`'s stream-teardown
+  /// cost (and, under flutter_test's FakeAsync zone with no `pump()`
+  /// calls, its zero-duration-Timer-that-never-fires hang risk).
+  Future<Set<String>> goalsOnce(String userId) async {
+    final rows = await (_db.select(_db.fitnessGoals)..where((g) => g.userId.equals(userId))).get();
+    return rows.map((r) => r.goalType).toSet();
+  }
+
   /// Reassembles the engine's [TrainingProfile] input from what's already
   /// on disk — used to regenerate a plan against the same profile the
   /// user onboarded with, without asking them to redo onboarding.
@@ -58,6 +68,10 @@ class ProfileRepository {
       minutesPerSession: profile.availabilityMinutesPerSession ?? 30,
       goals: goalRows.map((g) => g.goalType).toSet(),
     );
+  }
+
+  Future<NutritionGoal?> nutritionTargetsOnce(String userId) {
+    return (_db.select(_db.nutritionGoals)..where((g) => g.userId.equals(userId))).getSingleOrNull();
   }
 
   Set<String> _parseJsonList(String json) {

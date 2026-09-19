@@ -173,6 +173,34 @@ class WorkoutPlanRepository {
           ..orderBy([(e) => OrderingTerm.asc(e.orderIndex)]))
         .watch();
   }
+
+  /// Workouts scheduled from [days] days ago through today — a bounded
+  /// adherence window (see docs/AI_ARCHITECTURE.md's FitnessContextResolver)
+  /// rather than the full history, so the coach's context stays small and
+  /// predictable regardless of how long the user has used the app.
+  Future<List<Workout>> recentWorkouts(String userId, {int days = 14}) {
+    final today = DateTime.now();
+    final todayDay = DateTime(today.year, today.month, today.day);
+    final fromDay = todayDay.subtract(Duration(days: days));
+    return (_db.select(_db.workouts)
+          ..where((w) =>
+              w.userId.equals(userId) &
+              w.scheduledDate.isBiggerOrEqualValue(fromDay) &
+              w.scheduledDate.isSmallerOrEqualValue(todayDay))
+          ..orderBy([(w) => OrderingTerm.desc(w.scheduledDate)]))
+        .get();
+  }
+
+  Future<Workout?> nextUpcomingWorkout(String userId) {
+    final today = DateTime.now();
+    final todayDay = DateTime(today.year, today.month, today.day);
+    return (_db.select(_db.workouts)
+          ..where((w) =>
+              w.userId.equals(userId) & w.scheduledDate.isBiggerOrEqualValue(todayDay) & w.status.equals('scheduled'))
+          ..orderBy([(w) => OrderingTerm.asc(w.scheduledDate)])
+          ..limit(1))
+        .getSingleOrNull();
+  }
 }
 
 /// Maps the profile's persisted fitness level string back to the engine's

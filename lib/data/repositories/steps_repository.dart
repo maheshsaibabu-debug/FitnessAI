@@ -66,5 +66,14 @@ class StepsRepository {
         .watch();
   }
 
+  /// One-shot equivalent of [watchHistory] — see ProfileRepository.goalsOnce.
+  Future<List<StepRecord>> historyOnce(String userId, {int days = 7}) {
+    final from = _truncate(DateTime.now()).subtract(Duration(days: days - 1));
+    return (_db.select(_db.stepRecords)
+          ..where((s) => s.userId.equals(userId) & s.date.isBiggerOrEqualValue(from))
+          ..orderBy([(s) => OrderingTerm.asc(s.date)]))
+        .get();
+  }
+
   DateTime _truncate(DateTime d) => DateTime(d.year, d.month, d.day);
 }

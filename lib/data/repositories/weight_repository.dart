@@ -39,4 +39,13 @@ class WeightRepository {
           ..orderBy([(w) => OrderingTerm.asc(w.recordedAt)]))
         .watch();
   }
+
+  /// One-shot equivalent of [watchHistory] — see ProfileRepository.goalsOnce.
+  Future<List<WeightLog>> historyOnce(String userId, {int days = 30}) {
+    final from = DateTime.now().subtract(Duration(days: days));
+    return (_db.select(_db.weightLogs)
+          ..where((w) => w.userId.equals(userId) & w.recordedAt.isBiggerOrEqualValue(from))
+          ..orderBy([(w) => OrderingTerm.asc(w.recordedAt)]))
+        .get();
+  }
 }

@@ -1,6 +1,12 @@
 # AI Architecture
 
-Status: designed, not yet implemented (`lib/ai/` is currently empty folders — implementation phase 11). This document is the contract that phase 11 implements against.
+Status: core chain implemented (`lib/ai/`, `lib/features/coach/`, `supabase/functions/ai-coach-gateway`) — see deviations below. Observability (call logging) is not yet built.
+
+## Deviations from this doc as originally written
+
+- `FitnessContextResolver` omits **nutrition adherence %** and **recovery signal** — there's no food-logging or daily check-in feature yet to compute either from, and this app's convention is to never send/display an invented number. It includes the computed calorie/protein *targets* instead (real data), not adherence against them.
+- The gateway calls a free OpenRouter model by default (`OPENROUTER_MODEL` secret overrides it) rather than a specific paid model — free-tier model IDs on OpenRouter change over time, so the default in `supabase/functions/ai-coach-gateway/index.ts` may need updating; check https://openrouter.ai/models.
+- Coach chat history is in-memory only (`CoachController`) — no persistence table yet, so it resets on app restart.
 
 ## Provider abstraction
 
