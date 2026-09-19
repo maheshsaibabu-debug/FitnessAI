@@ -58,8 +58,9 @@ class WorkoutPlanRepository {
             ));
 
         for (final exercise in workout.exercises) {
+          final workoutExerciseId = _uuid.v4();
           await _db.into(_db.workoutExercises).insert(WorkoutExercisesCompanion.insert(
-                id: _uuid.v4(),
+                id: workoutExerciseId,
                 workoutId: workoutId,
                 exerciseId: exercise.exerciseId,
                 orderIndex: exercise.orderIndex,
@@ -68,6 +69,20 @@ class WorkoutPlanRepository {
                 targetDurationSeconds: Value(exercise.targetDurationSeconds),
                 restSeconds: Value(exercise.restSeconds),
               ));
+
+          // Pre-create one WorkoutSets row per target set so the execution
+          // screen has something to fill in rather than materializing sets
+          // on the fly — the plan already decided how many sets there are.
+          final setCount = exercise.targetSets ?? 1;
+          for (var setIndex = 0; setIndex < setCount; setIndex++) {
+            await _db.into(_db.workoutSets).insert(WorkoutSetsCompanion.insert(
+                  id: _uuid.v4(),
+                  workoutExerciseId: workoutExerciseId,
+                  setIndex: setIndex,
+                  targetReps: Value(exercise.targetReps),
+                  createdAt: now,
+                ));
+          }
         }
       }
     });

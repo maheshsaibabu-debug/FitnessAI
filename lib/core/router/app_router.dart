@@ -11,8 +11,9 @@ import '../../features/dashboard/presentation/today_screen.dart';
 import '../../features/onboarding/presentation/onboarding_flow_screen.dart';
 import '../../features/onboarding/presentation/onboarding_welcome_screen.dart';
 import '../../features/progress/presentation/progress_screen.dart';
+import '../../features/tracking/presentation/track_screen.dart';
 import '../../features/workouts/presentation/plan_screen.dart';
-import '../../features/workouts/presentation/track_screen.dart';
+import '../../features/workouts/presentation/workout_execution_screen.dart';
 import '../../shared/widgets/splash_screen.dart';
 import '../database/app_database.dart';
 import '../database/database_provider.dart';
@@ -73,6 +74,12 @@ GoRouter appRouter(Ref ref) {
         routes: [
           GoRoute(path: 'flow', builder: (context, state) => const OnboardingFlowScreen()),
         ],
+      ),
+      GoRoute(
+        path: '/workout/:workoutId',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) =>
+            WorkoutExecutionScreen(workoutId: state.pathParameters['workoutId']!),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) => HomeShell(navigationShell: navigationShell),
