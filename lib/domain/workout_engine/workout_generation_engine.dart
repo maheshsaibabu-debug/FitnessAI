@@ -227,29 +227,9 @@ class WorkoutGenerationEngine {
     return selected;
   }
 
-  String _movementPattern(ExerciseSummary e) {
-    if (e.category == 'hiit') return 'hiit';
-    if (e.category == 'cardio') return 'cardio';
-    if (e.category == 'mobility') return 'mobility';
-    if (e.category == 'core') return 'core';
+  String _movementPattern(ExerciseSummary e) => movementPatternFor(e);
 
-    final muscles = e.primaryMuscles.map((m) => m.toLowerCase()).toSet();
-    const pushMuscles = {'chest', 'shoulders', 'triceps'};
-    const pullMuscles = {'back', 'biceps'};
-    const legMuscles = {'quadriceps', 'hamstrings', 'glutes', 'calves'};
-
-    if (muscles.any(legMuscles.contains)) return 'legs';
-    if (muscles.any(pushMuscles.contains)) return 'push';
-    if (muscles.any(pullMuscles.contains)) return 'pull';
-    return 'core';
-  }
-
-  int _levelRank(String difficulty) => switch (difficulty) {
-        'beginner' => 0,
-        'intermediate' => 1,
-        'advanced' => 2,
-        _ => 0,
-      };
+  int _levelRank(String difficulty) => levelRankFor(difficulty);
 
   String _levelName(FitnessLevel level) => switch (level) {
         FitnessLevel.beginner => 'beginner',
@@ -319,6 +299,35 @@ bool exerciseUsesAvailableEquipment(List<String> required, Set<String> usableEqu
   if (usableEquipment.contains('full_gym')) return true;
   return required.every(usableEquipment.contains);
 }
+
+/// Which broad movement pattern an exercise belongs to — shared by
+/// [WorkoutGenerationEngine] and the AI plan path (which uses it to top
+/// a day back up to the requested session length with more exercises
+/// from the same patterns already present, if the model under-filled
+/// it — see ai/plan/ai_plan_response_parser.dart).
+String movementPatternFor(ExerciseSummary e) {
+  if (e.category == 'hiit') return 'hiit';
+  if (e.category == 'cardio') return 'cardio';
+  if (e.category == 'mobility') return 'mobility';
+  if (e.category == 'core') return 'core';
+
+  final muscles = e.primaryMuscles.map((m) => m.toLowerCase()).toSet();
+  const pushMuscles = {'chest', 'shoulders', 'triceps'};
+  const pullMuscles = {'back', 'biceps'};
+  const legMuscles = {'quadriceps', 'hamstrings', 'glutes', 'calves'};
+
+  if (muscles.any(legMuscles.contains)) return 'legs';
+  if (muscles.any(pushMuscles.contains)) return 'push';
+  if (muscles.any(pullMuscles.contains)) return 'pull';
+  return 'core';
+}
+
+int levelRankFor(String difficulty) => switch (difficulty) {
+      'beginner' => 0,
+      'intermediate' => 1,
+      'advanced' => 2,
+      _ => 0,
+    };
 
 /// A one-line reason a given day's workout type serves the user's
 /// selected goal(s) — so the plan visibly reads as goal-driven day to

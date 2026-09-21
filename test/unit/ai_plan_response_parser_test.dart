@@ -238,4 +238,64 @@ void main() {
     expect(dayZero.exercises, hasLength(1)); // only the well-formed plank survives
     expect(dayZero.exercises.single.targetDurationSeconds, 30);
   });
+
+  test('tops a day back up toward the requested session length when the model under-filled it', () {
+    // A richer library than the other tests', so there's real headroom
+    // to top up from — mirrors what under-filling looked like live: a
+    // gym day that only came back with one or two exercises.
+    const richLibrary = [
+      ExerciseSummary(id: 'barbell-bench-press', name: 'Barbell Bench Press', category: 'strength', primaryMuscles: ['chest'], equipment: ['barbell', 'bench'], difficulty: 'intermediate'),
+      ExerciseSummary(id: 'incline-dumbbell-press', name: 'Incline Dumbbell Press', category: 'strength', primaryMuscles: ['chest'], equipment: ['dumbbells', 'bench'], difficulty: 'intermediate'),
+      ExerciseSummary(id: 'cable-chest-fly', name: 'Cable Chest Fly', category: 'strength', primaryMuscles: ['chest'], equipment: ['machines'], difficulty: 'intermediate'),
+      ExerciseSummary(id: 'incline-machine-press', name: 'Incline Machine Press', category: 'strength', primaryMuscles: ['chest'], equipment: ['machines'], difficulty: 'beginner'),
+    ];
+    const gymProfile = TrainingProfile(
+      fitnessLevel: FitnessLevel.intermediate,
+      availableEquipment: {'full_gym'},
+      daysPerWeek: 2,
+      minutesPerSession: 60,
+      goals: {'muscle_gain'},
+    );
+
+    final result = parser.parse(
+      rawPlan: {
+        'workouts': [
+          {
+            'dayOffset': 0,
+            'workoutType': 'push',
+            'title': 'Push Day',
+            'exercises': [
+              {'exerciseId': 'barbell-bench-press', 'targetSets': 4, 'targetReps': 8, 'restSeconds': 90},
+            ],
+          },
+          {
+            'dayOffset': 1,
+            'workoutType': 'push',
+            'title': 'Push Day 2',
+            'exercises': [
+              {'exerciseId': 'barbell-bench-press', 'targetSets': 4, 'targetReps': 8, 'restSeconds': 90},
+            ],
+          },
+        ],
+        'nutrition': _validNutrition(),
+      },
+      model: null,
+      trainingProfile: gymProfile,
+      library: richLibrary,
+      nutritionInput: _nutritionInput,
+    );
+
+    final dayZero = result.plan.workouts.firstWhere((w) => w.dayOffset == 0);
+    // One bench-press set scheme alone comes nowhere near 60 minutes —
+    // the parser should pull in more real chest exercises to close the
+    // gap. This fixture library only has 4 valid candidates total, so it
+    // can't reach a full 60 real minutes; it should still use every one
+    // of them (exhausting real content honestly, not inventing more).
+    expect(dayZero.exercises.length, richLibrary.length);
+    expect(dayZero.estimatedMinutes, greaterThan(30)); // well above the ~14min single-exercise baseline
+    // Every added exercise must still be a real, valid library id — the
+    // top-up reuses the same validation rules, it doesn't bypass them.
+    final validIds = richLibrary.map((e) => e.id).toSet();
+    expect(dayZero.exercises.map((e) => e.exerciseId).every(validIds.contains), isTrue);
+  });
 }

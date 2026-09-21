@@ -71,27 +71,110 @@ class AiPlanResponseParser {
       final rawExercises = rawWorkout['exercises'];
       if (rawExercises is! List) continue;
 
+      final workoutType = (rawWorkout['workoutType'] as String?) ?? 'strength_full_body';
+      final title = (rawWorkout['title'] as String?) ?? 'Workout';
+
       var order = 0;
       final exercises = <GeneratedExercise>[];
+      final usedInDay = <String>{};
       for (final rawExercise in rawExercises) {
         final exercise = _parseExercise(rawExercise, libraryById, usableEquipment, levelRank, order);
         if (exercise == null) continue;
+        if (!usedInDay.add(exercise.exerciseId)) continue; // the model repeated an exercise within the day
         exercises.add(exercise);
         order++;
       }
       if (exercises.isEmpty) continue; // whole day was junk -> the day-count check below catches this
 
-      final workoutType = (rawWorkout['workoutType'] as String?) ?? 'strength_full_body';
-      final title = (rawWorkout['title'] as String?) ?? 'Workout';
+      // The model doesn't always fill a day out to the requested session
+      // length on its own (a "60-minute" gym day can come back with only
+      // 4-5 exercises) — top it back up with more real, valid exercises
+      // from the same muscle-group patterns already present, the same
+      // way WorkoutGenerationEngine fills a deterministic day.
+      final toppedUp = _topUpToTarget(
+        exercises: exercises,
+        usedIds: usedInDay,
+        libraryById: libraryById,
+        library: library,
+        usableEquipment: usableEquipment,
+        levelRank: levelRank,
+        targetSeconds: trainingProfile.minutesPerSession * 60,
+        workoutType: workoutType,
+      );
+
       workouts.add(GeneratedWorkout(
         dayOffset: dayOffset,
         workoutType: workoutType,
         title: title,
-        estimatedMinutes: estimatedMinutesFor(exercises),
-        exercises: exercises,
+        estimatedMinutes: estimatedMinutesFor(toppedUp),
+        exercises: toppedUp,
       ));
     }
     return workouts;
+  }
+
+  /// Fills a day back out toward [targetSeconds] using more real
+  /// exercises from the same movement patterns the model already picked
+  /// for that day (e.g. a chest/triceps day only tops up with more
+  /// push-pattern exercises) — reusing the day's own sets/reps/rest
+  /// scheme for consistency. Skipped for hiit/cardio days, which the
+  /// model already owns the full structure of, and if the day already
+  /// meets or exceeds the target.
+  List<GeneratedExercise> _topUpToTarget({
+    required List<GeneratedExercise> exercises,
+    required Set<String> usedIds,
+    required Map<String, ExerciseSummary> libraryById,
+    required List<ExerciseSummary> library,
+    required Set<String> usableEquipment,
+    required int levelRank,
+    required int targetSeconds,
+    required String workoutType,
+  }) {
+    if (workoutType == 'hiit' || workoutType == 'cardio') return exercises;
+    if (workoutSecondsFor(exercises) >= targetSeconds) return exercises;
+
+    final patterns = exercises
+        .map((e) => libraryById[e.exerciseId])
+        .whereType<ExerciseSummary>()
+        .map(movementPatternFor)
+        .toSet()
+        .toList();
+    if (patterns.isEmpty) return exercises;
+
+    final result = List<GeneratedExercise>.from(exercises);
+    final reference = result.first;
+    var order = result.length;
+
+    var addedThisRound = true;
+    while (workoutSecondsFor(result) < targetSeconds && addedThisRound) {
+      addedThisRound = false;
+      for (final pattern in patterns) {
+        if (workoutSecondsFor(result) >= targetSeconds) break;
+
+        final candidates = library.where((e) {
+          if (usedIds.contains(e.id)) return false;
+          if (movementPatternFor(e) != pattern) return false;
+          if (!exerciseUsesAvailableEquipment(e.equipment, usableEquipment)) return false;
+          return levelRankFor(e.difficulty) <= levelRank;
+        }).toList()
+          ..sort((a, b) => a.id.compareTo(b.id));
+
+        if (candidates.isEmpty) continue;
+        final chosen = candidates.first;
+        usedIds.add(chosen.id);
+        result.add(GeneratedExercise(
+          exerciseId: chosen.id,
+          orderIndex: order++,
+          targetSets: reference.targetSets,
+          targetReps: reference.targetReps,
+          targetDurationSeconds: reference.targetDurationSeconds,
+          restSeconds: reference.restSeconds,
+        ));
+        addedThisRound = true;
+      }
+    }
+
+    return result;
   }
 
   GeneratedExercise? _parseExercise(
