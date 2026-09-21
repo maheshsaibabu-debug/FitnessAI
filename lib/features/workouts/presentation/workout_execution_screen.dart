@@ -167,21 +167,21 @@ class _SetLoggingViewState extends ConsumerState<_SetLoggingView> {
               Expanded(
                 child: OutlinedButton(
                   onPressed: () => _logSet('skipped'),
-                  child: const Text('Skipped'),
+                  child: const FittedBox(fit: BoxFit.scaleDown, child: Text('Skipped', maxLines: 1)),
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: OutlinedButton(
                   onPressed: () => _logSet('reduced'),
-                  child: const Text('Reduced'),
+                  child: const FittedBox(fit: BoxFit.scaleDown, child: Text('Reduced', maxLines: 1)),
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: FilledButton(
                   onPressed: () => _logSet('completed'),
-                  child: const Text('Completed'),
+                  child: const FittedBox(fit: BoxFit.scaleDown, child: Text('Completed', maxLines: 1)),
                 ),
               ),
             ],
