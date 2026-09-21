@@ -1,5 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../ai/ai_providers.dart';
+import '../../../data/repositories/profile_repository.dart';
 import '../../../data/repositories/repository_providers.dart';
 import '../../../data/repositories/workout_plan_repository.dart';
 import '../../../domain/workout_engine/workout_generation_engine.dart';
@@ -63,31 +65,44 @@ class OnboardingController extends _$OnboardingController {
     );
   }
 
-  /// Persists the profile, generates the first week of workouts from it,
-  /// and returns the new local profile id. Throws if the draft is
-  /// incomplete — the UI is expected to gate the "Finish" button on
-  /// [OnboardingDraft.isReadyToSubmit] so this should never fire on bad
-  /// input in practice, but it's a real assertion, not decoration.
+  /// Persists the profile, generates the first week of workouts and
+  /// nutrition targets from it, and returns the new local profile id.
+  /// Throws if the draft is incomplete — the UI is expected to gate the
+  /// "Finish" button on [OnboardingDraft.isReadyToSubmit] so this should
+  /// never fire on bad input in practice, but it's a real assertion, not
+  /// decoration.
+  ///
+  /// Tries the AI-generated plan first, falling back to the deterministic
+  /// engines on any failure — see ai/plan/plan_generation_service.dart —
+  /// so onboarding still produces a real plan with zero connectivity.
   Future<String> submit() async {
     if (!state.isReadyToSubmit) {
       throw StateError('Cannot submit onboarding: required fields are missing.');
     }
 
+    final trainingProfile = TrainingProfile(
+      fitnessLevel: fitnessLevelFromString(state.fitnessLevel),
+      availableEquipment: state.equipment,
+      daysPerWeek: state.availabilityDaysPerWeek,
+      minutesPerSession: state.availabilityMinutesPerSession,
+      goals: state.goals,
+    );
+
+    final exerciseLibrarySeeder = ref.read(exerciseLibrarySeederProvider);
+    await exerciseLibrarySeeder.seedIfEmpty();
+    final library = await exerciseLibrarySeeder.loadSummaries();
+
+    final result = await ref.read(planGenerationServiceProvider).generate(
+          trainingProfile: trainingProfile,
+          library: library,
+          nutritionInput: nutritionRequestInputFor(state),
+        );
+
     final profileRepository = ref.read(profileRepositoryProvider);
-    final profileId = await profileRepository.completeOnboarding(state);
+    final profileId = await profileRepository.completeOnboarding(state, nutritionTargets: result.nutrition);
 
     final workoutPlanRepository = ref.read(workoutPlanRepositoryProvider);
-    await workoutPlanRepository.generateAndPersistFirstWeek(
-      userId: profileId,
-      trainingProfile: TrainingProfile(
-        fitnessLevel: fitnessLevelFromString(state.fitnessLevel),
-        availableEquipment: state.equipment,
-        daysPerWeek: state.availabilityDaysPerWeek,
-        minutesPerSession: state.availabilityMinutesPerSession,
-        goals: state.goals,
-      ),
-      startDate: DateTime.now(),
-    );
+    await workoutPlanRepository.persistFirstWeek(userId: profileId, generated: result.plan, startDate: DateTime.now());
 
     return profileId;
   }

@@ -4,6 +4,38 @@ enum ActivityLevel { sedentary, light, moderate, active, veryActive }
 
 enum NutritionGoalType { fatLoss, muscleGain, weightGain, maintain, other }
 
+/// [NutritionCalculationEngine.calculateTargets]'s parameters, bundled so
+/// the AI plan path (ai/plan/ai_plan_provider.dart) can send the exact
+/// same inputs to the gateway that the deterministic fallback would use
+/// — same framing regardless of which engine actually produces the
+/// numbers.
+class NutritionRequestInput {
+  const NutritionRequestInput({
+    required this.sex,
+    required this.weightKg,
+    required this.heightCm,
+    required this.ageYears,
+    required this.activityLevel,
+    required this.goal,
+  });
+
+  final BiologicalSex sex;
+  final double weightKg;
+  final double heightCm;
+  final int ageYears;
+  final ActivityLevel activityLevel;
+  final NutritionGoalType goal;
+
+  Map<String, Object?> toJson() => {
+        'sex': sex.name,
+        'weightKg': weightKg,
+        'heightCm': heightCm,
+        'ageYears': ageYears,
+        'activityLevel': activityLevel.name,
+        'goal': goal.name,
+      };
+}
+
 class NutritionTargets {
   const NutritionTargets({
     required this.bmr,
@@ -85,6 +117,15 @@ class NutritionCalculationEngine {
     if (trainingDaysPerWeek <= 6) return ActivityLevel.active;
     return ActivityLevel.veryActive;
   }
+
+  NutritionTargets calculateTargetsFor(NutritionRequestInput input) => calculateTargets(
+        sex: input.sex,
+        weightKg: input.weightKg,
+        heightCm: input.heightCm,
+        ageYears: input.ageYears,
+        activityLevel: input.activityLevel,
+        goal: input.goal,
+      );
 
   NutritionTargets calculateTargets({
     required BiologicalSex sex,

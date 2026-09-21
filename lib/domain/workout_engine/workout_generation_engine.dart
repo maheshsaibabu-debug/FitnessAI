@@ -101,24 +101,7 @@ class WorkoutGenerationEngine {
     return GeneratedPlan(workouts: workouts);
   }
 
-  /// Fixed time spent every session that isn't logging sets: warming up,
-  /// cooling down, and moving between exercises.
-  static const _overheadSeconds = 5 * 60;
-  static const _transitionSeconds = 60;
-  static const _secondsPerRep = 3;
-
-  /// How long a workout actually takes to perform, given what got
-  /// selected — this is what backs [GeneratedWorkout.estimatedMinutes],
-  /// so "60 minutes" on screen means 60 real minutes of work, not just
-  /// an echo of whatever the user typed into onboarding.
-  int _workoutSeconds(List<GeneratedExercise> exercises) {
-    var seconds = _overheadSeconds;
-    for (final exercise in exercises) {
-      final workPerSet = exercise.targetDurationSeconds ?? ((exercise.targetReps ?? 0) * _secondsPerRep);
-      seconds += _transitionSeconds + (exercise.targetSets ?? 1) * (workPerSet + exercise.restSeconds);
-    }
-    return seconds;
-  }
+  int _workoutSeconds(List<GeneratedExercise> exercises) => workoutSecondsFor(exercises);
 
   int _secondsToMinutes(int seconds) => (seconds / 60).round();
 
@@ -304,6 +287,27 @@ class WorkoutGenerationEngine {
         _ => 'Workout',
       };
 }
+
+/// Fixed time spent every session that isn't logging sets: warming up,
+/// cooling down, and moving between exercises.
+const _overheadSeconds = 5 * 60;
+const _transitionSeconds = 60;
+const _secondsPerRep = 3;
+
+/// How long a workout actually takes to perform, given what got selected
+/// — shared by [WorkoutGenerationEngine] and the AI plan path
+/// (ai/plan/ai_plan_provider.dart) so "60 minutes" means the same real
+/// 60 minutes of work regardless of which engine built the plan.
+int workoutSecondsFor(List<GeneratedExercise> exercises) {
+  var seconds = _overheadSeconds;
+  for (final exercise in exercises) {
+    final workPerSet = exercise.targetDurationSeconds ?? ((exercise.targetReps ?? 0) * _secondsPerRep);
+    seconds += _transitionSeconds + (exercise.targetSets ?? 1) * (workPerSet + exercise.restSeconds);
+  }
+  return seconds;
+}
+
+int estimatedMinutesFor(List<GeneratedExercise> exercises) => (workoutSecondsFor(exercises) / 60).round();
 
 /// A one-line reason a given day's workout type serves the user's
 /// selected goal(s) — so the plan visibly reads as goal-driven day to

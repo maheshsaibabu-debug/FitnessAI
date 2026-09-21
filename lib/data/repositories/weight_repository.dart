@@ -32,6 +32,15 @@ class WeightRepository {
         .watchSingleOrNull();
   }
 
+  /// One-shot equivalent of [watchLatest] — see ProfileRepository.goalsOnce.
+  Future<WeightLog?> latestOnce(String userId) {
+    return (_db.select(_db.weightLogs)
+          ..where((w) => w.userId.equals(userId))
+          ..orderBy([(w) => OrderingTerm.desc(w.recordedAt)])
+          ..limit(1))
+        .getSingleOrNull();
+  }
+
   Stream<List<WeightLog>> watchHistory(String userId, {int days = 30}) {
     final from = DateTime.now().subtract(Duration(days: days));
     return (_db.select(_db.weightLogs)

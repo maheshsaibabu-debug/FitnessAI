@@ -11,8 +11,10 @@ class Env {
 
   static String get supabaseUrl => _require('SUPABASE_URL');
   static String get supabaseAnonKey => _require('SUPABASE_ANON_KEY');
-  static String get aiGatewayFunctionName =>
-      dotenv.env['AI_GATEWAY_FUNCTION_NAME'] ?? 'ai-coach-gateway';
+  static String get aiGatewayFunctionName => _optional('AI_GATEWAY_FUNCTION_NAME') ?? 'ai-coach-gateway';
+  static String get aiPlanGatewayFunctionName => _optional('AI_PLAN_GATEWAY_FUNCTION_NAME') ?? 'ai-plan-generator';
+  static String get aiProgramOverviewFunctionName =>
+      _optional('AI_PROGRAM_OVERVIEW_FUNCTION_NAME') ?? 'ai-program-overview';
 
   static AppEnvironment get appEnvironment {
     switch (dotenv.env['APP_ENV']) {
@@ -33,5 +35,18 @@ class Env {
       );
     }
     return value;
+  }
+
+  /// Like [_require] but for a value that has a sensible fallback rather
+  /// than being a launch requirement — never throws, including when
+  /// `.env` was never loaded at all (e.g. a test that never calls
+  /// [load]/`dotenv.testLoad`, because nothing it exercises has needed a
+  /// config value before).
+  static String? _optional(String key) {
+    try {
+      return dotenv.env[key];
+    } catch (_) {
+      return null;
+    }
   }
 }

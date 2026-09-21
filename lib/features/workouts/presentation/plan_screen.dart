@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../ai/ai_providers.dart';
+import '../../../data/repositories/profile_repository.dart';
 import '../../../data/repositories/repository_providers.dart';
 import '../../../domain/workout_engine/workout_generation_engine.dart';
 import '../../../shared/widgets/category_icon_badge.dart';
@@ -21,10 +23,10 @@ const Map<String, IconData> _workoutTypeIcons = {
 
 /// Lists the generated plan's upcoming workouts. The adaptive re-planning
 /// from actual adherence (phase 10) is still a later phase, but a manual
-/// "Regenerate" is available now — it re-runs [WorkoutGenerationEngine]
-/// against the same saved profile, e.g. after a fix to how session
-/// length or goal-matching is computed. Nothing here is invented: every
-/// row is still exactly what the engine produced.
+/// "Regenerate" is available now — it tries the AI plan generator first
+/// (ai/plan/plan_generation_service.dart) and falls back to
+/// [WorkoutGenerationEngine] if that's unavailable, against the same
+/// saved profile. The SnackBar after a regenerate says which one ran.
 class PlanScreen extends ConsumerStatefulWidget {
   const PlanScreen({super.key});
 
@@ -43,15 +45,40 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
       final trainingProfile = await profileRepository.currentTrainingProfile();
       if (profile == null || trainingProfile == null) return;
 
-      await ref.read(workoutPlanRepositoryProvider).regenerateUpcomingPlan(
-            userId: profile.id,
+      final latestWeight = await ref.read(weightRepositoryProvider).latestOnce(profile.id);
+      final primaryGoal = await profileRepository.primaryGoalOnce(profile.id);
+      final nutritionInput = nutritionRequestInputForProfile(
+        profile,
+        weightKg: latestWeight?.weightKg ?? 70,
+        primaryGoal: primaryGoal,
+      );
+
+      final exerciseLibrarySeeder = ref.read(exerciseLibrarySeederProvider);
+      await exerciseLibrarySeeder.seedIfEmpty();
+      final library = await exerciseLibrarySeeder.loadSummaries();
+
+      final result = await ref.read(planGenerationServiceProvider).generate(
             trainingProfile: trainingProfile,
+            library: library,
+            nutritionInput: nutritionInput,
+          );
+
+      await ref.read(workoutPlanRepositoryProvider).persistUpcomingPlanReplacement(
+            userId: profile.id,
+            generated: result.plan,
             from: DateTime.now(),
           );
+      await profileRepository.updateNutritionTargets(profile.id, result.nutrition);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Plan regenerated from today onward.')),
+          SnackBar(
+            content: Text(
+              result.source == 'ai'
+                  ? 'Plan regenerated with AI from today onward.'
+                  : 'Plan regenerated from today onward (offline mode).',
+            ),
+          ),
         );
       }
     } finally {

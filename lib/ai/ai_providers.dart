@@ -5,6 +5,10 @@ import '../core/config/env.dart';
 import '../data/repositories/repository_providers.dart';
 import 'ai_provider.dart';
 import 'fitness_context_resolver.dart';
+import 'plan/ai_plan_provider.dart';
+import 'plan/plan_generation_service.dart';
+import 'program/ai_program_overview_provider.dart';
+import 'program/program_overview_service.dart';
 import 'providers/cloud_ai_provider.dart';
 import 'providers/rule_based_fallback_provider.dart';
 
@@ -25,3 +29,21 @@ AiProvider cloudAiProvider(Ref ref) => CloudAiProvider(functionName: Env.aiGatew
 
 @Riverpod(keepAlive: true)
 AiProvider ruleBasedFallbackProvider(Ref ref) => const RuleBasedFallbackProvider();
+
+@Riverpod(keepAlive: true)
+AiPlanProvider aiPlanProvider(Ref ref) => AiPlanProvider(functionName: Env.aiPlanGatewayFunctionName);
+
+@Riverpod(keepAlive: true)
+PlanGenerationService planGenerationService(Ref ref) {
+  return PlanGenerationService(aiPlanProvider: ref.watch(aiPlanProviderProvider));
+}
+
+@Riverpod(keepAlive: true)
+AiProgramOverviewProvider aiProgramOverviewProvider(Ref ref) {
+  return AiProgramOverviewProvider(functionName: Env.aiProgramOverviewFunctionName);
+}
+
+@Riverpod(keepAlive: true)
+ProgramOverviewService programOverviewService(Ref ref) {
+  return ProgramOverviewService(aiProvider: ref.watch(aiProgramOverviewProviderProvider));
+}

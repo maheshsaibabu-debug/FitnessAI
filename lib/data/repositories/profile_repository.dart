@@ -52,6 +52,41 @@ class ProfileRepository {
     return rows.map((r) => r.goalType).toSet();
   }
 
+  /// The single goal flagged primary at onboarding (see
+  /// OnboardingDraft.goals) — used to recompute nutrition targets on a
+  /// plan regenerate without asking the user to redo onboarding.
+  Future<String?> primaryGoalOnce(String userId) async {
+    final row = await primaryGoalRowOnce(userId);
+    return row?.goalType;
+  }
+
+  /// Full primary-goal row, including `targetValue`/`targetDate` — these
+  /// two columns existed in the schema from the start but were unused
+  /// until the Program view needed a real goal-weight-by-date to build a
+  /// trajectory from (ai/program/program_trajectory_engine.dart).
+  Future<FitnessGoal?> primaryGoalRowOnce(String userId) {
+    return (_db.select(_db.fitnessGoals)
+          ..where((g) => g.userId.equals(userId) & g.isPrimary.equals(true))
+          ..limit(1))
+        .getSingleOrNull();
+  }
+
+  /// Sets the target weight/date on the user's primary goal — the input
+  /// the Program view's trajectory is computed from. Overwrites any
+  /// previous target, matching "edit your goal" rather than "add another
+  /// goal."
+  Future<void> setGoalTarget(String userId, {required double targetWeightKg, required DateTime targetDate}) async {
+    final primary = await primaryGoalRowOnce(userId);
+    if (primary == null) return;
+    await (_db.update(_db.fitnessGoals)..where((g) => g.id.equals(primary.id))).write(
+      FitnessGoalsCompanion(
+        targetValue: Value(targetWeightKg),
+        targetDate: Value(targetDate),
+        updatedAt: Value(DateTime.now().toUtc()),
+      ),
+    );
+  }
+
   /// Reassembles the engine's [TrainingProfile] input from what's already
   /// on disk — used to regenerate a plan against the same profile the
   /// user onboarded with, without asking them to redo onboarding.
@@ -74,12 +109,54 @@ class ProfileRepository {
     return (_db.select(_db.nutritionGoals)..where((g) => g.userId.equals(userId))).getSingleOrNull();
   }
 
+  /// Replaces the user's stored nutrition targets — used by the Plan
+  /// screen's regenerate action so a refreshed AI/deterministic plan
+  /// updates diet targets too, not just the workout days. Re-applies the
+  /// safety floor regardless of source, same as [completeOnboarding].
+  Future<void> updateNutritionTargets(String userId, NutritionTargets nutritionTargets) async {
+    final now = DateTime.now().toUtc();
+    final safeCalorieTarget = nutritionTargets.calorieTarget < NutritionCalculationEngine.minSafeCalories
+        ? NutritionCalculationEngine.minSafeCalories
+        : nutritionTargets.calorieTarget;
+    final existing = await (_db.select(_db.nutritionGoals)..where((g) => g.userId.equals(userId))).getSingleOrNull();
+
+    final companion = NutritionGoalsCompanion(
+      calorieTarget: Value(safeCalorieTarget),
+      proteinGrams: Value(nutritionTargets.proteinGrams < 0 ? 0 : nutritionTargets.proteinGrams),
+      carbsGrams: Value(nutritionTargets.carbsGrams < 0 ? 0 : nutritionTargets.carbsGrams),
+      fatGrams: Value(nutritionTargets.fatGrams < 0 ? 0 : nutritionTargets.fatGrams),
+      calculationMethod: Value(nutritionTargets.calculationMethod),
+      updatedAt: Value(now),
+    );
+
+    if (existing == null) {
+      await _db.into(_db.nutritionGoals).insert(NutritionGoalsCompanion.insert(
+            id: _uuid.v4(),
+            userId: userId,
+            calorieTarget: companion.calorieTarget.value,
+            proteinGrams: companion.proteinGrams.value,
+            carbsGrams: companion.carbsGrams.value,
+            fatGrams: companion.fatGrams.value,
+            calculationMethod: companion.calculationMethod.value,
+            updatedAt: now,
+          ));
+    } else {
+      await (_db.update(_db.nutritionGoals)..where((g) => g.id.equals(existing.id))).write(companion);
+    }
+  }
+
   Set<String> _parseJsonList(String json) {
     if (json.isEmpty) return {};
     return (jsonDecode(json) as List).map((v) => v.toString()).toSet();
   }
 
-  Future<String> completeOnboarding(OnboardingDraft draft) async {
+  /// [nutritionTargets] is required rather than computed here — the
+  /// caller (OnboardingController) decides whether it comes from the AI
+  /// plan path or the deterministic [NutritionCalculationEngine] fallback
+  /// (see ai/plan/plan_generation_service.dart), but either way the
+  /// safety floor gets re-applied here too, one more time, regardless of
+  /// source — see product spec §25.
+  Future<String> completeOnboarding(OnboardingDraft draft, {required NutritionTargets nutritionTargets}) async {
     assert(draft.isReadyToSubmit, 'completeOnboarding called with an incomplete draft');
 
     final now = DateTime.now().toUtc();
@@ -101,18 +178,9 @@ class ProfileRepository {
     // self-reported level from the earlier step — a measured result beats
     // a guess.
     final resolvedFitnessLevel = assessment != null ? _levelName(assessment.overallLevel) : draft.fitnessLevel!;
-
-    final ageYears = _ageInYears(draft.dateOfBirth!, now);
-    final activityLevel =
-        const NutritionCalculationEngine().inferActivityLevel(trainingDaysPerWeek: draft.availabilityDaysPerWeek);
-    final nutritionTargets = const NutritionCalculationEngine().calculateTargets(
-      sex: _toBiologicalSex(draft.sex),
-      weightKg: draft.weightKg!,
-      heightCm: draft.heightCm!,
-      ageYears: ageYears,
-      activityLevel: activityLevel,
-      goal: _toNutritionGoalType(draft.primaryGoal),
-    );
+    final safeCalorieTarget = nutritionTargets.calorieTarget < NutritionCalculationEngine.minSafeCalories
+        ? NutritionCalculationEngine.minSafeCalories
+        : nutritionTargets.calorieTarget;
 
     await _db.transaction(() async {
       await _db.into(_db.userProfiles).insert(UserProfilesCompanion.insert(
@@ -172,10 +240,10 @@ class ProfileRepository {
       await _db.into(_db.nutritionGoals).insert(NutritionGoalsCompanion.insert(
             id: _uuid.v4(),
             userId: profileId,
-            calorieTarget: nutritionTargets.calorieTarget,
-            proteinGrams: nutritionTargets.proteinGrams,
-            carbsGrams: nutritionTargets.carbsGrams,
-            fatGrams: nutritionTargets.fatGrams,
+            calorieTarget: safeCalorieTarget,
+            proteinGrams: nutritionTargets.proteinGrams < 0 ? 0 : nutritionTargets.proteinGrams,
+            carbsGrams: nutritionTargets.carbsGrams < 0 ? 0 : nutritionTargets.carbsGrams,
+            fatGrams: nutritionTargets.fatGrams < 0 ? 0 : nutritionTargets.fatGrams,
             calculationMethod: nutritionTargets.calculationMethod,
             updatedAt: now,
           ));
@@ -185,12 +253,6 @@ class ProfileRepository {
   }
 
   String _jsonList(Set<String> values) => '[${values.map((v) => '"$v"').join(',')}]';
-
-  int _ageInYears(DateTime dob, DateTime now) {
-    var age = now.year - dob.year;
-    if (now.month < dob.month || (now.month == dob.month && now.day < dob.day)) age--;
-    return age;
-  }
 
   String _levelName(FitnessLevel level) => switch (level) {
         FitnessLevel.beginner => 'beginner',
@@ -217,3 +279,46 @@ NutritionGoalType _toNutritionGoalType(String? goal) => switch (goal) {
       'weight_gain' => NutritionGoalType.weightGain,
       _ => NutritionGoalType.maintain,
     };
+
+int _ageInYearsFrom(DateTime dob, DateTime now) {
+  var age = now.year - dob.year;
+  if (now.month < dob.month || (now.month == dob.month && now.day < dob.day)) age--;
+  return age;
+}
+
+/// [NutritionCalculationEngine.calculateTargetsFor]'s input, assembled
+/// from an onboarding draft — shared by the deterministic fallback and
+/// the AI plan path (ai/plan/plan_generation_service.dart) so both send
+/// identical framing regardless of which one runs.
+NutritionRequestInput nutritionRequestInputFor(OnboardingDraft draft) {
+  return NutritionRequestInput(
+    sex: _toBiologicalSex(draft.sex),
+    weightKg: draft.weightKg!,
+    heightCm: draft.heightCm!,
+    ageYears: _ageInYearsFrom(draft.dateOfBirth!, DateTime.now().toUtc()),
+    activityLevel:
+        const NutritionCalculationEngine().inferActivityLevel(trainingDaysPerWeek: draft.availabilityDaysPerWeek),
+    goal: _toNutritionGoalType(draft.primaryGoal),
+  );
+}
+
+/// [nutritionRequestInputFor]'s counterpart for an already-onboarded
+/// profile — used by the Plan screen's regenerate action, which has a
+/// saved [UserProfile] rather than a live [OnboardingDraft]. Weight and
+/// primary goal aren't columns on UserProfile (weight is a time-series
+/// log, goals are their own table), so the caller supplies them.
+NutritionRequestInput nutritionRequestInputForProfile(
+  UserProfile profile, {
+  required double weightKg,
+  required String? primaryGoal,
+}) {
+  return NutritionRequestInput(
+    sex: _toBiologicalSex(profile.sex),
+    weightKg: weightKg,
+    heightCm: profile.heightCm ?? 170,
+    ageYears: profile.dateOfBirth == null ? 30 : _ageInYearsFrom(profile.dateOfBirth!, DateTime.now().toUtc()),
+    activityLevel: const NutritionCalculationEngine()
+        .inferActivityLevel(trainingDaysPerWeek: profile.availabilityDaysPerWeek ?? 3),
+    goal: _toNutritionGoalType(primaryGoal),
+  );
+}

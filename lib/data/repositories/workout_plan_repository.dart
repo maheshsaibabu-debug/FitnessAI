@@ -21,8 +21,19 @@ class WorkoutPlanRepository {
     required DateTime startDate,
   }) async {
     final generated = await _generateWeek(trainingProfile);
-    final startDay = DateTime(startDate.year, startDate.month, startDate.day);
+    return persistFirstWeek(userId: userId, generated: generated, startDate: startDate);
+  }
 
+  /// Persists an already-built [GeneratedPlan] as the user's first week —
+  /// used directly by [generateAndPersistFirstWeek] (deterministic) and
+  /// by the AI-first onboarding path (ai/plan/plan_generation_service.dart),
+  /// so both sources funnel through identical persistence code.
+  Future<String> persistFirstWeek({
+    required String userId,
+    required GeneratedPlan generated,
+    required DateTime startDate,
+  }) {
+    final startDay = DateTime(startDate.year, startDate.month, startDate.day);
     return _db.transaction(() => _insertGeneratedWeek(
           userId: userId,
           planName: 'Week 1',
@@ -44,6 +55,19 @@ class WorkoutPlanRepository {
     required DateTime from,
   }) async {
     final generated = await _generateWeek(trainingProfile);
+    return persistUpcomingPlanReplacement(userId: userId, generated: generated, from: from);
+  }
+
+  /// Persists an already-built [GeneratedPlan] as the replacement for the
+  /// not-yet-done portion of the active plan — the shared persistence
+  /// step behind [regenerateUpcomingPlan] and the AI-first regenerate
+  /// path (ai/plan/plan_generation_service.dart). See
+  /// [regenerateUpcomingPlan]'s doc comment for what "not-yet-done" means.
+  Future<String> persistUpcomingPlanReplacement({
+    required String userId,
+    required GeneratedPlan generated,
+    required DateTime from,
+  }) {
     final today = DateTime(from.year, from.month, from.day);
 
     return _db.transaction(() async {
@@ -153,17 +177,38 @@ class WorkoutPlanRepository {
         .watch();
   }
 
+  /// One-shot equivalent of [watchUpcomingWorkouts], optionally capped —
+  /// see ProfileRepository.goalsOnce. Used by the Program view to pull
+  /// "this week's real plan" for the overview without a live subscription.
+  Future<List<Workout>> upcomingWorkoutsOnce(String userId, {required DateTime from, int? limit}) {
+    final fromDay = DateTime(from.year, from.month, from.day);
+    final query = _db.select(_db.workouts)
+      ..where((w) => w.userId.equals(userId) & w.scheduledDate.isBiggerOrEqualValue(fromDay))
+      ..orderBy([(w) => OrderingTerm.asc(w.scheduledDate)]);
+    if (limit != null) query.limit(limit);
+    return query.get();
+  }
+
+  // `..limit(1)` makes these resilient to more than one row ever landing
+  // on the same date for a user — which shouldn't happen, but a query
+  // that assumes an unenforced invariant instead of a query that can't
+  // violate it is exactly the kind of thing that turns "stale test data"
+  // into a crashed Home screen. Most-recently-updated wins.
   Future<Workout?> todaysWorkout(String userId, {required DateTime today}) async {
     final day = DateTime(today.year, today.month, today.day);
     return (_db.select(_db.workouts)
-          ..where((w) => w.userId.equals(userId) & w.scheduledDate.equals(day)))
+          ..where((w) => w.userId.equals(userId) & w.scheduledDate.equals(day))
+          ..orderBy([(w) => OrderingTerm.desc(w.updatedAt)])
+          ..limit(1))
         .getSingleOrNull();
   }
 
   Stream<Workout?> watchTodaysWorkout(String userId, {required DateTime today}) {
     final day = DateTime(today.year, today.month, today.day);
     return (_db.select(_db.workouts)
-          ..where((w) => w.userId.equals(userId) & w.scheduledDate.equals(day)))
+          ..where((w) => w.userId.equals(userId) & w.scheduledDate.equals(day))
+          ..orderBy([(w) => OrderingTerm.desc(w.updatedAt)])
+          ..limit(1))
         .watchSingleOrNull();
   }
 
