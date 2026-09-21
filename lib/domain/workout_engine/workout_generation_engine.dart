@@ -159,7 +159,7 @@ class WorkoutGenerationEngine {
         final candidates = library.where((e) {
           if (used.contains(e.id)) return false;
           if (_movementPattern(e) != pattern) return false;
-          if (!e.equipment.every(usableEquipment.contains)) return false;
+          if (!exerciseUsesAvailableEquipment(e.equipment, usableEquipment)) return false;
           return _levelRank(e.difficulty) <= _levelRank(_levelName(profile.fitnessLevel));
         }).toList()
           ..sort((a, b) => a.id.compareTo(b.id)); // deterministic ordering
@@ -202,7 +202,7 @@ class WorkoutGenerationEngine {
           final candidates = library.where((e) {
             if (used.contains(e.id)) return false;
             if (_movementPattern(e) != pattern) return false;
-            if (!e.equipment.every(usableEquipment.contains)) return false;
+            if (!exerciseUsesAvailableEquipment(e.equipment, usableEquipment)) return false;
             return _levelRank(e.difficulty) <= _levelRank(_levelName(profile.fitnessLevel));
           }).toList()
             ..sort((a, b) => a.id.compareTo(b.id));
@@ -308,6 +308,17 @@ int workoutSecondsFor(List<GeneratedExercise> exercises) {
 }
 
 int estimatedMinutesFor(List<GeneratedExercise> exercises) => (workoutSecondsFor(exercises) / 60).round();
+
+/// True if the user's available equipment covers what an exercise
+/// requires. 'full_gym' is a wildcard — selecting it means "everything a
+/// commercial gym has," so an exercise needing a barbell, cable machine,
+/// etc. shouldn't need that machine listed individually too. Shared by
+/// [WorkoutGenerationEngine] and the AI plan path's response validator
+/// (ai/plan/ai_plan_response_parser.dart) so both apply the same rule.
+bool exerciseUsesAvailableEquipment(List<String> required, Set<String> usableEquipment) {
+  if (usableEquipment.contains('full_gym')) return true;
+  return required.every(usableEquipment.contains);
+}
 
 /// A one-line reason a given day's workout type serves the user's
 /// selected goal(s) — so the plan visibly reads as goal-driven day to

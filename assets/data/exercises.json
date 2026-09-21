@@ -1,32 +1,1378 @@
 [
-  {"id": "push-up", "name": "Push-up", "category": "bodyweight", "primaryMuscles": ["chest", "triceps"], "secondaryMuscles": ["shoulders", "core"], "equipment": ["none"], "difficulty": "beginner", "instructions": "Hands under shoulders, body in a straight line, lower chest to the floor and press back up.", "formCues": ["Keep core braced", "Elbows ~45° from torso"], "commonMistakes": ["Sagging hips", "Flaring elbows out to 90°"], "regression": "incline-push-up", "progression": "diamond-push-up"},
-  {"id": "incline-push-up", "name": "Incline Push-up", "category": "bodyweight", "primaryMuscles": ["chest", "triceps"], "secondaryMuscles": ["shoulders"], "equipment": ["none"], "difficulty": "beginner", "instructions": "Hands on a bench or step, perform a push-up at an incline to reduce load.", "formCues": ["Straight body line"], "commonMistakes": ["Too shallow a range of motion"], "progression": "push-up"},
-  {"id": "diamond-push-up", "name": "Diamond Push-up", "category": "bodyweight", "primaryMuscles": ["triceps", "chest"], "secondaryMuscles": ["shoulders"], "equipment": ["none"], "difficulty": "advanced", "instructions": "Hands together under the chest forming a diamond, lower and press up.", "formCues": ["Elbows tucked close to the body"], "commonMistakes": ["Wrist strain from poor hand placement"], "regression": "push-up"},
-  {"id": "pull-up", "name": "Pull-up", "category": "bodyweight", "primaryMuscles": ["back", "biceps"], "secondaryMuscles": ["core"], "equipment": ["pull_up_bar"], "difficulty": "intermediate", "instructions": "Hang from the bar, pull your chin over the bar, lower with control.", "formCues": ["Full dead hang at the bottom", "Drive elbows down and back"], "commonMistakes": ["Kipping/swinging", "Partial range of motion"], "regression": "assisted-pull-up", "progression": "weighted-pull-up"},
-  {"id": "assisted-pull-up", "name": "Assisted / Negative Pull-up", "category": "bodyweight", "primaryMuscles": ["back", "biceps"], "secondaryMuscles": ["core"], "equipment": ["pull_up_bar"], "difficulty": "beginner", "instructions": "Jump or step to the top position, lower yourself down as slowly as possible.", "formCues": ["Control the descent, aim for 3-5 seconds"], "commonMistakes": ["Dropping too fast"], "progression": "pull-up"},
-  {"id": "weighted-pull-up", "name": "Weighted Pull-up", "category": "strength", "primaryMuscles": ["back", "biceps"], "secondaryMuscles": ["core"], "equipment": ["pull_up_bar"], "difficulty": "advanced", "instructions": "Perform a pull-up with added weight via a belt or vest.", "formCues": ["Same strict form as bodyweight pull-ups"], "commonMistakes": ["Adding weight before strict form is solid"], "regression": "pull-up"},
-  {"id": "chin-up", "name": "Chin-up", "category": "bodyweight", "primaryMuscles": ["back", "biceps"], "secondaryMuscles": ["core"], "equipment": ["pull_up_bar"], "difficulty": "intermediate", "instructions": "Underhand grip pull-up, chin over the bar.", "formCues": ["Squeeze the bar hard"], "commonMistakes": ["Using momentum"], "regression": "assisted-pull-up"},
-  {"id": "bodyweight-row", "name": "Inverted Row", "category": "bodyweight", "primaryMuscles": ["back"], "secondaryMuscles": ["biceps", "core"], "equipment": ["bench"], "difficulty": "beginner", "instructions": "Under a sturdy bar or table edge, body straight, pull chest to the bar.", "formCues": ["Keep body rigid, squeeze shoulder blades"], "commonMistakes": ["Hips sagging"], "progression": "pull-up"},
-  {"id": "squat", "name": "Bodyweight Squat", "category": "bodyweight", "primaryMuscles": ["quadriceps", "glutes"], "secondaryMuscles": ["hamstrings"], "equipment": ["none"], "difficulty": "beginner", "instructions": "Feet shoulder-width, sit hips back and down, drive up through the heels.", "formCues": ["Chest up", "Knees track over toes"], "commonMistakes": ["Heels lifting", "Knees caving inward"], "progression": "goblet-squat"},
-  {"id": "goblet-squat", "name": "Goblet Squat", "category": "strength", "primaryMuscles": ["quadriceps", "glutes"], "secondaryMuscles": ["core"], "equipment": ["dumbbells", "kettlebell"], "difficulty": "intermediate", "instructions": "Hold a dumbbell or kettlebell at chest height, squat down and up.", "formCues": ["Elbows brush the inside of the knees at the bottom"], "commonMistakes": ["Leaning too far forward"], "regression": "squat", "progression": "barbell-back-squat"},
-  {"id": "barbell-back-squat", "name": "Barbell Back Squat", "category": "strength", "primaryMuscles": ["quadriceps", "glutes"], "secondaryMuscles": ["hamstrings", "core"], "equipment": ["barbell"], "difficulty": "advanced", "instructions": "Bar on the upper back, squat to depth, drive back up.", "formCues": ["Brace core before descending"], "commonMistakes": ["Rounding the lower back"], "regression": "goblet-squat"},
-  {"id": "lunge", "name": "Lunge", "category": "bodyweight", "primaryMuscles": ["quadriceps", "glutes"], "secondaryMuscles": ["hamstrings"], "equipment": ["none"], "difficulty": "beginner", "instructions": "Step forward, lower the back knee toward the floor, push back to standing.", "formCues": ["Front knee stays behind the toes"], "commonMistakes": ["Short, unstable steps"], "progression": "split-squat"},
-  {"id": "split-squat", "name": "Bulgarian Split Squat", "category": "strength", "primaryMuscles": ["quadriceps", "glutes"], "secondaryMuscles": ["hamstrings"], "equipment": ["bench"], "difficulty": "intermediate", "instructions": "Rear foot elevated on a bench, lower into a lunge, drive up.", "formCues": ["Keep torso mostly upright"], "commonMistakes": ["Front knee collapsing inward"], "regression": "lunge"},
-  {"id": "glute-bridge", "name": "Glute Bridge", "category": "bodyweight", "primaryMuscles": ["glutes"], "secondaryMuscles": ["hamstrings", "core"], "equipment": ["none"], "difficulty": "beginner", "instructions": "Lie on your back, knees bent, drive hips up by squeezing the glutes.", "formCues": ["Squeeze at the top, avoid arching the lower back"], "commonMistakes": ["Using the lower back instead of glutes"], "progression": "hip-thrust"},
-  {"id": "hip-thrust", "name": "Hip Thrust", "category": "strength", "primaryMuscles": ["glutes"], "secondaryMuscles": ["hamstrings"], "equipment": ["bench", "barbell"], "difficulty": "intermediate", "instructions": "Upper back on a bench, barbell across the hips, drive hips up.", "formCues": ["Chin tucked, ribs down at the top"], "commonMistakes": ["Overextending the lower back"], "regression": "glute-bridge"},
-  {"id": "calf-raise", "name": "Calf Raise", "category": "bodyweight", "primaryMuscles": ["calves"], "secondaryMuscles": [], "equipment": ["none"], "difficulty": "beginner", "instructions": "Rise onto the balls of your feet, lower with control.", "formCues": ["Full range of motion, pause at the top"], "commonMistakes": ["Bouncing instead of controlling the tempo"]},
-  {"id": "plank", "name": "Plank", "category": "core", "primaryMuscles": ["core"], "secondaryMuscles": ["shoulders"], "equipment": ["none"], "difficulty": "beginner", "instructions": "Forearms and toes on the ground, body in a straight line, hold.", "formCues": ["Squeeze glutes and brace the core", "Neutral neck"], "commonMistakes": ["Hips sagging or piking up"], "progression": "side-plank"},
-  {"id": "side-plank", "name": "Side Plank", "category": "core", "primaryMuscles": ["core"], "secondaryMuscles": ["shoulders"], "equipment": ["none"], "difficulty": "intermediate", "instructions": "Balance on one forearm and the side of one foot, hips lifted, hold.", "formCues": ["Stack hips and shoulders"], "commonMistakes": ["Hips dropping toward the floor"], "regression": "plank"},
-  {"id": "mountain-climber", "name": "Mountain Climber", "category": "core", "primaryMuscles": ["core"], "secondaryMuscles": ["shoulders"], "equipment": ["none"], "difficulty": "beginner", "instructions": "In a plank position, drive knees alternately toward the chest at speed.", "formCues": ["Keep hips low and stable"], "commonMistakes": ["Hips bouncing up and down"]},
-  {"id": "hanging-knee-raise", "name": "Hanging Knee Raise", "category": "core", "primaryMuscles": ["core"], "secondaryMuscles": ["back"], "equipment": ["pull_up_bar"], "difficulty": "intermediate", "instructions": "Hang from a bar, raise the knees toward the chest with control.", "formCues": ["Avoid swinging"], "commonMistakes": ["Using momentum instead of the core"]},
-  {"id": "burpee", "name": "Burpee", "category": "hiit", "primaryMuscles": ["full_body"], "secondaryMuscles": [], "equipment": ["none"], "difficulty": "intermediate", "instructions": "Squat, kick back to a plank, push-up, jump feet in, jump up.", "formCues": ["Land softly"], "commonMistakes": ["Sagging plank position"]},
-  {"id": "jumping-jacks", "name": "Jumping Jacks", "category": "hiit", "primaryMuscles": ["full_body"], "secondaryMuscles": [], "equipment": ["none"], "difficulty": "beginner", "instructions": "Jump feet apart while raising arms overhead, jump back together.", "formCues": ["Stay light on your feet"], "commonMistakes": ["Landing flat-footed"]},
-  {"id": "high-knees", "name": "High Knees", "category": "hiit", "primaryMuscles": ["full_body"], "secondaryMuscles": ["core"], "equipment": ["none"], "difficulty": "beginner", "instructions": "Run in place driving the knees up toward waist height.", "formCues": ["Pump the arms", "Stay on the balls of your feet"], "commonMistakes": ["Leaning back"]},
-  {"id": "squat-jump", "name": "Squat Jump", "category": "hiit", "primaryMuscles": ["quadriceps", "glutes"], "secondaryMuscles": ["calves"], "equipment": ["none"], "difficulty": "intermediate", "instructions": "Squat down and explode upward into a jump, land softly and reset.", "formCues": ["Soft landing, knees tracking over toes"], "commonMistakes": ["Landing with locked knees"]},
-  {"id": "kettlebell-swing", "name": "Kettlebell Swing", "category": "hiit", "primaryMuscles": ["glutes", "hamstrings"], "secondaryMuscles": ["core", "shoulders"], "equipment": ["kettlebell"], "difficulty": "intermediate", "instructions": "Hinge at the hips and swing the kettlebell to chest height using hip drive.", "formCues": ["Power comes from the hips, not the arms"], "commonMistakes": ["Squatting the swing instead of hinging"]},
-  {"id": "walking", "name": "Walking", "category": "cardio", "primaryMuscles": ["full_body"], "secondaryMuscles": [], "equipment": ["none"], "difficulty": "beginner", "instructions": "Brisk walk at a conversational pace.", "formCues": ["Maintain an upright posture"], "commonMistakes": ["Pace too slow to raise heart rate"]},
-  {"id": "jogging", "name": "Jogging", "category": "cardio", "primaryMuscles": ["full_body"], "secondaryMuscles": [], "equipment": ["none"], "difficulty": "intermediate", "instructions": "Steady-state jog at an easy, sustainable pace.", "formCues": ["Relaxed shoulders, midfoot strike"], "commonMistakes": ["Overstriding"]},
-  {"id": "cycling", "name": "Cycling", "category": "cardio", "primaryMuscles": ["quadriceps", "glutes"], "secondaryMuscles": ["calves"], "equipment": ["none"], "difficulty": "beginner", "instructions": "Steady-state cycling at a moderate, sustainable effort.", "formCues": ["Knees tracking straight, not splaying out"], "commonMistakes": ["Seat height too low"]},
-  {"id": "cat-cow", "name": "Cat-Cow", "category": "mobility", "primaryMuscles": ["back"], "secondaryMuscles": ["core"], "equipment": ["none"], "difficulty": "beginner", "instructions": "On hands and knees, alternate arching and rounding the spine slowly.", "formCues": ["Move with the breath"], "commonMistakes": ["Rushing the movement"]},
-  {"id": "worlds-greatest-stretch", "name": "World's Greatest Stretch", "category": "mobility", "primaryMuscles": ["hips"], "secondaryMuscles": ["hamstrings", "back"], "equipment": ["none"], "difficulty": "beginner", "instructions": "Lunge forward, rotate the torso toward the front leg, reaching upward.", "formCues": ["Keep the back leg straight"], "commonMistakes": ["Rushing through the rotation"]}
+  {
+    "id": "push-up",
+    "name": "Push-up",
+    "category": "bodyweight",
+    "primaryMuscles": [
+      "chest",
+      "triceps"
+    ],
+    "secondaryMuscles": [
+      "shoulders",
+      "core"
+    ],
+    "equipment": [
+      "none"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Hands under shoulders, body in a straight line, lower chest to the floor and press back up.",
+    "formCues": [
+      "Keep core braced",
+      "Elbows ~45\u00b0 from torso"
+    ],
+    "commonMistakes": [
+      "Sagging hips",
+      "Flaring elbows out to 90\u00b0"
+    ],
+    "regression": "incline-push-up",
+    "progression": "diamond-push-up"
+  },
+  {
+    "id": "incline-push-up",
+    "name": "Incline Push-up",
+    "category": "bodyweight",
+    "primaryMuscles": [
+      "chest",
+      "triceps"
+    ],
+    "secondaryMuscles": [
+      "shoulders"
+    ],
+    "equipment": [
+      "none"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Hands on a bench or step, perform a push-up at an incline to reduce load.",
+    "formCues": [
+      "Straight body line"
+    ],
+    "commonMistakes": [
+      "Too shallow a range of motion"
+    ],
+    "progression": "push-up"
+  },
+  {
+    "id": "diamond-push-up",
+    "name": "Diamond Push-up",
+    "category": "bodyweight",
+    "primaryMuscles": [
+      "triceps",
+      "chest"
+    ],
+    "secondaryMuscles": [
+      "shoulders"
+    ],
+    "equipment": [
+      "none"
+    ],
+    "difficulty": "advanced",
+    "instructions": "Hands together under the chest forming a diamond, lower and press up.",
+    "formCues": [
+      "Elbows tucked close to the body"
+    ],
+    "commonMistakes": [
+      "Wrist strain from poor hand placement"
+    ],
+    "regression": "push-up"
+  },
+  {
+    "id": "pull-up",
+    "name": "Pull-up",
+    "category": "bodyweight",
+    "primaryMuscles": [
+      "back",
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "core"
+    ],
+    "equipment": [
+      "pull_up_bar"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Hang from the bar, pull your chin over the bar, lower with control.",
+    "formCues": [
+      "Full dead hang at the bottom",
+      "Drive elbows down and back"
+    ],
+    "commonMistakes": [
+      "Kipping/swinging",
+      "Partial range of motion"
+    ],
+    "regression": "assisted-pull-up",
+    "progression": "weighted-pull-up"
+  },
+  {
+    "id": "assisted-pull-up",
+    "name": "Assisted / Negative Pull-up",
+    "category": "bodyweight",
+    "primaryMuscles": [
+      "back",
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "core"
+    ],
+    "equipment": [
+      "pull_up_bar"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Jump or step to the top position, lower yourself down as slowly as possible.",
+    "formCues": [
+      "Control the descent, aim for 3-5 seconds"
+    ],
+    "commonMistakes": [
+      "Dropping too fast"
+    ],
+    "progression": "pull-up"
+  },
+  {
+    "id": "weighted-pull-up",
+    "name": "Weighted Pull-up",
+    "category": "strength",
+    "primaryMuscles": [
+      "back",
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "core"
+    ],
+    "equipment": [
+      "pull_up_bar"
+    ],
+    "difficulty": "advanced",
+    "instructions": "Perform a pull-up with added weight via a belt or vest.",
+    "formCues": [
+      "Same strict form as bodyweight pull-ups"
+    ],
+    "commonMistakes": [
+      "Adding weight before strict form is solid"
+    ],
+    "regression": "pull-up"
+  },
+  {
+    "id": "chin-up",
+    "name": "Chin-up",
+    "category": "bodyweight",
+    "primaryMuscles": [
+      "back",
+      "biceps"
+    ],
+    "secondaryMuscles": [
+      "core"
+    ],
+    "equipment": [
+      "pull_up_bar"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Underhand grip pull-up, chin over the bar.",
+    "formCues": [
+      "Squeeze the bar hard"
+    ],
+    "commonMistakes": [
+      "Using momentum"
+    ],
+    "regression": "assisted-pull-up"
+  },
+  {
+    "id": "bodyweight-row",
+    "name": "Inverted Row",
+    "category": "bodyweight",
+    "primaryMuscles": [
+      "back"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "core"
+    ],
+    "equipment": [
+      "bench"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Under a sturdy bar or table edge, body straight, pull chest to the bar.",
+    "formCues": [
+      "Keep body rigid, squeeze shoulder blades"
+    ],
+    "commonMistakes": [
+      "Hips sagging"
+    ],
+    "progression": "pull-up"
+  },
+  {
+    "id": "squat",
+    "name": "Bodyweight Squat",
+    "category": "bodyweight",
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings"
+    ],
+    "equipment": [
+      "none"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Feet shoulder-width, sit hips back and down, drive up through the heels.",
+    "formCues": [
+      "Chest up",
+      "Knees track over toes"
+    ],
+    "commonMistakes": [
+      "Heels lifting",
+      "Knees caving inward"
+    ],
+    "progression": "goblet-squat"
+  },
+  {
+    "id": "goblet-squat",
+    "name": "Goblet Squat",
+    "category": "strength",
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "core"
+    ],
+    "equipment": [
+      "dumbbells",
+      "kettlebell"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Hold a dumbbell or kettlebell at chest height, squat down and up.",
+    "formCues": [
+      "Elbows brush the inside of the knees at the bottom"
+    ],
+    "commonMistakes": [
+      "Leaning too far forward"
+    ],
+    "regression": "squat",
+    "progression": "barbell-back-squat"
+  },
+  {
+    "id": "barbell-back-squat",
+    "name": "Barbell Back Squat",
+    "category": "strength",
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "core"
+    ],
+    "equipment": [
+      "barbell"
+    ],
+    "difficulty": "advanced",
+    "instructions": "Bar on the upper back, squat to depth, drive back up.",
+    "formCues": [
+      "Brace core before descending"
+    ],
+    "commonMistakes": [
+      "Rounding the lower back"
+    ],
+    "regression": "goblet-squat"
+  },
+  {
+    "id": "lunge",
+    "name": "Lunge",
+    "category": "bodyweight",
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings"
+    ],
+    "equipment": [
+      "none"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Step forward, lower the back knee toward the floor, push back to standing.",
+    "formCues": [
+      "Front knee stays behind the toes"
+    ],
+    "commonMistakes": [
+      "Short, unstable steps"
+    ],
+    "progression": "split-squat"
+  },
+  {
+    "id": "split-squat",
+    "name": "Bulgarian Split Squat",
+    "category": "strength",
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings"
+    ],
+    "equipment": [
+      "bench"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Rear foot elevated on a bench, lower into a lunge, drive up.",
+    "formCues": [
+      "Keep torso mostly upright"
+    ],
+    "commonMistakes": [
+      "Front knee collapsing inward"
+    ],
+    "regression": "lunge"
+  },
+  {
+    "id": "glute-bridge",
+    "name": "Glute Bridge",
+    "category": "bodyweight",
+    "primaryMuscles": [
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "core"
+    ],
+    "equipment": [
+      "none"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Lie on your back, knees bent, drive hips up by squeezing the glutes.",
+    "formCues": [
+      "Squeeze at the top, avoid arching the lower back"
+    ],
+    "commonMistakes": [
+      "Using the lower back instead of glutes"
+    ],
+    "progression": "hip-thrust"
+  },
+  {
+    "id": "hip-thrust",
+    "name": "Hip Thrust",
+    "category": "strength",
+    "primaryMuscles": [
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings"
+    ],
+    "equipment": [
+      "bench",
+      "barbell"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Upper back on a bench, barbell across the hips, drive hips up.",
+    "formCues": [
+      "Chin tucked, ribs down at the top"
+    ],
+    "commonMistakes": [
+      "Overextending the lower back"
+    ],
+    "regression": "glute-bridge"
+  },
+  {
+    "id": "calf-raise",
+    "name": "Calf Raise",
+    "category": "bodyweight",
+    "primaryMuscles": [
+      "calves"
+    ],
+    "secondaryMuscles": [],
+    "equipment": [
+      "none"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Rise onto the balls of your feet, lower with control.",
+    "formCues": [
+      "Full range of motion, pause at the top"
+    ],
+    "commonMistakes": [
+      "Bouncing instead of controlling the tempo"
+    ]
+  },
+  {
+    "id": "plank",
+    "name": "Plank",
+    "category": "core",
+    "primaryMuscles": [
+      "core"
+    ],
+    "secondaryMuscles": [
+      "shoulders"
+    ],
+    "equipment": [
+      "none"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Forearms and toes on the ground, body in a straight line, hold.",
+    "formCues": [
+      "Squeeze glutes and brace the core",
+      "Neutral neck"
+    ],
+    "commonMistakes": [
+      "Hips sagging or piking up"
+    ],
+    "progression": "side-plank"
+  },
+  {
+    "id": "side-plank",
+    "name": "Side Plank",
+    "category": "core",
+    "primaryMuscles": [
+      "core"
+    ],
+    "secondaryMuscles": [
+      "shoulders"
+    ],
+    "equipment": [
+      "none"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Balance on one forearm and the side of one foot, hips lifted, hold.",
+    "formCues": [
+      "Stack hips and shoulders"
+    ],
+    "commonMistakes": [
+      "Hips dropping toward the floor"
+    ],
+    "regression": "plank"
+  },
+  {
+    "id": "mountain-climber",
+    "name": "Mountain Climber",
+    "category": "core",
+    "primaryMuscles": [
+      "core"
+    ],
+    "secondaryMuscles": [
+      "shoulders"
+    ],
+    "equipment": [
+      "none"
+    ],
+    "difficulty": "beginner",
+    "instructions": "In a plank position, drive knees alternately toward the chest at speed.",
+    "formCues": [
+      "Keep hips low and stable"
+    ],
+    "commonMistakes": [
+      "Hips bouncing up and down"
+    ]
+  },
+  {
+    "id": "hanging-knee-raise",
+    "name": "Hanging Knee Raise",
+    "category": "core",
+    "primaryMuscles": [
+      "core"
+    ],
+    "secondaryMuscles": [
+      "back"
+    ],
+    "equipment": [
+      "pull_up_bar"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Hang from a bar, raise the knees toward the chest with control.",
+    "formCues": [
+      "Avoid swinging"
+    ],
+    "commonMistakes": [
+      "Using momentum instead of the core"
+    ]
+  },
+  {
+    "id": "burpee",
+    "name": "Burpee",
+    "category": "hiit",
+    "primaryMuscles": [
+      "full_body"
+    ],
+    "secondaryMuscles": [],
+    "equipment": [
+      "none"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Squat, kick back to a plank, push-up, jump feet in, jump up.",
+    "formCues": [
+      "Land softly"
+    ],
+    "commonMistakes": [
+      "Sagging plank position"
+    ]
+  },
+  {
+    "id": "jumping-jacks",
+    "name": "Jumping Jacks",
+    "category": "hiit",
+    "primaryMuscles": [
+      "full_body"
+    ],
+    "secondaryMuscles": [],
+    "equipment": [
+      "none"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Jump feet apart while raising arms overhead, jump back together.",
+    "formCues": [
+      "Stay light on your feet"
+    ],
+    "commonMistakes": [
+      "Landing flat-footed"
+    ]
+  },
+  {
+    "id": "high-knees",
+    "name": "High Knees",
+    "category": "hiit",
+    "primaryMuscles": [
+      "full_body"
+    ],
+    "secondaryMuscles": [
+      "core"
+    ],
+    "equipment": [
+      "none"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Run in place driving the knees up toward waist height.",
+    "formCues": [
+      "Pump the arms",
+      "Stay on the balls of your feet"
+    ],
+    "commonMistakes": [
+      "Leaning back"
+    ]
+  },
+  {
+    "id": "squat-jump",
+    "name": "Squat Jump",
+    "category": "hiit",
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "calves"
+    ],
+    "equipment": [
+      "none"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Squat down and explode upward into a jump, land softly and reset.",
+    "formCues": [
+      "Soft landing, knees tracking over toes"
+    ],
+    "commonMistakes": [
+      "Landing with locked knees"
+    ]
+  },
+  {
+    "id": "kettlebell-swing",
+    "name": "Kettlebell Swing",
+    "category": "hiit",
+    "primaryMuscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "secondaryMuscles": [
+      "core",
+      "shoulders"
+    ],
+    "equipment": [
+      "kettlebell"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Hinge at the hips and swing the kettlebell to chest height using hip drive.",
+    "formCues": [
+      "Power comes from the hips, not the arms"
+    ],
+    "commonMistakes": [
+      "Squatting the swing instead of hinging"
+    ]
+  },
+  {
+    "id": "walking",
+    "name": "Walking",
+    "category": "cardio",
+    "primaryMuscles": [
+      "full_body"
+    ],
+    "secondaryMuscles": [],
+    "equipment": [
+      "none"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Brisk walk at a conversational pace.",
+    "formCues": [
+      "Maintain an upright posture"
+    ],
+    "commonMistakes": [
+      "Pace too slow to raise heart rate"
+    ]
+  },
+  {
+    "id": "jogging",
+    "name": "Jogging",
+    "category": "cardio",
+    "primaryMuscles": [
+      "full_body"
+    ],
+    "secondaryMuscles": [],
+    "equipment": [
+      "none"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Steady-state jog at an easy, sustainable pace.",
+    "formCues": [
+      "Relaxed shoulders, midfoot strike"
+    ],
+    "commonMistakes": [
+      "Overstriding"
+    ]
+  },
+  {
+    "id": "cycling",
+    "name": "Cycling",
+    "category": "cardio",
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "calves"
+    ],
+    "equipment": [
+      "none"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Steady-state cycling at a moderate, sustainable effort.",
+    "formCues": [
+      "Knees tracking straight, not splaying out"
+    ],
+    "commonMistakes": [
+      "Seat height too low"
+    ]
+  },
+  {
+    "id": "cat-cow",
+    "name": "Cat-Cow",
+    "category": "mobility",
+    "primaryMuscles": [
+      "back"
+    ],
+    "secondaryMuscles": [
+      "core"
+    ],
+    "equipment": [
+      "none"
+    ],
+    "difficulty": "beginner",
+    "instructions": "On hands and knees, alternate arching and rounding the spine slowly.",
+    "formCues": [
+      "Move with the breath"
+    ],
+    "commonMistakes": [
+      "Rushing the movement"
+    ]
+  },
+  {
+    "id": "worlds-greatest-stretch",
+    "name": "World's Greatest Stretch",
+    "category": "mobility",
+    "primaryMuscles": [
+      "hips"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "back"
+    ],
+    "equipment": [
+      "none"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Lunge forward, rotate the torso toward the front leg, reaching upward.",
+    "formCues": [
+      "Keep the back leg straight"
+    ],
+    "commonMistakes": [
+      "Rushing through the rotation"
+    ]
+  },
+  {
+    "id": "barbell-bench-press",
+    "name": "Barbell Bench Press",
+    "category": "strength",
+    "primaryMuscles": [
+      "chest"
+    ],
+    "secondaryMuscles": [
+      "triceps",
+      "shoulders"
+    ],
+    "equipment": [
+      "barbell",
+      "bench"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Lie on a flat bench, lower the bar to mid-chest, press back to lockout.",
+    "formCues": [
+      "Shoulder blades pinned back",
+      "Feet flat, drive through the floor"
+    ],
+    "commonMistakes": [
+      "Bouncing the bar off the chest",
+      "Flaring elbows to 90 degrees"
+    ]
+  },
+  {
+    "id": "incline-dumbbell-press",
+    "name": "Incline Dumbbell Press",
+    "category": "strength",
+    "primaryMuscles": [
+      "chest"
+    ],
+    "secondaryMuscles": [
+      "shoulders",
+      "triceps"
+    ],
+    "equipment": [
+      "dumbbells",
+      "bench"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "On an incline bench, press dumbbells up and slightly together over the upper chest.",
+    "formCues": [
+      "Control the descent",
+      "Don't let elbows flare past 45 degrees"
+    ],
+    "commonMistakes": [
+      "Bench angle too steep, shifts work to shoulders"
+    ]
+  },
+  {
+    "id": "cable-chest-fly",
+    "name": "Cable Chest Fly",
+    "category": "strength",
+    "primaryMuscles": [
+      "chest"
+    ],
+    "secondaryMuscles": [
+      "shoulders"
+    ],
+    "equipment": [
+      "machines"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Standing between two cable stacks, sweep the handles together in front of the chest with a slight elbow bend.",
+    "formCues": [
+      "Slight forward lean",
+      "Squeeze at the midline, don't just swing arms"
+    ],
+    "commonMistakes": [
+      "Using momentum instead of a controlled squeeze"
+    ]
+  },
+  {
+    "id": "incline-machine-press",
+    "name": "Incline Machine Press",
+    "category": "strength",
+    "primaryMuscles": [
+      "chest"
+    ],
+    "secondaryMuscles": [
+      "shoulders",
+      "triceps"
+    ],
+    "equipment": [
+      "machines"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Seated on an incline press machine, press the handles up and away until arms are extended.",
+    "formCues": [
+      "Keep shoulder blades set against the pad"
+    ],
+    "commonMistakes": [
+      "Locking out elbows aggressively at the top"
+    ]
+  },
+  {
+    "id": "cable-triceps-pushdown",
+    "name": "Cable Triceps Pushdown",
+    "category": "strength",
+    "primaryMuscles": [
+      "triceps"
+    ],
+    "secondaryMuscles": [],
+    "equipment": [
+      "machines"
+    ],
+    "difficulty": "beginner",
+    "instructions": "At a high cable, push the bar down to full elbow extension, keeping elbows pinned to your sides.",
+    "formCues": [
+      "Elbows stay fixed at your sides"
+    ],
+    "commonMistakes": [
+      "Letting elbows drift forward to use body weight"
+    ]
+  },
+  {
+    "id": "overhead-cable-extension",
+    "name": "Overhead Cable Triceps Extension",
+    "category": "strength",
+    "primaryMuscles": [
+      "triceps"
+    ],
+    "secondaryMuscles": [],
+    "equipment": [
+      "machines"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Facing away from a low cable, extend the rope overhead until arms are straight.",
+    "formCues": [
+      "Keep upper arms close to your head"
+    ],
+    "commonMistakes": [
+      "Flaring elbows out to the sides"
+    ]
+  },
+  {
+    "id": "close-grip-bench-press",
+    "name": "Close-Grip Bench Press",
+    "category": "strength",
+    "primaryMuscles": [
+      "triceps"
+    ],
+    "secondaryMuscles": [
+      "chest"
+    ],
+    "equipment": [
+      "barbell",
+      "bench"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Bench press with a shoulder-width grip, keeping elbows tucked to bias the triceps.",
+    "formCues": [
+      "Elbows track close to the torso"
+    ],
+    "commonMistakes": [
+      "Grip too narrow, straining the wrists"
+    ]
+  },
+  {
+    "id": "rope-pushdown",
+    "name": "Rope Triceps Pushdown",
+    "category": "strength",
+    "primaryMuscles": [
+      "triceps"
+    ],
+    "secondaryMuscles": [],
+    "equipment": [
+      "machines"
+    ],
+    "difficulty": "beginner",
+    "instructions": "At a high cable with a rope attachment, push down and spread the rope apart at the bottom.",
+    "formCues": [
+      "Spread the rope ends apart at full extension"
+    ],
+    "commonMistakes": [
+      "Using shoulders to drive the movement"
+    ]
+  },
+  {
+    "id": "lat-pulldown",
+    "name": "Lat Pulldown",
+    "category": "strength",
+    "primaryMuscles": [
+      "back"
+    ],
+    "secondaryMuscles": [
+      "biceps"
+    ],
+    "equipment": [
+      "machines"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Seated, pull the bar down to your upper chest, leading with the elbows.",
+    "formCues": [
+      "Lead with elbows, not hands"
+    ],
+    "commonMistakes": [
+      "Leaning back excessively to move more weight"
+    ]
+  },
+  {
+    "id": "chest-supported-row",
+    "name": "Chest-Supported Row",
+    "category": "strength",
+    "primaryMuscles": [
+      "back"
+    ],
+    "secondaryMuscles": [
+      "biceps"
+    ],
+    "equipment": [
+      "machines",
+      "bench"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Chest against a supportive pad, row the handles to your torso.",
+    "formCues": [
+      "Squeeze shoulder blades together at the top"
+    ],
+    "commonMistakes": [
+      "Using momentum instead of controlled rowing"
+    ]
+  },
+  {
+    "id": "barbell-row",
+    "name": "Barbell Row",
+    "category": "strength",
+    "primaryMuscles": [
+      "back"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "core"
+    ],
+    "equipment": [
+      "barbell"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Hinge at the hips with a flat back, row the bar to your lower ribs.",
+    "formCues": [
+      "Flat back throughout",
+      "Pull with the elbows"
+    ],
+    "commonMistakes": [
+      "Rounding the lower back"
+    ]
+  },
+  {
+    "id": "seated-cable-row",
+    "name": "Seated Cable Row",
+    "category": "strength",
+    "primaryMuscles": [
+      "back"
+    ],
+    "secondaryMuscles": [
+      "biceps"
+    ],
+    "equipment": [
+      "machines"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Seated, row the handle to your torso, keeping your back upright.",
+    "formCues": [
+      "Chest tall, avoid leaning far back to pull"
+    ],
+    "commonMistakes": [
+      "Rounding the shoulders forward between reps"
+    ]
+  },
+  {
+    "id": "straight-arm-pulldown",
+    "name": "Straight-Arm Pulldown",
+    "category": "strength",
+    "primaryMuscles": [
+      "back"
+    ],
+    "secondaryMuscles": [],
+    "equipment": [
+      "machines"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "With straight arms on a high cable, pull the bar down to your thighs in an arc.",
+    "formCues": [
+      "Keep a slight elbow bend, arms move as one unit"
+    ],
+    "commonMistakes": [
+      "Bending the elbows to turn it into a pushdown"
+    ]
+  },
+  {
+    "id": "tbar-row",
+    "name": "T-Bar Row",
+    "category": "strength",
+    "primaryMuscles": [
+      "back"
+    ],
+    "secondaryMuscles": [
+      "biceps"
+    ],
+    "equipment": [
+      "machines"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Hinged over a T-bar, row the handles to your chest.",
+    "formCues": [
+      "Keep the back flat and braced"
+    ],
+    "commonMistakes": [
+      "Jerking the weight with the lower back"
+    ]
+  },
+  {
+    "id": "single-arm-cable-row",
+    "name": "Single-Arm Cable Row",
+    "category": "strength",
+    "primaryMuscles": [
+      "back"
+    ],
+    "secondaryMuscles": [
+      "biceps",
+      "core"
+    ],
+    "equipment": [
+      "machines"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "One arm at a time, row the handle to your ribs while resisting torso rotation.",
+    "formCues": [
+      "Keep hips and shoulders square"
+    ],
+    "commonMistakes": [
+      "Rotating the torso to move more weight"
+    ]
+  },
+  {
+    "id": "reverse-fly",
+    "name": "Reverse Fly",
+    "category": "strength",
+    "primaryMuscles": [
+      "back"
+    ],
+    "secondaryMuscles": [
+      "shoulders"
+    ],
+    "equipment": [
+      "dumbbells"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Hinged forward, raise dumbbells out to the sides, squeezing the rear shoulders.",
+    "formCues": [
+      "Slight elbow bend, lead with the elbows"
+    ],
+    "commonMistakes": [
+      "Using momentum to swing the weights up"
+    ]
+  },
+  {
+    "id": "ez-bar-curl",
+    "name": "EZ-Bar Curl",
+    "category": "strength",
+    "primaryMuscles": [
+      "biceps"
+    ],
+    "secondaryMuscles": [],
+    "equipment": [
+      "barbell"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Curl the EZ-bar up to shoulder height, keeping elbows fixed at your sides.",
+    "formCues": [
+      "Elbows stay pinned to your sides"
+    ],
+    "commonMistakes": [
+      "Swinging the torso to generate momentum"
+    ]
+  },
+  {
+    "id": "incline-dumbbell-curl",
+    "name": "Incline Dumbbell Curl",
+    "category": "strength",
+    "primaryMuscles": [
+      "biceps"
+    ],
+    "secondaryMuscles": [],
+    "equipment": [
+      "dumbbells",
+      "bench"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Seated on an incline bench, curl dumbbells with arms hanging straight down.",
+    "formCues": [
+      "Let the shoulder stay pinned back, no swinging"
+    ],
+    "commonMistakes": [
+      "Letting elbows drift forward"
+    ]
+  },
+  {
+    "id": "hammer-curl",
+    "name": "Hammer Curl",
+    "category": "strength",
+    "primaryMuscles": [
+      "biceps"
+    ],
+    "secondaryMuscles": [],
+    "equipment": [
+      "dumbbells"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Curl dumbbells with a neutral (palms-in) grip.",
+    "formCues": [
+      "Keep wrists neutral and elbows fixed"
+    ],
+    "commonMistakes": [
+      "Using shoulder momentum instead of the arm"
+    ]
+  },
+  {
+    "id": "seated-dumbbell-shoulder-press",
+    "name": "Seated Dumbbell Shoulder Press",
+    "category": "strength",
+    "primaryMuscles": [
+      "shoulders"
+    ],
+    "secondaryMuscles": [
+      "triceps"
+    ],
+    "equipment": [
+      "dumbbells",
+      "bench"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Seated, press dumbbells overhead to full extension.",
+    "formCues": [
+      "Keep ribs down, avoid over-arching the lower back"
+    ],
+    "commonMistakes": [
+      "Flaring elbows out too wide at the bottom"
+    ]
+  },
+  {
+    "id": "lateral-raise",
+    "name": "Dumbbell Lateral Raise",
+    "category": "strength",
+    "primaryMuscles": [
+      "shoulders"
+    ],
+    "secondaryMuscles": [],
+    "equipment": [
+      "dumbbells"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Raise dumbbells out to the sides to shoulder height with a slight elbow bend.",
+    "formCues": [
+      "Lead with the elbows, not the hands"
+    ],
+    "commonMistakes": [
+      "Swinging the weight up with momentum"
+    ]
+  },
+  {
+    "id": "rear-delt-fly",
+    "name": "Rear-Delt Fly",
+    "category": "strength",
+    "primaryMuscles": [
+      "shoulders"
+    ],
+    "secondaryMuscles": [
+      "back"
+    ],
+    "equipment": [
+      "dumbbells"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Hinged forward, raise dumbbells out to the sides targeting the rear shoulders.",
+    "formCues": [
+      "Keep a soft bend in the elbows"
+    ],
+    "commonMistakes": [
+      "Standing too upright, shifting work to the traps"
+    ]
+  },
+  {
+    "id": "face-pull",
+    "name": "Face Pull",
+    "category": "strength",
+    "primaryMuscles": [
+      "shoulders"
+    ],
+    "secondaryMuscles": [
+      "back"
+    ],
+    "equipment": [
+      "machines"
+    ],
+    "difficulty": "beginner",
+    "instructions": "At a high cable with a rope, pull toward your face, flaring elbows out wide.",
+    "formCues": [
+      "Pull to eye level, elbows high"
+    ],
+    "commonMistakes": [
+      "Pulling low toward the chest instead of the face"
+    ]
+  },
+  {
+    "id": "hack-squat",
+    "name": "Hack Squat",
+    "category": "strength",
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [],
+    "equipment": [
+      "machines"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "On a hack squat machine, lower under control until thighs are near parallel, then drive up.",
+    "formCues": [
+      "Knees track over the toes"
+    ],
+    "commonMistakes": [
+      "Only using a partial range of motion"
+    ]
+  },
+  {
+    "id": "romanian-deadlift",
+    "name": "Romanian Deadlift",
+    "category": "strength",
+    "primaryMuscles": [
+      "hamstrings",
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "back"
+    ],
+    "equipment": [
+      "barbell"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "With a slight knee bend, hinge at the hips and lower the bar along your legs, then drive hips forward.",
+    "formCues": [
+      "Flat back, bar stays close to the legs"
+    ],
+    "commonMistakes": [
+      "Rounding the lower back",
+      "Squatting instead of hinging"
+    ]
+  },
+  {
+    "id": "leg-press",
+    "name": "Leg Press",
+    "category": "strength",
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [],
+    "equipment": [
+      "machines"
+    ],
+    "difficulty": "beginner",
+    "instructions": "On a leg press machine, lower the platform under control, then press through your heels.",
+    "formCues": [
+      "Don't let the lower back round off the pad"
+    ],
+    "commonMistakes": [
+      "Locking the knees out hard at the top"
+    ]
+  },
+  {
+    "id": "bulgarian-split-squat",
+    "name": "Bulgarian Split Squat",
+    "category": "strength",
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [],
+    "equipment": [
+      "dumbbells",
+      "bench"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Rear foot elevated on a bench, lower the front knee toward the floor, then drive back up.",
+    "formCues": [
+      "Keep most of the weight through the front foot"
+    ],
+    "commonMistakes": [
+      "Front knee caving inward"
+    ]
+  },
+  {
+    "id": "leg-curl",
+    "name": "Leg Curl",
+    "category": "strength",
+    "primaryMuscles": [
+      "hamstrings"
+    ],
+    "secondaryMuscles": [],
+    "equipment": [
+      "machines"
+    ],
+    "difficulty": "beginner",
+    "instructions": "On a leg curl machine, curl the pad toward your glutes under control.",
+    "formCues": [
+      "Avoid lifting the hips off the pad"
+    ],
+    "commonMistakes": [
+      "Using momentum to swing the weight"
+    ]
+  },
+  {
+    "id": "leg-extension",
+    "name": "Leg Extension",
+    "category": "strength",
+    "primaryMuscles": [
+      "quadriceps"
+    ],
+    "secondaryMuscles": [],
+    "equipment": [
+      "machines"
+    ],
+    "difficulty": "beginner",
+    "instructions": "On a leg extension machine, extend your knees until legs are straight, then lower with control.",
+    "formCues": [
+      "Control the negative, don't drop the weight"
+    ],
+    "commonMistakes": [
+      "Using a jerky, fast tempo"
+    ]
+  },
+  {
+    "id": "walking-lunge",
+    "name": "Walking Lunge",
+    "category": "strength",
+    "primaryMuscles": [
+      "quadriceps",
+      "glutes"
+    ],
+    "secondaryMuscles": [],
+    "equipment": [
+      "dumbbells"
+    ],
+    "difficulty": "intermediate",
+    "instructions": "Holding dumbbells, step forward into a lunge and continue alternating legs as you travel.",
+    "formCues": [
+      "Torso upright, front knee over the ankle"
+    ],
+    "commonMistakes": [
+      "Taking too short a step, limiting range of motion"
+    ]
+  },
+  {
+    "id": "cable-crunch",
+    "name": "Cable Crunch",
+    "category": "core",
+    "primaryMuscles": [
+      "core"
+    ],
+    "secondaryMuscles": [],
+    "equipment": [
+      "machines"
+    ],
+    "difficulty": "beginner",
+    "instructions": "Kneeling under a high cable, crunch down by flexing the spine, not just bending at the hips.",
+    "formCues": [
+      "Round the spine, keep hips still"
+    ],
+    "commonMistakes": [
+      "Hinging at the hips instead of flexing the spine"
+    ]
+  }
 ]

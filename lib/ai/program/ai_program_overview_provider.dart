@@ -20,7 +20,13 @@ class AiProgramOverviewProvider {
       response = await Supabase.instance.client.functions.invoke(
         functionName,
         body: {
-          'profile': {'name': input.name, 'fitnessLevel': input.fitnessLevel, 'goals': input.goals.toList()},
+          'profile': {
+            'name': input.name,
+            'fitnessLevel': input.fitnessLevel,
+            'goals': input.goals.toList(),
+            if (input.dietaryPreference != null) 'dietaryPreference': input.dietaryPreference,
+            'dietaryRestrictions': input.dietaryRestrictions.toList(),
+          },
           'trajectory': _trajectoryJson(input.trajectory),
           'nutrition': {
             'calorieTarget': input.nutrition.calorieTarget,

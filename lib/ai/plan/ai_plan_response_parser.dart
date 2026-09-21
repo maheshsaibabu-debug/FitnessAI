@@ -107,7 +107,7 @@ class AiPlanResponseParser {
 
     final exercise = libraryById[exerciseId];
     if (exercise == null) return null; // hallucinated id
-    if (!exercise.equipment.every(usableEquipment.contains)) return null; // equipment the user doesn't have
+    if (!exerciseUsesAvailableEquipment(exercise.equipment, usableEquipment)) return null; // equipment the user doesn't have
     if (_levelRank(exercise.difficulty) > levelRank) return null; // too advanced
 
     final targetSets = (rawExercise['targetSets'] as num?)?.toInt();

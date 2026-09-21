@@ -38,6 +38,11 @@ class DeterministicProgramOverviewBuilder {
           '${input.nutrition.proteinGrams.toStringAsFixed(0)}g protein, '
           '${input.nutrition.carbsGrams.toStringAsFixed(0)}g carbs, '
           '${input.nutrition.fatGrams.toStringAsFixed(0)}g fat.');
+    if (input.dietaryPreference != null) {
+      buffer.write(' Diet: ${input.dietaryPreference}');
+      if (input.dietaryRestrictions.isNotEmpty) buffer.write(' (${input.dietaryRestrictions.join(', ')})');
+      buffer.writeln('.');
+    }
 
     buffer
       ..writeln()

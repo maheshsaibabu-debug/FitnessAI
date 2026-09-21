@@ -22,6 +22,8 @@ class ProgramOverviewInput {
     required this.trajectory,
     required this.nutrition,
     required this.weeklyPlan,
+    this.dietaryPreference,
+    this.dietaryRestrictions = const {},
   });
 
   final String name;
@@ -30,6 +32,12 @@ class ProgramOverviewInput {
   final ProgramTrajectory trajectory;
   final NutritionTargets nutrition;
   final List<ProgramPlanDay> weeklyPlan;
+
+  /// From onboarding (vegetarian/vegan/omnivore/pescatarian/other) — lets
+  /// the overview suggest real meals instead of generic "eat protein"
+  /// advice, without us hard-coding a food/cuisine database.
+  final String? dietaryPreference;
+  final Set<String> dietaryRestrictions;
 }
 
 class ProgramOverviewResult {

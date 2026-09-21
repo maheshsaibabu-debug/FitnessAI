@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../ai/ai_providers.dart';
@@ -143,11 +145,18 @@ class ProgramController extends _$ProgramController {
             trajectory: trajectory,
             nutrition: nutrition,
             weeklyPlan: weeklyPlan,
+            dietaryPreference: profile.dietaryPreference,
+            dietaryRestrictions: _parseJsonStringList(profile.dietaryRestrictionsJson),
           ));
 
       state = AsyncData(current.copyWith(trajectory: trajectory, overview: overview, isGenerating: false, error: ''));
     } catch (e) {
       state = AsyncData(current.copyWith(isGenerating: false, error: 'Could not generate your program overview: $e'));
     }
+  }
+
+  Set<String> _parseJsonStringList(String json) {
+    if (json.isEmpty) return {};
+    return (jsonDecode(json) as List).map((v) => v.toString()).toSet();
   }
 }

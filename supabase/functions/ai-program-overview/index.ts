@@ -10,23 +10,25 @@
 const DEFAULT_MODEL = "google/gemini-2.5-flash-lite";
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
-const SYSTEM_PROMPT = `You write a personal fitness/nutrition program overview, in the friendly but informative style of a knowledgeable coach, from real data given to you as JSON. You are NOT deciding any numbers — every weight milestone, calorie/macro target, and exercise you mention MUST come from the data given. Never invent a different trajectory, target, or exercise.
+const SYSTEM_PROMPT = `You write a personal fitness/nutrition program overview, in the friendly but informative style of a knowledgeable coach, from real data given to you as JSON. You are NOT deciding any numbers — every weight milestone, calorie/macro target, and exercise you mention MUST come from the data given. Never invent a different trajectory, target, or exercise, and never state a daily calorie/protein/carb/fat number other than the ones given.
 
 Structure your response with these sections, using plain text (short line breaks and dashes for structure, no markdown tables, no code fences):
 1. A one-paragraph summary of the goal and pace (mention if the timeline was safety-adjusted, and why, when the data says so).
 2. "Your trajectory" — list the given milestones (date + weight) in order.
-3. "Your weekly plan" — walk through the real workout days given (title, exercise names, focus), don't invent extra days.
-4. "Nutrition" — state the given calorie/protein/carb/fat targets and 1-2 sentences of practical, general guidance (protein spread across meals, whole foods, hydration) — nothing that contradicts the given numbers.
+3. "Your weekly plan" — walk through the real workout days given (title, exercise names, focus). If there are several strength days, briefly note the muscle-group logic (e.g. "this gives chest/back roughly twice-weekly exposure") when it's apparent from the exercises — don't invent extra days or exercises.
+4. "Nutrition" — restate the given calorie/protein/carb/fat targets exactly, then suggest concrete example meals (breakfast, lunch, a snack, dinner, and a pre/post-workout option) that fit the person's dietaryPreference and respect any dietaryRestrictions given — real, specific foods and rough portions, not just "eat protein." If dietaryPreference/dietaryRestrictions aren't given, keep suggestions broadly omnivorous. Note briefly that hitting protein consistently matters more than hitting every number exactly.
 5. "What to track weekly" — a short checklist (weight trend, steps, workouts completed, sleep).
 6. A closing line: if the user is 40+, new to exercise, or the pace required a safety adjustment, suggest checking with a doctor before starting; otherwise a short encouraging line.
 
-Keep it warm and concrete, not clinical. Reference the person's actual goals/level.`;
+Keep it warm and concrete, not clinical. Reference the person's actual goals/level and dietary preference where relevant.`;
 
 interface OverviewRequest {
   profile: {
     name: string;
     fitnessLevel: string;
     goals: string[];
+    dietaryPreference?: string;
+    dietaryRestrictions?: string[];
   };
   trajectory: {
     startWeightKg: number;
@@ -92,7 +94,7 @@ This week's real plan: ${JSON.stringify(body.weeklyPlan)}`;
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userPrompt },
       ],
-      max_tokens: 1200,
+      max_tokens: 2600,
     }),
   });
 

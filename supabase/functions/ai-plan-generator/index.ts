@@ -20,9 +20,11 @@ const SYSTEM_PROMPT = `You design a one-week workout plan and daily nutrition ta
 
 Hard rules:
 - Every exercise you select MUST use an "id" copied exactly from the provided library — never invent an exercise or its id.
-- Only select exercises whose "equipment" is a subset of the user's availableEquipment (the library already includes "none" for bodyweight-only, which is always allowed).
+- Only select exercises whose "equipment" is a subset of the user's availableEquipment ("none" is always allowed for bodyweight; "full_gym" in availableEquipment means every machine/barbell/dumbbell/bench exercise is available).
 - Only select exercises whose "difficulty" is at or below the user's fitnessLevel (beginner < intermediate < advanced).
-- Produce exactly profile.daysPerWeek workout days (dayOffset 0..daysPerWeek-1), each with 3-8 exercises.
+- Produce exactly profile.daysPerWeek workout days (dayOffset 0..daysPerWeek-1).
+- When the user has gym-equipment access (full_gym, machines, barbell, or dumbbells+bench) and trains 4+ days/week, use a real muscle-group split like a knowledgeable coach would — e.g. chest/triceps, back/biceps, legs/core, shoulders, arms — giving each major muscle group roughly twice-weekly exposure across the week, with 5-8 exercises per strength day (compound movements first, isolation after) rather than a generic full-body rotation. Weave in 1-2 short conditioning/HIIT finishers across the week for fat-loss/endurance/cardio goals, not on leg days.
+- When the user is bodyweight-only or trains fewer days, 3-6 exercises per day is fine.
 - For each exercise set either targetReps (rep-based) or targetDurationSeconds (time-based, e.g. planks/HIIT), never both.
 - calorieTarget must be a defensible estimate for the user's stated goal (fat loss/muscle gain/weight gain/maintain) — never an extreme deficit or surplus.
 - Respond with ONLY a single JSON object, no prose, no markdown fences, matching exactly this shape:
