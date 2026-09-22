@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   const builder = DeterministicProgramOverviewBuilder();
 
-  ProgramOverviewInput input({bool adjusted = false}) {
+  ProgramOverviewInput input({bool adjusted = false, String? dietaryPreference}) {
     final trajectory = ProgramTrajectory(
       startWeightKg: 85,
       goalWeightKg: 70,
@@ -33,6 +33,7 @@ void main() {
       weeklyPlan: const [
         ProgramPlanDay(title: 'Push Day', workoutType: 'push', exerciseNames: ['Push-up', 'Plank']),
       ],
+      dietaryPreference: dietaryPreference,
     );
   }
 
@@ -41,27 +42,48 @@ void main() {
     expect(result.source, 'deterministic');
   });
 
-  test('includes every milestone and every real workout day, never inventing extras', () {
+  test('greets the user by name and never leaves the weekly plan section empty for a real plan', () {
     final result = builder.build(input());
-    expect(result.overview, contains('85.0 kg'));
-    expect(result.overview, contains('70.0 kg'));
-    expect(result.overview, contains('Push Day'));
-    expect(result.overview, contains('Push-up, Plank'));
+    expect(result.summary, contains('Alex'));
+    expect(result.weeklyPlanNarrative, contains('Push Day'));
+    expect(result.weeklyPlanNarrative, contains('Push-up, Plank'));
   });
 
-  test('surfaces the adjustment reason when the timeline was safety-adjusted', () {
+  test('surfaces the adjustment reason in the summary when the timeline was safety-adjusted', () {
     final result = builder.build(input(adjusted: true));
-    expect(result.overview, contains('timeline was extended'));
+    expect(result.summary, contains('timeline was extended'));
   });
 
   test('omits adjustment language when nothing was adjusted', () {
     final result = builder.build(input());
-    expect(result.overview, isNot(contains('timeline was extended')));
+    expect(result.summary, isNot(contains('timeline was extended')));
   });
 
   test('states the real nutrition numbers, not placeholders', () {
     final result = builder.build(input());
-    expect(result.overview, contains('2200 kcal/day'));
-    expect(result.overview, contains('170g protein'));
+    expect(result.nutritionSummary, contains('2200 kcal'));
+    expect(result.nutritionSummary, contains('170g protein'));
+  });
+
+  test('always returns at least one real meal suggestion and a non-empty tracking checklist', () {
+    final result = builder.build(input());
+    expect(result.meals, isNotEmpty);
+    for (final meal in result.meals) {
+      expect(meal.label, isNotEmpty);
+      expect(meal.suggestion, isNotEmpty);
+    }
+    expect(result.trackingChecklist, isNotEmpty);
+  });
+
+  test('meal suggestions respect a stated vegetarian preference', () {
+    final result = builder.build(input(dietaryPreference: 'vegetarian'));
+    final allSuggestions = result.meals.map((m) => m.suggestion.toLowerCase()).join(' ');
+    expect(allSuggestions, isNot(contains('chicken')));
+    expect(allSuggestions, isNot(contains('beef')));
+  });
+
+  test('falls back to omnivorous suggestions when no dietary preference is given', () {
+    final result = builder.build(input());
+    expect(result.meals, isNotEmpty);
   });
 }

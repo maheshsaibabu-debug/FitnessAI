@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../ai/program/program_overview_input.dart';
 import '../../../domain/program_engine/program_trajectory_engine.dart';
 import '../application/program_controller.dart';
 
@@ -162,25 +163,22 @@ class _ProgramView extends ConsumerWidget {
               ),
             ),
           if (state.overview != null) ...[
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(state.overview!.overview, style: Theme.of(context).textTheme.bodyMedium),
-                    if (state.overview!.source == 'deterministic')
-                      Padding(
-                        padding: const EdgeInsets.only(top: 12),
-                        child: Text(
-                          'Offline overview',
-                          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
+            _OverviewCard(
+              title: 'Summary',
+              body: state.overview!.summary,
+              isOffline: state.overview!.source == 'deterministic',
             ),
+            const SizedBox(height: 16),
+            _OverviewCard(title: 'This week\'s plan', body: state.overview!.weeklyPlanNarrative),
+            const SizedBox(height: 16),
+            _NutritionCard(overview: state.overview!),
+            const SizedBox(height: 16),
+            _OverviewCard(
+              title: 'Track weekly',
+              body: state.overview!.trackingChecklist.map((c) => '• $c').join('\n'),
+            ),
+            const SizedBox(height: 16),
+            _OverviewCard(title: null, body: state.overview!.closingLine),
             const SizedBox(height: 16),
           ],
           Center(
@@ -216,6 +214,89 @@ class _MilestoneRow extends StatelessWidget {
           Expanded(child: Text(DateFormat.yMMMd().format(milestone.date), style: Theme.of(context).textTheme.bodySmall)),
           Text('${milestone.weightKg.toStringAsFixed(1)} kg', style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
         ],
+      ),
+    );
+  }
+}
+
+/// A single labeled prose section of the overview — used for everything
+/// except nutrition, which gets its own richer card below.
+class _OverviewCard extends StatelessWidget {
+  const _OverviewCard({required this.title, required this.body, this.isOffline = false});
+
+  final String? title;
+  final String body;
+  final bool isOffline;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (title != null) ...[
+              Text(title!, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+              const SizedBox(height: 8),
+            ],
+            Text(body, style: Theme.of(context).textTheme.bodyMedium),
+            if (isOffline)
+              Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: Text(
+                  'Offline overview',
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The dedicated "where's my diet plan" card: real calorie/macro stat
+/// chips plus a labeled meal-by-meal suggestion list, findable as its
+/// own section instead of buried mid-paragraph.
+class _NutritionCard extends StatelessWidget {
+  const _NutritionCard({required this.overview});
+  final ProgramOverviewResult overview;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.restaurant_outlined, size: 20, color: scheme.primary),
+                const SizedBox(width: 8),
+                Text('Nutrition & meals', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(overview.nutritionSummary, style: Theme.of(context).textTheme.bodyMedium),
+            const SizedBox(height: 16),
+            for (final meal in overview.meals)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(meal.label, style: Theme.of(context).textTheme.labelLarge?.copyWith(color: scheme.primary)),
+                    const SizedBox(height: 2),
+                    Text(meal.suggestion, style: Theme.of(context).textTheme.bodyMedium),
+                  ],
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

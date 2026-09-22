@@ -48,11 +48,49 @@ class AiProgramOverviewProvider {
     }
 
     final data = response.data;
-    if (data is! Map || data['overview'] is! String) {
+    if (data is! Map || data['overview'] is! Map) {
       throw AiProviderException('Program overview generator returned an unexpected response shape');
     }
 
-    return ProgramOverviewResult(overview: data['overview'] as String, source: 'ai', model: data['model'] as String?);
+    final overview = data['overview'] as Map;
+    final summary = overview['summary'];
+    final weeklyPlanNarrative = overview['weeklyPlanNarrative'];
+    final nutritionSummary = overview['nutritionSummary'];
+    final closingLine = overview['closingLine'];
+    final rawChecklist = overview['trackingChecklist'];
+    final rawMeals = overview['meals'];
+    if (summary is! String ||
+        weeklyPlanNarrative is! String ||
+        nutritionSummary is! String ||
+        closingLine is! String ||
+        rawChecklist is! List ||
+        rawMeals is! List) {
+      throw AiProviderException('Program overview generator returned incomplete sections');
+    }
+
+    final meals = <MealSuggestion>[];
+    for (final raw in rawMeals) {
+      if (raw is! Map) continue;
+      final label = raw['label'];
+      final suggestion = raw['suggestion'];
+      if (label is String && suggestion is String) meals.add(MealSuggestion(label: label, suggestion: suggestion));
+    }
+    if (meals.isEmpty) {
+      throw AiProviderException('Program overview generator returned no valid meal suggestions');
+    }
+
+    final checklist = rawChecklist.whereType<String>().toList();
+
+    return ProgramOverviewResult(
+      summary: summary,
+      weeklyPlanNarrative: weeklyPlanNarrative,
+      nutritionSummary: nutritionSummary,
+      meals: meals,
+      trackingChecklist: checklist,
+      closingLine: closingLine,
+      source: 'ai',
+      model: data['model'] as String?,
+    );
   }
 
   Map<String, Object?> _trajectoryJson(ProgramTrajectory t) => {

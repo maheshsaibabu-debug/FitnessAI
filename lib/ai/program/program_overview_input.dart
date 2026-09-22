@@ -40,10 +40,37 @@ class ProgramOverviewInput {
   final Set<String> dietaryRestrictions;
 }
 
-class ProgramOverviewResult {
-  const ProgramOverviewResult({required this.overview, required this.source, this.model});
+/// One suggested meal — a label ("Breakfast", "Pre-workout") and real,
+/// concrete food suggestion text, not "eat protein."
+class MealSuggestion {
+  const MealSuggestion({required this.label, required this.suggestion});
+  final String label;
+  final String suggestion;
+}
 
-  final String overview;
+/// The overview, broken into sections a screen can lay out as separate
+/// cards — in particular so nutrition/meal suggestions are their own
+/// findable section rather than buried partway through one long block
+/// of prose (the original flat-string design; a real usability
+/// complaint, not a hypothetical one).
+class ProgramOverviewResult {
+  const ProgramOverviewResult({
+    required this.summary,
+    required this.weeklyPlanNarrative,
+    required this.nutritionSummary,
+    required this.meals,
+    required this.trackingChecklist,
+    required this.closingLine,
+    required this.source,
+    this.model,
+  });
+
+  final String summary;
+  final String weeklyPlanNarrative;
+  final String nutritionSummary;
+  final List<MealSuggestion> meals;
+  final List<String> trackingChecklist;
+  final String closingLine;
 
   /// 'ai' | 'deterministic' — surfaced so the UI can be honest about
   /// which one produced this text, same as everywhere else in this app.
