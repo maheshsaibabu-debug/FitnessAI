@@ -6,6 +6,7 @@ import '../../dashboard/application/dashboard_providers.dart';
 import '../application/workout_execution_controller.dart';
 import '../application/workout_execution_state.dart';
 import 'widgets/exercise_animation_view.dart';
+import 'widgets/exercise_detail_card.dart';
 import 'widgets/rpe_selector.dart';
 
 StickFigureSex _stickFigureSexFrom(String? sex) => switch (sex) {
@@ -104,14 +105,15 @@ class _SetLoggingViewState extends ConsumerState<_SetLoggingView> {
             'Exercise ${widget.state.exerciseIndex + 1} of ${widget.state.exercises.length}',
             style: Theme.of(context).textTheme.labelLarge,
           ),
-          const SizedBox(height: 4),
-          Text(exercise.exercise.name, style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 8),
-          Text(exercise.exercise.instructions, style: Theme.of(context).textTheme.bodyMedium),
-          const SizedBox(height: 16),
-          ExerciseAnimationView(
-            exerciseId: exercise.exercise.id,
+          ExerciseDetailCard(
+            index: widget.state.exerciseIndex + 1,
+            exercise: exercise.exercise,
             sex: _stickFigureSexFrom(profile?.sex),
+            targetSets: we.targetSets ?? 1,
+            targetReps: we.targetReps,
+            targetDurationSeconds: we.targetDurationSeconds,
+            restSeconds: we.restSeconds ?? 60,
           ),
           const SizedBox(height: 16),
           Card(

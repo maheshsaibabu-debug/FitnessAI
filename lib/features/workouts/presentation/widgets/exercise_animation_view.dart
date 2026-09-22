@@ -19,6 +19,9 @@ enum _Motion {
   calfRaise,
   stride,
   catCow,
+  benchPress,
+  cablePull,
+  armIsolation,
 }
 
 /// A small set of procedurally-animated exercise illustrations, one per
@@ -69,6 +72,41 @@ class ExerciseAnimationView extends StatefulWidget {
     'cycling': _Motion.stride,
     'cat-cow': _Motion.catCow,
     'worlds-greatest-stretch': _Motion.squat,
+    // Gym-equipment exercises (added when the library grew to cover
+    // full-gym access) — mapped onto a small set of generic press/pull/
+    // isolation motions rather than 31 hand-tuned poses, so every one of
+    // them shows *something* real instead of "no demo animation."
+    'barbell-bench-press': _Motion.benchPress,
+    'incline-dumbbell-press': _Motion.benchPress,
+    'cable-chest-fly': _Motion.benchPress,
+    'incline-machine-press': _Motion.benchPress,
+    'close-grip-bench-press': _Motion.benchPress,
+    'cable-triceps-pushdown': _Motion.armIsolation,
+    'overhead-cable-extension': _Motion.armIsolation,
+    'rope-pushdown': _Motion.armIsolation,
+    'ez-bar-curl': _Motion.armIsolation,
+    'incline-dumbbell-curl': _Motion.armIsolation,
+    'hammer-curl': _Motion.armIsolation,
+    'lateral-raise': _Motion.armIsolation,
+    'rear-delt-fly': _Motion.armIsolation,
+    'seated-dumbbell-shoulder-press': _Motion.armIsolation,
+    'face-pull': _Motion.armIsolation,
+    'lat-pulldown': _Motion.cablePull,
+    'chest-supported-row': _Motion.cablePull,
+    'barbell-row': _Motion.cablePull,
+    'seated-cable-row': _Motion.cablePull,
+    'straight-arm-pulldown': _Motion.cablePull,
+    'tbar-row': _Motion.cablePull,
+    'single-arm-cable-row': _Motion.cablePull,
+    'reverse-fly': _Motion.cablePull,
+    'hack-squat': _Motion.squat,
+    'bulgarian-split-squat': _Motion.squat,
+    'walking-lunge': _Motion.squat,
+    'leg-press': _Motion.squat,
+    'leg-curl': _Motion.squat,
+    'leg-extension': _Motion.squat,
+    'romanian-deadlift': _Motion.kettlebellSwing,
+    'cable-crunch': _Motion.mountainClimber,
   };
 
   @override
@@ -187,6 +225,18 @@ class _FigurePainter extends CustomPainter {
     ..color = const Color(0x33000000)
     ..style = PaintingStyle.stroke
     ..strokeWidth = 2;
+  // Gym equipment (bars, benches, cable lines) — one shared style so a
+  // barbell, a cable machine's frame, and a bench all read as "hardware"
+  // rather than body parts.
+  static final Paint _equipmentPaint = Paint()
+    ..color = const Color(0xFF6B6B70)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 5
+    ..strokeCap = StrokeCap.round;
+  static final Paint _cablePaint = Paint()
+    ..color = const Color(0xFF6B6B70)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1.6;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -241,6 +291,13 @@ class _FigurePainter extends CustomPainter {
       case _Motion.catCow:
         _groundLine(canvas, 128);
         _paintCatCow(canvas);
+      case _Motion.benchPress:
+        _paintBenchPress(canvas);
+      case _Motion.cablePull:
+        _paintCablePull(canvas);
+      case _Motion.armIsolation:
+        _groundLine(canvas, 138);
+        _paintArmIsolation(canvas);
     }
 
     canvas.restore();
@@ -719,6 +776,90 @@ class _FigurePainter extends CustomPainter {
     canvas.drawCircle(center, 12, _strokePaint);
     final handle = Rect.fromCenter(center: center - const Offset(0, 15), width: 15, height: 11);
     canvas.drawArc(handle, math.pi, math.pi, false, _strokePaint);
+  }
+
+  /// Lying on a bench, pressing a bar from the chest to full extension —
+  /// covers every chest-press variant (barbell/dumbbell/machine/fly all
+  /// share this same "press away from the chest" shape).
+  void _paintBenchPress(Canvas canvas) {
+    final press = progress; // 0 bar at chest, 1 arms extended
+    const groundY = 130.0;
+    const hip = Offset(120, groundY - 4);
+    const shoulder = Offset(60, groundY - 4);
+    const knee = Offset(150, groundY - 30);
+    const foot = Offset(172, groundY);
+    final hand = Offset.lerp(const Offset(58, groundY - 42), const Offset(58, groundY - 82), press)!;
+    final head = Offset(shoulder.dx - 18, shoulder.dy);
+
+    canvas.drawLine(const Offset(38, groundY + 8), const Offset(142, groundY + 8), _equipmentPaint);
+    _segment(canvas, hip, knee, 18, 13);
+    _segment(canvas, knee, foot, 13, 9);
+    _segment(canvas, shoulder, hip, 22, 17);
+    _torsoLine(canvas, shoulder, hip);
+    _segment(canvas, shoulder, hand, 12, 8);
+    _shorts(canvas, hip, knee, width: 30, length: 22);
+    if (sex == StickFigureSex.female) _bra(canvas, shoulder, hip, width: 22);
+    _shoe(canvas, foot, knee);
+    _head(canvas, head, radius: 12);
+    canvas.drawLine(hand - const Offset(22, 0), hand + const Offset(22, 0), _equipmentPaint);
+  }
+
+  /// Seated, pulling a cable handle from an extended reach back to the
+  /// torso — covers lat pulldowns and every seated/standing row variant
+  /// (the visual difference between them is minor compared to the
+  /// "pull toward the body" shape they all share).
+  void _paintCablePull(Canvas canvas) {
+    final pull = progress; // 0 arms extended toward the machine, 1 handle at the torso
+    const hip = Offset(120, 100);
+    const foot = Offset(172, 128);
+    const anchor = Offset(186, 68);
+    final shoulder = Offset.lerp(const Offset(95, 70), const Offset(76, 66), pull)!;
+    final hand = Offset.lerp(const Offset(172, 74), const Offset(95, 78), pull)!;
+    final head = Offset(shoulder.dx - 14, shoulder.dy - 9);
+
+    canvas.drawLine(hand, anchor, _cablePaint);
+    canvas.drawLine(anchor - const Offset(0, 14), anchor + const Offset(0, 14), _equipmentPaint);
+    _segment(canvas, hip, foot, 16, 10);
+    _segment(canvas, shoulder, hip, 22, 17);
+    _torsoLine(canvas, shoulder, hip);
+    _segment(canvas, shoulder, hand, 12, 8);
+    _shorts(canvas, Offset(hip.dx - 4, hip.dy + 2), foot, width: 24, length: 20);
+    if (sex == StickFigureSex.female) _bra(canvas, shoulder, hip, width: 18);
+    _shoe(canvas, foot, hip);
+    _head(canvas, head, radius: 12);
+  }
+
+  /// Standing, both hands raising a light weight from low to high —
+  /// covers curls, lateral/rear raises, shoulder presses, and
+  /// pushdown/extension-style triceps work. These are genuinely
+  /// different movements, but all read as "an arm bending against
+  /// resistance," which is what this generic motion shows honestly
+  /// rather than claiming a false precision the illustration can't back.
+  void _paintArmIsolation(Canvas canvas) {
+    final t = progress; // 0 arms extended, 1 arms curled/raised
+    const head = Offset(100, 26);
+    const shoulder = Offset(100, 44);
+    const hip = Offset(100, 76);
+    const leftFoot = Offset(90, 138);
+    const rightFoot = Offset(110, 138);
+    final leftHand = Offset.lerp(const Offset(84, 86), const Offset(84, 52), t)!;
+    final rightHand = Offset.lerp(const Offset(116, 86), const Offset(116, 52), t)!;
+
+    _segment(canvas, hip, leftFoot, 16, 10);
+    _segment(canvas, hip, rightFoot, 16, 10);
+    _segment(canvas, shoulder, hip, 22, 18);
+    _torsoLine(canvas, shoulder, hip);
+    _segment(canvas, shoulder, leftHand, 11, 7);
+    _segment(canvas, shoulder, rightHand, 11, 7);
+    _shorts(canvas, hip, const Offset(100, 138), width: 30, length: 22);
+    if (sex == StickFigureSex.female) _bra(canvas, shoulder, hip, width: 22);
+    _shoe(canvas, leftFoot, hip, pointRight: false);
+    _shoe(canvas, rightFoot, hip);
+    _head(canvas, head);
+    canvas.drawCircle(leftHand, 5, _skinFill);
+    canvas.drawCircle(leftHand, 5, _strokePaint);
+    canvas.drawCircle(rightHand, 5, _skinFill);
+    canvas.drawCircle(rightHand, 5, _strokePaint);
   }
 
   @override
