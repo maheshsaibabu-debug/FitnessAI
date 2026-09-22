@@ -1,0 +1,678 @@
+{
+  "push-up": {
+    "status": "auto",
+    "external_id": "Pushups",
+    "external_name": "Pushups",
+    "my_name": "Push-up",
+    "images": [
+      "Pushups/0.jpg",
+      "Pushups/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "incline-push-up": {
+    "status": "auto",
+    "external_id": "Incline_Push-Up",
+    "external_name": "Incline Push-Up",
+    "my_name": "Incline Push-up",
+    "images": [
+      "Incline_Push-Up/0.jpg",
+      "Incline_Push-Up/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "pull-up": {
+    "status": "auto",
+    "external_id": "Pullups",
+    "external_name": "Pullups",
+    "my_name": "Pull-up",
+    "images": [
+      "Pullups/0.jpg",
+      "Pullups/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "assisted-pull-up": {
+    "status": "review",
+    "external_id": "Band_Assisted_Pull-Up",
+    "external_name": "Band Assisted Pull-Up",
+    "my_name": "Assisted / Negative Pull-up",
+    "images": [
+      "Band_Assisted_Pull-Up/0.jpg",
+      "Band_Assisted_Pull-Up/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "weighted-pull-up": {
+    "status": "auto",
+    "external_id": "Weighted_Pull_Ups",
+    "external_name": "Weighted Pull Ups",
+    "my_name": "Weighted Pull-up",
+    "images": [
+      "Weighted_Pull_Ups/0.jpg",
+      "Weighted_Pull_Ups/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "chin-up": {
+    "status": "auto",
+    "external_id": "Chin-Up",
+    "external_name": "Chin-Up",
+    "my_name": "Chin-up",
+    "images": [
+      "Chin-Up/0.jpg",
+      "Chin-Up/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "bodyweight-row": {
+    "status": "auto",
+    "external_id": "Inverted_Row",
+    "external_name": "Inverted Row",
+    "my_name": "Inverted Row",
+    "images": [
+      "Inverted_Row/0.jpg",
+      "Inverted_Row/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "squat": {
+    "status": "auto",
+    "external_id": "Bodyweight_Squat",
+    "external_name": "Bodyweight Squat",
+    "my_name": "Bodyweight Squat",
+    "images": [
+      "Bodyweight_Squat/0.jpg",
+      "Bodyweight_Squat/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "goblet-squat": {
+    "status": "auto",
+    "external_id": "Goblet_Squat",
+    "external_name": "Goblet Squat",
+    "my_name": "Goblet Squat",
+    "images": [
+      "Goblet_Squat/0.jpg",
+      "Goblet_Squat/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "barbell-back-squat": {
+    "status": "auto",
+    "external_id": "Barbell_Squat",
+    "external_name": "Barbell Squat",
+    "my_name": "Barbell Back Squat",
+    "images": [
+      "Barbell_Squat/0.jpg",
+      "Barbell_Squat/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "split-squat": {
+    "status": "review",
+    "external_id": "Split_Squats",
+    "external_name": "Split Squats",
+    "my_name": "Bulgarian Split Squat",
+    "images": [
+      "Split_Squats/0.jpg",
+      "Split_Squats/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "hip-thrust": {
+    "status": "auto",
+    "external_id": "Barbell_Hip_Thrust",
+    "external_name": "Barbell Hip Thrust",
+    "my_name": "Hip Thrust",
+    "images": [
+      "Barbell_Hip_Thrust/0.jpg",
+      "Barbell_Hip_Thrust/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "plank": {
+    "status": "auto",
+    "external_id": "Plank",
+    "external_name": "Plank",
+    "my_name": "Plank",
+    "images": [
+      "Plank/0.jpg",
+      "Plank/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "mountain-climber": {
+    "status": "auto",
+    "external_id": "Mountain_Climbers",
+    "external_name": "Mountain Climbers",
+    "my_name": "Mountain Climber",
+    "images": [
+      "Mountain_Climbers/0.jpg",
+      "Mountain_Climbers/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "hanging-knee-raise": {
+    "status": "review",
+    "external_id": "Hanging_Leg_Raise",
+    "external_name": "Hanging Leg Raise",
+    "my_name": "Hanging Knee Raise",
+    "images": [
+      "Hanging_Leg_Raise/0.jpg",
+      "Hanging_Leg_Raise/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "squat-jump": {
+    "status": "auto",
+    "external_id": "Freehand_Jump_Squat",
+    "external_name": "Freehand Jump Squat",
+    "my_name": "Squat Jump",
+    "images": [
+      "Freehand_Jump_Squat/0.jpg",
+      "Freehand_Jump_Squat/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "walking": {
+    "status": "review",
+    "external_id": "Walking_Treadmill",
+    "external_name": "Walking, Treadmill",
+    "my_name": "Walking",
+    "images": [
+      "Walking_Treadmill/0.jpg",
+      "Walking_Treadmill/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "jogging": {
+    "status": "review",
+    "external_id": "Jogging_Treadmill",
+    "external_name": "Jogging, Treadmill",
+    "my_name": "Jogging",
+    "images": [
+      "Jogging_Treadmill/0.jpg",
+      "Jogging_Treadmill/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "cycling": {
+    "status": "review",
+    "external_id": "Bicycling",
+    "external_name": "Bicycling",
+    "my_name": "Cycling",
+    "images": [
+      "Bicycling/0.jpg",
+      "Bicycling/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "worlds-greatest-stretch": {
+    "status": "auto",
+    "external_id": "Worlds_Greatest_Stretch",
+    "external_name": "World's Greatest Stretch",
+    "my_name": "World's Greatest Stretch",
+    "images": [
+      "Worlds_Greatest_Stretch/0.jpg",
+      "Worlds_Greatest_Stretch/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "barbell-bench-press": {
+    "status": "auto",
+    "external_id": "Barbell_Bench_Press_-_Medium_Grip",
+    "external_name": "Barbell Bench Press - Medium Grip",
+    "my_name": "Barbell Bench Press",
+    "images": [
+      "Barbell_Bench_Press_-_Medium_Grip/0.jpg",
+      "Barbell_Bench_Press_-_Medium_Grip/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "incline-dumbbell-press": {
+    "status": "auto",
+    "external_id": "Incline_Dumbbell_Press",
+    "external_name": "Incline Dumbbell Press",
+    "my_name": "Incline Dumbbell Press",
+    "images": [
+      "Incline_Dumbbell_Press/0.jpg",
+      "Incline_Dumbbell_Press/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "cable-chest-fly": {
+    "status": "auto",
+    "external_id": "Cable_Crossover",
+    "external_name": "Cable Crossover",
+    "my_name": "Cable Chest Fly",
+    "images": [
+      "Cable_Crossover/0.jpg",
+      "Cable_Crossover/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "incline-machine-press": {
+    "status": "review",
+    "external_id": "Smith_Machine_Incline_Bench_Press",
+    "external_name": "Smith Machine Incline Bench Press",
+    "my_name": "Incline Machine Press",
+    "images": [
+      "Smith_Machine_Incline_Bench_Press/0.jpg",
+      "Smith_Machine_Incline_Bench_Press/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "cable-triceps-pushdown": {
+    "status": "auto",
+    "external_id": "Triceps_Pushdown",
+    "external_name": "Triceps Pushdown",
+    "my_name": "Cable Triceps Pushdown",
+    "images": [
+      "Triceps_Pushdown/0.jpg",
+      "Triceps_Pushdown/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "overhead-cable-extension": {
+    "status": "auto",
+    "external_id": "Cable_Rope_Overhead_Triceps_Extension",
+    "external_name": "Cable Rope Overhead Triceps Extension",
+    "my_name": "Overhead Cable Triceps Extension",
+    "images": [
+      "Cable_Rope_Overhead_Triceps_Extension/0.jpg",
+      "Cable_Rope_Overhead_Triceps_Extension/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "close-grip-bench-press": {
+    "status": "auto",
+    "external_id": "Close-Grip_Barbell_Bench_Press",
+    "external_name": "Close-Grip Barbell Bench Press",
+    "my_name": "Close-Grip Bench Press",
+    "images": [
+      "Close-Grip_Barbell_Bench_Press/0.jpg",
+      "Close-Grip_Barbell_Bench_Press/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "rope-pushdown": {
+    "status": "auto",
+    "external_id": "Triceps_Pushdown_-_Rope_Attachment",
+    "external_name": "Triceps Pushdown - Rope Attachment",
+    "my_name": "Rope Triceps Pushdown",
+    "images": [
+      "Triceps_Pushdown_-_Rope_Attachment/0.jpg",
+      "Triceps_Pushdown_-_Rope_Attachment/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "lat-pulldown": {
+    "status": "auto",
+    "external_id": "Wide-Grip_Lat_Pulldown",
+    "external_name": "Wide-Grip Lat Pulldown",
+    "my_name": "Lat Pulldown",
+    "images": [
+      "Wide-Grip_Lat_Pulldown/0.jpg",
+      "Wide-Grip_Lat_Pulldown/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "barbell-row": {
+    "status": "auto",
+    "external_id": "Bent_Over_Barbell_Row",
+    "external_name": "Bent Over Barbell Row",
+    "my_name": "Barbell Row",
+    "images": [
+      "Bent_Over_Barbell_Row/0.jpg",
+      "Bent_Over_Barbell_Row/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "seated-cable-row": {
+    "status": "auto",
+    "external_id": "Seated_Cable_Rows",
+    "external_name": "Seated Cable Rows",
+    "my_name": "Seated Cable Row",
+    "images": [
+      "Seated_Cable_Rows/0.jpg",
+      "Seated_Cable_Rows/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "straight-arm-pulldown": {
+    "status": "auto",
+    "external_id": "Straight-Arm_Pulldown",
+    "external_name": "Straight-Arm Pulldown",
+    "my_name": "Straight-Arm Pulldown",
+    "images": [
+      "Straight-Arm_Pulldown/0.jpg",
+      "Straight-Arm_Pulldown/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "tbar-row": {
+    "status": "auto",
+    "external_id": "Lying_T-Bar_Row",
+    "external_name": "Lying T-Bar Row",
+    "my_name": "T-Bar Row",
+    "images": [
+      "Lying_T-Bar_Row/0.jpg",
+      "Lying_T-Bar_Row/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "reverse-fly": {
+    "status": "auto",
+    "external_id": "Reverse_Flyes",
+    "external_name": "Reverse Flyes",
+    "my_name": "Reverse Fly",
+    "images": [
+      "Reverse_Flyes/0.jpg",
+      "Reverse_Flyes/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "ez-bar-curl": {
+    "status": "auto",
+    "external_id": "EZ-Bar_Curl",
+    "external_name": "EZ-Bar Curl",
+    "my_name": "EZ-Bar Curl",
+    "images": [
+      "EZ-Bar_Curl/0.jpg",
+      "EZ-Bar_Curl/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "incline-dumbbell-curl": {
+    "status": "auto",
+    "external_id": "Incline_Dumbbell_Curl",
+    "external_name": "Incline Dumbbell Curl",
+    "my_name": "Incline Dumbbell Curl",
+    "images": [
+      "Incline_Dumbbell_Curl/0.jpg",
+      "Incline_Dumbbell_Curl/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "hammer-curl": {
+    "status": "auto",
+    "external_id": "Hammer_Curls",
+    "external_name": "Hammer Curls",
+    "my_name": "Hammer Curl",
+    "images": [
+      "Hammer_Curls/0.jpg",
+      "Hammer_Curls/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "seated-dumbbell-shoulder-press": {
+    "status": "auto",
+    "external_id": "Seated_Dumbbell_Press",
+    "external_name": "Seated Dumbbell Press",
+    "my_name": "Seated Dumbbell Shoulder Press",
+    "images": [
+      "Seated_Dumbbell_Press/0.jpg",
+      "Seated_Dumbbell_Press/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "lateral-raise": {
+    "status": "auto",
+    "external_id": "Side_Lateral_Raise",
+    "external_name": "Side Lateral Raise",
+    "my_name": "Dumbbell Lateral Raise",
+    "images": [
+      "Side_Lateral_Raise/0.jpg",
+      "Side_Lateral_Raise/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "rear-delt-fly": {
+    "status": "review",
+    "external_id": "Cable_Rear_Delt_Fly",
+    "external_name": "Cable Rear Delt Fly",
+    "my_name": "Rear-Delt Fly",
+    "images": [
+      "Cable_Rear_Delt_Fly/0.jpg",
+      "Cable_Rear_Delt_Fly/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "face-pull": {
+    "status": "auto",
+    "external_id": "Face_Pull",
+    "external_name": "Face Pull",
+    "my_name": "Face Pull",
+    "images": [
+      "Face_Pull/0.jpg",
+      "Face_Pull/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "hack-squat": {
+    "status": "auto",
+    "external_id": "Hack_Squat",
+    "external_name": "Hack Squat",
+    "my_name": "Hack Squat",
+    "images": [
+      "Hack_Squat/0.jpg",
+      "Hack_Squat/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "romanian-deadlift": {
+    "status": "auto",
+    "external_id": "Romanian_Deadlift",
+    "external_name": "Romanian Deadlift",
+    "my_name": "Romanian Deadlift",
+    "images": [
+      "Romanian_Deadlift/0.jpg",
+      "Romanian_Deadlift/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "leg-press": {
+    "status": "auto",
+    "external_id": "Leg_Press",
+    "external_name": "Leg Press",
+    "my_name": "Leg Press",
+    "images": [
+      "Leg_Press/0.jpg",
+      "Leg_Press/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "leg-curl": {
+    "status": "auto",
+    "external_id": "Lying_Leg_Curls",
+    "external_name": "Lying Leg Curls",
+    "my_name": "Leg Curl",
+    "images": [
+      "Lying_Leg_Curls/0.jpg",
+      "Lying_Leg_Curls/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "leg-extension": {
+    "status": "auto",
+    "external_id": "Leg_Extensions",
+    "external_name": "Leg Extensions",
+    "my_name": "Leg Extension",
+    "images": [
+      "Leg_Extensions/0.jpg",
+      "Leg_Extensions/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "walking-lunge": {
+    "status": "review",
+    "external_id": "Barbell_Walking_Lunge",
+    "external_name": "Barbell Walking Lunge",
+    "my_name": "Walking Lunge",
+    "images": [
+      "Barbell_Walking_Lunge/0.jpg",
+      "Barbell_Walking_Lunge/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "cable-crunch": {
+    "status": "auto",
+    "external_id": "Cable_Crunch",
+    "external_name": "Cable Crunch",
+    "my_name": "Cable Crunch",
+    "images": [
+      "Cable_Crunch/0.jpg",
+      "Cable_Crunch/1.jpg"
+    ],
+    "source": "free-exercise-db",
+    "source_url": "https://github.com/yuhonas/free-exercise-db",
+    "license": "Unlicense"
+  },
+  "diamond-push-up": {
+    "status": "no_match",
+    "reason": "no confident close-grip/diamond variant found"
+  },
+  "lunge": {
+    "status": "no_match",
+    "reason": "no plain bodyweight lunge entry (only weighted/walking variants)"
+  },
+  "bulgarian-split-squat": {
+    "status": "no_match",
+    "reason": "no rear-foot-elevated variant; reusing plain Split Squats would misrepresent it"
+  },
+  "glute-bridge": {
+    "status": "no_match",
+    "reason": "no plain two-leg bodyweight version; only single-leg or barbell-loaded variants exist"
+  },
+  "calf-raise": {
+    "status": "no_match",
+    "reason": "no plain standing bodyweight version; only seated/machine variants exist"
+  },
+  "side-plank": {
+    "status": "no_match",
+    "reason": "no exact match; candidates are a different exercise or a transition drill"
+  },
+  "burpee": {
+    "status": "no_match",
+    "reason": "not present in this dataset at all"
+  },
+  "jumping-jacks": {
+    "status": "no_match",
+    "reason": "not present under this name; nearest (Star Jump) is plausibly a different movement"
+  },
+  "high-knees": {
+    "status": "no_match",
+    "reason": "not present in this dataset"
+  },
+  "kettlebell-swing": {
+    "status": "no_match",
+    "reason": "only a one-arm variant exists; would misrepresent the two-hand swing this app shows"
+  },
+  "chest-supported-row": {
+    "status": "no_match",
+    "reason": "no matching equipment setup found"
+  },
+  "single-arm-cable-row": {
+    "status": "no_match",
+    "reason": "only a cable crossover (a fly, not a row) came back as the closest name"
+  },
+  "cat-cow": {
+    "status": "no_match",
+    "reason": "only a generic 'Cat Stretch' exists; no matching cow-pose half of the movement"
+  }
+}

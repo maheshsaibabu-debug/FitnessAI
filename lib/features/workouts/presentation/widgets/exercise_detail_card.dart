@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/database/app_database.dart';
 import 'exercise_animation_view.dart';
+import 'exercise_photo_registry.dart';
+import 'exercise_photo_view.dart';
 
 /// The exercise-info card shown at the top of a set: a numbered badge,
 /// the illustration, a target-muscle chip, a sets/reps/rest stat row,
@@ -11,7 +13,9 @@ import 'exercise_animation_view.dart';
 /// bundled data (assets/data/exercises.json) — nothing invented, just
 /// finally surfaced. Modeled on the "one card per exercise" layout
 /// common across fitness apps (numbered header, stat icons, form/note
-/// callouts), with our vector illustration standing in for a photo.
+/// callouts). Shows a real bundled photo (free-exercise-db) when one
+/// exists for this exercise ID; falls back to the vector illustration
+/// otherwise — see exercise_photo_registry.dart.
 class ExerciseDetailCard extends StatelessWidget {
   const ExerciseDetailCard({
     super.key,
@@ -70,7 +74,10 @@ class ExerciseDetailCard extends StatelessWidget {
               ],
             ),
           ),
-          ExerciseAnimationView(exerciseId: exercise.id, sex: sex),
+          if (kExercisesWithPhotos.contains(exercise.id))
+            ExercisePhotoView(exerciseId: exercise.id)
+          else
+            ExerciseAnimationView(exerciseId: exercise.id, sex: sex),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
             child: Column(

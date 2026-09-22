@@ -77,3 +77,4 @@ flutter:
   assets:
     - .env
     - assets/data/
+    - assets/data/exercise_images/

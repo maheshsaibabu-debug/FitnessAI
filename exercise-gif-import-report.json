@@ -1,0 +1,20 @@
+{
+  "total_exercises": 61,
+  "matched": 48,
+  "downloaded": 48,
+  "already_existing": 0,
+  "missing": 0,
+  "failed": [],
+  "manual_review": [
+    "assisted-pull-up",
+    "split-squat",
+    "hanging-knee-raise",
+    "walking",
+    "jogging",
+    "cycling",
+    "incline-machine-press",
+    "rear-delt-fly",
+    "walking-lunge"
+  ],
+  "no_match": 13
+}
