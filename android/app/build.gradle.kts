@@ -6,12 +6,15 @@ plugins {
 
 android {
     namespace = "com.fitnesscompanion.fitness_companion"
-    compileSdk = flutter.compileSdkVersion
+    // androidx.health.connect:connect-client requires compileSdk 35+
+    // (the `health` plugin's Android backend), above Flutter's own default.
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
 
     defaultConfig {
@@ -44,4 +47,8 @@ kotlin {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }
