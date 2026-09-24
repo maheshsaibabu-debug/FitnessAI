@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../data/repositories/repository_providers.dart';
 import '../../../data/repositories/workout_execution_repository.dart';
 import '../../../domain/workout_engine/workout_generation_engine.dart';
 import '../../dashboard/application/dashboard_providers.dart';
+import '../application/workout_execution_controller.dart';
 import '../application/workout_preview_provider.dart';
 
 /// Shown before a workout starts: what the day actually contains, one
@@ -23,7 +25,17 @@ class WorkoutPreviewScreen extends ConsumerWidget {
     final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Workout')),
+      appBar: AppBar(
+        title: const Text('Workout'),
+        actions: [
+          if (preview.valueOrNull != null && preview.value!.workout.status != 'scheduled')
+            IconButton(
+              icon: const Icon(Icons.restart_alt),
+              tooltip: 'Reset workout',
+              onPressed: () => _confirmReset(context, ref, workoutId),
+            ),
+        ],
+      ),
       body: SafeArea(
         child: preview.when(
           loading: () => const Center(child: CircularProgressIndicator()),
@@ -72,6 +84,25 @@ class WorkoutPreviewScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+Future<void> _confirmReset(BuildContext context, WidgetRef ref, String workoutId) async {
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Reset this workout?'),
+      content: const Text("Any sets you logged will be cleared and you'll start again from exercise 1."),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+        FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('Reset')),
+      ],
+    ),
+  );
+  if (confirmed != true) return;
+
+  await ref.read(workoutExecutionRepositoryProvider).resetWorkout(workoutId);
+  ref.invalidate(workoutExecutionControllerProvider(workoutId));
+  ref.invalidate(workoutPreviewProvider(workoutId));
 }
 
 class _ExerciseRow extends StatelessWidget {

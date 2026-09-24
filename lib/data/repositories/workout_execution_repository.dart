@@ -101,6 +101,38 @@ class WorkoutExecutionRepository {
         ));
   }
 
+  /// Wipes this workout back to its pre-start state: clears every logged
+  /// set, drops any completion record, and flips status back to
+  /// 'scheduled' — so the next "Start Workout" begins at exercise 1
+  /// again. Leaves [ExerciseProgressionsCompanion] history untouched —
+  /// that's an append-only record of what actually happened, not part
+  /// of this session's UI state.
+  Future<void> resetWorkout(String workoutId) async {
+    final now = DateTime.now().toUtc();
+    await _db.transaction(() async {
+      await (_db.delete(_db.workoutCompletions)..where((c) => c.workoutId.equals(workoutId))).go();
+
+      final workoutExerciseIds = await (_db.select(_db.workoutExercises)
+            ..where((e) => e.workoutId.equals(workoutId)))
+          .map((e) => e.id)
+          .get();
+
+      await (_db.update(_db.workoutSets)..where((s) => s.workoutExerciseId.isIn(workoutExerciseIds)))
+          .write(const WorkoutSetsCompanion(
+        actualReps: Value(null),
+        actualWeightKg: Value(null),
+        rpe: Value(null),
+        outcome: Value(null),
+        eventId: Value(null),
+        completedAt: Value(null),
+      ));
+
+      await (_db.update(_db.workouts)..where((w) => w.id.equals(workoutId))).write(
+        WorkoutsCompanion(status: const Value('scheduled'), updatedAt: Value(now)),
+      );
+    });
+  }
+
   Future<void> completeWorkout({
     required String workoutId,
     required String userId,
