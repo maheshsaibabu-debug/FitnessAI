@@ -4,6 +4,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'connectivity_monitor.g.dart';
 
+bool _isOnline(List<ConnectivityResult> results) =>
+    results.any((r) => r != ConnectivityResult.none);
+
 /// The app's single notion of "online". Nothing in `domain/` or the core
 /// local flows may gate on this — it exists purely to decide when the
 /// SyncEngine should attempt to drain the outbox and when to show the
@@ -20,14 +23,10 @@ class ConnectivityStatus extends _$ConnectivityStatus {
       return online;
     });
   }
-
-  bool _isOnline(List<ConnectivityResult> results) =>
-      results.any((r) => r != ConnectivityResult.none);
 }
 
 @riverpod
 Future<bool> isCurrentlyOnline(Ref ref) async {
-  final connectivity = Connectivity();
-  final results = await connectivity.checkConnectivity();
-  return results.any((r) => r != ConnectivityResult.none);
+  final results = await Connectivity().checkConnectivity();
+  return _isOnline(results);
 }
