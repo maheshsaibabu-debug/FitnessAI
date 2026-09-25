@@ -18,7 +18,7 @@ const _mealSplit = {
 
 /// Per-serving macros for a small set of concrete dishes per meal slot —
 /// just enough to make the diet chart a real "here's what to eat" view
-/// (salad, paneer chicken, ...) rather than a bare macro total. Not a
+/// (salad, paneer, chicken, ...) rather than a bare macro total. Not a
 /// food database (see the Foods table's own doc comment); portions are
 /// scaled to the day's target, not looked up.
 class _FoodTemplate {
@@ -30,24 +30,86 @@ class _FoodTemplate {
   final double fat;
 }
 
-const _mealTemplates = <String, List<_FoodTemplate>>{
-  'breakfast': [
-    _FoodTemplate('Oats porridge', 150, 5, 27, 3),
-    _FoodTemplate('Boiled eggs', 78, 6, 0.6, 5),
-  ],
-  'lunch': [
-    _FoodTemplate('Grilled chicken breast', 165, 31, 0, 3.6),
-    _FoodTemplate('Brown rice', 216, 5, 45, 1.8),
-    _FoodTemplate('Salad', 35, 2, 6, 0.3),
-  ],
-  'snack': [
-    _FoodTemplate('Mixed nuts', 170, 6, 6, 15),
-    _FoodTemplate('Fruit bowl', 80, 1, 20, 0.3),
-  ],
-  'dinner': [
-    _FoodTemplate('Paneer chicken curry', 250, 22, 8, 15),
-    _FoodTemplate('Salad', 35, 2, 6, 0.3),
-  ],
+/// Keyed the same way as UserProfile.dietaryPreference and
+/// DeterministicProgramOverviewBuilder's own meal suggestions
+/// (vegetarian|vegan|pescatarian|omnivore) — a vegetarian user never
+/// sees a meat dish here, same as they never see one there.
+const _mealTemplatesByDiet = <String, Map<String, List<_FoodTemplate>>>{
+  'omnivore': {
+    'breakfast': [
+      _FoodTemplate('Oats porridge', 150, 5, 27, 3),
+      _FoodTemplate('Boiled eggs', 78, 6, 0.6, 5),
+    ],
+    'lunch': [
+      _FoodTemplate('Grilled chicken breast', 165, 31, 0, 3.6),
+      _FoodTemplate('Brown rice', 216, 5, 45, 1.8),
+      _FoodTemplate('Salad', 35, 2, 6, 0.3),
+    ],
+    'snack': [
+      _FoodTemplate('Mixed nuts', 170, 6, 6, 15),
+      _FoodTemplate('Fruit bowl', 80, 1, 20, 0.3),
+    ],
+    'dinner': [
+      _FoodTemplate('Chicken curry', 220, 25, 6, 10),
+      _FoodTemplate('Salad', 35, 2, 6, 0.3),
+    ],
+  },
+  'vegetarian': {
+    'breakfast': [
+      _FoodTemplate('Greek yogurt with berries', 150, 15, 20, 3),
+      _FoodTemplate('Mixed nuts', 85, 3, 3, 7.5),
+    ],
+    'lunch': [
+      _FoodTemplate('Paneer curry', 265, 18, 10, 18),
+      _FoodTemplate('Brown rice', 216, 5, 45, 1.8),
+      _FoodTemplate('Salad', 35, 2, 6, 0.3),
+    ],
+    'snack': [
+      _FoodTemplate('Cottage cheese bowl', 120, 14, 6, 4),
+      _FoodTemplate('Fruit bowl', 80, 1, 20, 0.3),
+    ],
+    'dinner': [
+      _FoodTemplate('Mixed dal', 200, 14, 30, 3),
+      _FoodTemplate('Salad', 35, 2, 6, 0.3),
+    ],
+  },
+  'vegan': {
+    'breakfast': [
+      _FoodTemplate('Oats with plant milk', 160, 6, 28, 3),
+      _FoodTemplate('Mixed nuts', 85, 3, 3, 7.5),
+    ],
+    'lunch': [
+      _FoodTemplate('Tofu stir-fry', 180, 16, 10, 9),
+      _FoodTemplate('Brown rice', 216, 5, 45, 1.8),
+      _FoodTemplate('Salad', 35, 2, 6, 0.3),
+    ],
+    'snack': [
+      _FoodTemplate('Hummus with vegetables', 120, 5, 14, 6),
+      _FoodTemplate('Fruit bowl', 80, 1, 20, 0.3),
+    ],
+    'dinner': [
+      _FoodTemplate('Lentil curry', 200, 14, 30, 3),
+      _FoodTemplate('Salad', 35, 2, 6, 0.3),
+    ],
+  },
+  'pescatarian': {
+    'breakfast': [
+      _FoodTemplate('Boiled eggs', 78, 6, 0.6, 5),
+      _FoodTemplate('Oats porridge', 150, 5, 27, 3),
+    ],
+    'lunch': [
+      _FoodTemplate('Grilled fish', 206, 22, 0, 12),
+      _FoodTemplate('Brown rice', 216, 5, 45, 1.8),
+      _FoodTemplate('Salad', 35, 2, 6, 0.3),
+    ],
+    'snack': [
+      _FoodTemplate('Greek yogurt with berries', 150, 15, 20, 3),
+    ],
+    'dinner': [
+      _FoodTemplate('Grilled salmon', 250, 25, 0, 16),
+      _FoodTemplate('Salad', 35, 2, 6, 0.3),
+    ],
+  },
 };
 
 /// One concrete food item within a meal, with a portion scaled to fit
@@ -143,11 +205,14 @@ class NutritionRepository {
         await (_db.select(_db.nutritionGoals)..where((g) => g.userId.equals(userId))).getSingleOrNull();
     if (targets == null) return const [];
 
+    final profile = await (_db.select(_db.userProfiles)..where((p) => p.id.equals(userId))).getSingleOrNull();
+    final dietKey = profile?.dietaryPreference?.toLowerCase() ?? 'omnivore';
+
     final calorieTarget = await _progressAdjustedCalorieTarget(userId, targets.calorieTarget);
 
     final now = DateTime.now().toUtc();
     final rows = _mealSplit.entries.map((entry) {
-      final items = _scaledItems(entry.key, calorieTarget * entry.value);
+      final items = _scaledItems(dietKey, entry.key, calorieTarget * entry.value);
       return MealsCompanion.insert(
         id: _uuid.v4(),
         userId: userId,
@@ -199,8 +264,9 @@ class NutritionRepository {
         _ => NutritionGoalType.maintain,
       };
 
-  List<DietItem> _scaledItems(String mealType, double targetCalories) {
-    final templates = _mealTemplates[mealType] ?? const [];
+  List<DietItem> _scaledItems(String dietKey, String mealType, double targetCalories) {
+    final mealsForDiet = _mealTemplatesByDiet[dietKey] ?? _mealTemplatesByDiet['omnivore']!;
+    final templates = mealsForDiet[mealType] ?? const [];
     if (templates.isEmpty) return const [];
     final baseTotal = templates.fold(0.0, (sum, t) => sum + t.calories);
     final multiplier = double.parse((targetCalories / baseTotal).clamp(0.5, 3.0).toStringAsFixed(1));
