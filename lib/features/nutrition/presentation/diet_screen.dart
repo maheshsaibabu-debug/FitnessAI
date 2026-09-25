@@ -92,6 +92,27 @@ class _DietMealCard extends ConsumerWidget {
               'Protein ${meal.proteinGrams.round()}g · Carbs ${meal.carbsGrams.round()}g · Fat ${meal.fatGrams.round()}g',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
             ),
+            for (final item in dietMeal.items) ...[
+              const SizedBox(height: 8),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('${item.quantity}× ', style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(item.name, style: Theme.of(context).textTheme.bodyMedium),
+                        Text(
+                          '${item.calories.round()} kcal · P ${item.proteinGrams.round()}g · C ${item.carbsGrams.round()}g · F ${item.fatGrams.round()}g',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
             const SizedBox(height: 12),
             Text('Did you have this?', style: Theme.of(context).textTheme.labelLarge),
             const SizedBox(height: 8),

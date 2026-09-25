@@ -7,6 +7,7 @@ import '../../../data/repositories/repository_providers.dart';
 import '../../../domain/workout_engine/workout_generation_engine.dart';
 import '../../../shared/widgets/category_icon_badge.dart';
 import '../../../shared/widgets/offline_banner.dart';
+import '../../nutrition/application/diet_provider.dart';
 import '../../tracking/application/tracking_providers.dart';
 import '../application/dashboard_providers.dart';
 
@@ -38,6 +39,7 @@ class TodayScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final todaysWorkout = ref.watch(todaysWorkoutProvider);
     final todaysSteps = ref.watch(todaysStepsProvider);
+    final todaysDiet = ref.watch(todaysDietProvider);
     final profile = ref.watch(activeProfileProvider).valueOrNull;
     final goals = ref.watch(activeGoalsProvider).valueOrNull ?? const {};
     final scheme = Theme.of(context).colorScheme;
@@ -89,6 +91,23 @@ class TodayScreen extends ConsumerWidget {
                                   ? 'Not logged yet'
                                   : '${record.steps}${record.target != null ? ' / ${record.target}' : ''}',
                             ),
+                          ),
+                          const SizedBox(height: 14),
+                          todaysDiet.when(
+                            loading: () => const SizedBox.shrink(),
+                            error: (e, st) => const SizedBox.shrink(),
+                            data: (meals) {
+                              if (meals.isEmpty) return const SizedBox.shrink();
+                              final confirmed = meals.where((m) => m.eaten != null).length;
+                              final totalCalories = meals.fold<double>(0, (sum, m) => sum + m.meal.calories);
+                              return _InfoRow(
+                                icon: Icons.restaurant,
+                                categoryKey: 'diet',
+                                label: 'Diet',
+                                value: '${totalCalories.round()} kcal',
+                                subtitle: '$confirmed of ${meals.length} meals confirmed',
+                              );
+                            },
                           ),
                         ],
                       ),

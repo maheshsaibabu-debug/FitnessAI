@@ -107,6 +107,35 @@ class NutritionCalculationEngine {
     }
   }
 
+  /// Nudges a calorie target toward what the user's actual weight trend
+  /// implies is needed — the same "adjust from real results, capped for
+  /// safety" idea [AdaptivePlanEngine] applies to workload, applied here
+  /// to calories. [actualWeeklyRateKg] is a real trend (see
+  /// ProgressAnalysisEngine.weightTrend), null when there isn't enough
+  /// weight-log history yet, in which case the base target is returned
+  /// unchanged. Only ever corrects a quarter of the implied daily gap, so
+  /// it reacts to sustained drift, not a single noisy trend read.
+  int adjustForProgress({
+    required int baseCalorieTarget,
+    required NutritionGoalType goal,
+    double? actualWeeklyRateKg,
+  }) {
+    if (actualWeeklyRateKg == null) return baseCalorieTarget;
+
+    final expectedWeeklyKg = switch (goal) {
+      NutritionGoalType.fatLoss => -0.5,
+      NutritionGoalType.muscleGain => 0.25,
+      NutritionGoalType.weightGain => 0.5,
+      NutritionGoalType.maintain || NutritionGoalType.other => 0.0,
+    };
+    final deviationKg = actualWeeklyRateKg - expectedWeeklyKg;
+    // ~7700 kcal per kg of body mass; spread over a week, correct a
+    // quarter of that implied daily gap.
+    final adjustment = (-deviationKg * 7700 / 7 * 0.25).round().clamp(-150, 150);
+    final adjusted = baseCalorieTarget + adjustment;
+    return adjusted < minSafeCalories ? minSafeCalories : adjusted;
+  }
+
   /// Infers an activity multiplier from weekly training frequency when the
   /// user hasn't logged enough real activity data yet. A coarse default,
   /// meant to be superseded by actual step/workout data once available.
