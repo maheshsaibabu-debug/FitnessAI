@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../core/database/database_provider.dart';
 import '../local/exercise_library_seeder.dart';
 import '../local/health_repository.dart';
+import 'nutrition_repository.dart';
 import 'profile_repository.dart';
 import 'steps_repository.dart';
 import 'weight_repository.dart';
@@ -36,3 +37,6 @@ WeightRepository weightRepository(Ref ref) => WeightRepository(ref.watch(appData
 
 @Riverpod(keepAlive: true)
 HealthRepository healthRepository(Ref ref) => HealthRepository();
+
+@Riverpod(keepAlive: true)
+NutritionRepository nutritionRepository(Ref ref) => NutritionRepository(ref.watch(appDatabaseProvider));

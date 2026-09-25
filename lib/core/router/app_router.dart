@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../features/coach/presentation/coach_screen.dart';
 import '../../features/dashboard/presentation/home_shell.dart';
 import '../../features/dashboard/presentation/today_screen.dart';
+import '../../features/nutrition/presentation/diet_screen.dart';
 import '../../features/onboarding/presentation/onboarding_flow_screen.dart';
 import '../../features/onboarding/presentation/onboarding_welcome_screen.dart';
 import '../../features/progress/presentation/progress_screen.dart';
@@ -106,7 +106,7 @@ GoRouter appRouter(Ref ref) {
             GoRoute(path: '/progress', builder: (context, state) => const ProgressScreen()),
           ]),
           StatefulShellBranch(routes: [
-            GoRoute(path: '/coach', builder: (context, state) => const CoachScreen()),
+            GoRoute(path: '/diet', builder: (context, state) => const DietScreen()),
           ]),
         ],
       ),
