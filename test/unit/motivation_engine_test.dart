@@ -50,4 +50,17 @@ void main() {
       }
     }
   });
+
+  test('dailyQuote is stable within a day and changes the next day', () {
+    final today = engine.dailyQuote(DateTime(2026, 3, 15));
+    final sameDayLater = engine.dailyQuote(DateTime(2026, 3, 15, 23, 59));
+    final tomorrow = engine.dailyQuote(DateTime(2026, 3, 16));
+
+    expect(today, sameDayLater);
+    expect(today, isNot(tomorrow));
+  });
+
+  test('dailyQuote never indexes out of range, including Dec 31 of a leap year', () {
+    expect(() => engine.dailyQuote(DateTime(2028, 12, 31)), returnsNormally);
+  });
 }

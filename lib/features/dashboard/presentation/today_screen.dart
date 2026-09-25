@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/database/app_database.dart';
 import '../../../data/repositories/repository_providers.dart';
+import '../../../domain/motivation_engine/motivation_engine.dart';
 import '../../../domain/workout_engine/workout_generation_engine.dart';
 import '../../../shared/widgets/category_icon_badge.dart';
 import '../../../shared/widgets/offline_banner.dart';
@@ -59,7 +60,7 @@ class TodayScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Small steps create big results.',
+                    const MotivationEngine().dailyQuote(DateTime.now()),
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
                   ),
                   const SizedBox(height: 24),
