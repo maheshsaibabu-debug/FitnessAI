@@ -1,0 +1,184 @@
+{
+  "diamond-push-up": {
+    "male": {
+      "photo_id": 4920478,
+      "photographer": "Andrea Piacquadio",
+      "source_url": "https://www.pexels.com/photo/4920478/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    },
+    "female": {
+      "photo_id": 14623615,
+      "photographer": "Cats Coming",
+      "source_url": "https://www.pexels.com/photo/14623615/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    }
+  },
+  "lunge": {
+    "male": {
+      "photo_id": 13993813,
+      "photographer": "Cats Coming",
+      "source_url": "https://www.pexels.com/photo/13993813/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    },
+    "female": {
+      "photo_id": 8770407,
+      "photographer": "Miriam Alonso",
+      "source_url": "https://www.pexels.com/photo/8770407/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    }
+  },
+  "bulgarian-split-squat": {
+    "male": {
+      "photo_id": 38796260,
+      "photographer": "Pexels",
+      "source_url": "https://www.pexels.com/photo/38796260/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    },
+    "female": {
+      "photo_id": 13106607,
+      "photographer": "Pavel Danilyuk",
+      "source_url": "https://www.pexels.com/photo/13106607/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    }
+  },
+  "glute-bridge": {
+    "male": {
+      "photo_id": 4334848,
+      "photographer": "Miriam Alonso",
+      "source_url": "https://www.pexels.com/photo/4334848/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    },
+    "female": {
+      "photo_id": 6516221,
+      "photographer": "Miriam Alonso",
+      "source_url": "https://www.pexels.com/photo/6516221/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    }
+  },
+  "calf-raise": {
+    "male": {
+      "photo_id": 8846487,
+      "photographer": "Pexels",
+      "source_url": "https://www.pexels.com/photo/8846487/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    },
+    "female": {
+      "photo_id": 13965339,
+      "photographer": "Pexels",
+      "source_url": "https://www.pexels.com/photo/13965339/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    }
+  },
+  "side-plank": {
+    "male": {
+      "photo_id": 2294363,
+      "photographer": "Julia Larson",
+      "source_url": "https://www.pexels.com/photo/2294363/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    },
+    "female": {
+      "photo_id": 8436141,
+      "photographer": "Miriam Alonso",
+      "source_url": "https://www.pexels.com/photo/8436141/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    }
+  },
+  "burpee": {
+    "male": {
+      "photo_id": 13993508,
+      "photographer": "Cats Coming",
+      "source_url": "https://www.pexels.com/photo/13993508/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    },
+    "female": {
+      "photo_id": 30246184,
+      "photographer": "Pexels",
+      "source_url": "https://www.pexels.com/photo/30246184/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    }
+  },
+  "jumping-jacks": {
+    "male": {
+      "photo_id": 8544641,
+      "photographer": "Pexels",
+      "source_url": "https://www.pexels.com/photo/8544641/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    },
+    "female": {
+      "photo_id": 6339345,
+      "photographer": "Miriam Alonso",
+      "source_url": "https://www.pexels.com/photo/6339345/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    }
+  },
+  "high-knees": {
+    "male": {
+      "photo_id": 8084766,
+      "photographer": "Pexels",
+      "source_url": "https://www.pexels.com/photo/8084766/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    },
+    "female": {
+      "photo_id": 6339342,
+      "photographer": "Miriam Alonso",
+      "source_url": "https://www.pexels.com/photo/6339342/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    }
+  },
+  "kettlebell-swing": {
+    "male": {
+      "photo_id": 13106615,
+      "photographer": "Pavel Danilyuk",
+      "source_url": "https://www.pexels.com/photo/13106615/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    },
+    "female": {
+      "photo_id": 14252286,
+      "photographer": "Pexels",
+      "source_url": "https://www.pexels.com/photo/14252286/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    }
+  },
+  "chest-supported-row": {
+    "male": {
+      "photo_id": 3888104,
+      "photographer": "Andrea Piacquadio",
+      "source_url": "https://www.pexels.com/photo/3888104/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    },
+    "female": {
+      "photo_id": 6539844,
+      "photographer": "Pexels",
+      "source_url": "https://www.pexels.com/photo/6539844/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    }
+  },
+  "single-arm-cable-row": {
+    "male": {
+      "photo_id": 17559311,
+      "photographer": "Pexels",
+      "source_url": "https://www.pexels.com/photo/17559311/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    },
+    "female": {
+      "photo_id": 38641894,
+      "photographer": "Pexels",
+      "source_url": "https://www.pexels.com/photo/38641894/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    }
+  },
+  "cat-cow": {
+    "male": {
+      "photo_id": 36764428,
+      "photographer": "Vitaly Gariev",
+      "source_url": "https://www.pexels.com/photo/36764428/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    },
+    "female": {
+      "photo_id": 7663035,
+      "photographer": "Pexels",
+      "source_url": "https://www.pexels.com/photo/7663035/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    }
+  }
+}

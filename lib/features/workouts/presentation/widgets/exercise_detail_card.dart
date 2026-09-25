@@ -6,6 +6,8 @@ import '../../../../core/database/app_database.dart';
 import 'exercise_animation_view.dart';
 import 'exercise_photo_registry.dart';
 import 'exercise_photo_view.dart';
+import 'gendered_exercise_photo_registry.dart';
+import 'gendered_exercise_photo_view.dart';
 
 /// The exercise-info card shown at the top of a set: a numbered badge,
 /// the illustration, a target-muscle chip, a sets/reps/rest stat row,
@@ -14,8 +16,10 @@ import 'exercise_photo_view.dart';
 /// finally surfaced. Modeled on the "one card per exercise" layout
 /// common across fitness apps (numbered header, stat icons, form/note
 /// callouts). Shows a real bundled photo (free-exercise-db) when one
-/// exists for this exercise ID; falls back to the vector illustration
-/// otherwise — see exercise_photo_registry.dart.
+/// exists for this exercise ID, a male/female Pexels demonstration photo
+/// for the exercises free-exercise-db had no match for, or falls back to
+/// the vector illustration — see exercise_photo_registry.dart and
+/// gendered_exercise_photo_registry.dart.
 class ExerciseDetailCard extends StatelessWidget {
   const ExerciseDetailCard({
     super.key,
@@ -76,6 +80,8 @@ class ExerciseDetailCard extends StatelessWidget {
           ),
           if (kExercisesWithPhotos.contains(exercise.id))
             ExercisePhotoView(exerciseId: exercise.id)
+          else if (kGenderedExercisePhotos.contains(exercise.id))
+            GenderedExercisePhotoView(exerciseId: exercise.id, sex: sex)
           else
             ExerciseAnimationView(exerciseId: exercise.id, sex: sex),
           Padding(
