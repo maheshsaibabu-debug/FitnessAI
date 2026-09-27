@@ -14,7 +14,13 @@ Usage:
     python3 tool/import_gendered_exercise_images.py --validate
 
 Safe to re-run: skips any image file that already exists and is
-non-empty.
+non-empty. One exception: glute-bridge-male.jpg is a hand-cropped
+version of photo 14942843 (face/head cropped out — the original framing
+read as "resting" rather than exercising once the display switched to
+BoxFit.contain and showed the whole photo). Deleting that file and
+re-running --download replaces it with the uncropped original; re-crop
+with `magick glute-bridge-male.jpg -crop 680x1067+0+0 glute-bridge-male.jpg`
+if that happens.
 """
 import argparse
 import json
@@ -45,7 +51,7 @@ CURATED = {
     "diamond-push-up": {"male": (4920478, "Andrea Piacquadio"), "female": (14623615, "Cats Coming")},
     "lunge": {"male": (13993813, "Cats Coming"), "female": (8770407, "Miriam Alonso")},
     "bulgarian-split-squat": {"male": (38796260, "Pexels"), "female": (38576473, "Fernando Capetillo")},
-    "glute-bridge": {"male": (14942844, "ben sant"), "female": (6516221, "Miriam Alonso")},
+    "glute-bridge": {"male": (14942843, "ben sant"), "female": (6516221, "Miriam Alonso")},
     "calf-raise": {"male": (9152547, "Gustavo Gimenez"), "female": (13965343, "Amar Preciado")},
     "side-plank": {"male": (2294363, "Julia Larson"), "female": (8436141, "Miriam Alonso")},
     "burpee": {"male": (6999016, "Pexels"), "female": (30246184, "Pexels")},

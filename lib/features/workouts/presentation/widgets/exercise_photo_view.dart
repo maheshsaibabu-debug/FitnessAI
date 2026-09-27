@@ -60,7 +60,10 @@ class _ExercisePhotoViewState extends State<ExercisePhotoView> with SingleTicker
         child: Image.asset(
           framePath,
           key: ValueKey(framePath),
-          fit: BoxFit.cover,
+          // contain, not cover: these are portrait photos, and a 200px-tall
+          // wide card would crop most of a tall image away under cover —
+          // showing "half a leg" instead of the whole person.
+          fit: BoxFit.contain,
           width: double.infinity,
           height: 200,
           frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
