@@ -4,10 +4,11 @@
 
 48 of the app's 61 bundled exercises (`assets/data/exercises.json`) ship two real
 demonstration photos each (start/end position), shown as a crossfading
-pseudo-animation in `ExerciseDetailCard`. The other 13 — the ones
+pseudo-animation in `ExerciseDetailCard`. 12 of the remaining 13 — the ones
 free-exercise-db had no safe match for — each ship one male and one female
 demonstration photo from Pexels instead (see "Gendered photos" below), shown as
-a single static image picked by the user's profile sex.
+a single static image picked by the user's profile sex. The last one
+(`glute-bridge`) still uses the vector animation — see below for why.
 
 ## Why static photos, not GIFs
 
@@ -95,12 +96,22 @@ archive, not a fitness-stock-photo site.
 
 **Decision (user-approved): [Pexels](https://www.pexels.com/license/) instead**
 — free for commercial use, no attribution required, and it actually has posed
-single-subject fitness photography. Each of the 13 exercises got one
+single-subject fitness photography. 12 of the 13 exercises got one
 male-presenting and one female-presenting photo, each picked by hand (viewing
 the actual photo, not trusting a filename/keyword match) — same discipline as
-the free-exercise-db curation. `ExerciseDetailCard` shows whichever matches the
-active profile's `sex` (`other`/unset falls back to the male photo — both exist
-and neither is more "default" than the other).
+the free-exercise-db curation. A first pass at this still let real mismatches
+through purely from a quick glance (a "female" slot that was actually a bearded
+man, a "calf raise" that was a full-body stretch, a "chest-supported row" that
+was a chest **press** machine, a "row" that was a triceps pushdown) — every
+photo was re-opened and re-checked against what the exercise actually is before
+this was called done. `glute-bridge` has no gendered photos: after 9 distinct
+searches, no honest male-presenting plain glute-bridge photo (as opposed to an
+advanced yoga-wheel backbend) turned up, so both genders fall back to the
+vector animation rather than ship a wrong or misleading photo.
+
+`ExerciseDetailCard` shows whichever gendered photo matches the active
+profile's `sex` (`other`/unset falls back to the male photo — both exist and
+neither is more "default" than the other).
 
 Same minimal-footprint approach as the rest of this doc: no new DB columns, no
 new table. `assets/data/gendered_exercise_images_mapping.json` records the

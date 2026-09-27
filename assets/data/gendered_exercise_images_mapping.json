@@ -35,31 +35,17 @@
       "license": "Pexels License (free for commercial use, no attribution required)"
     },
     "female": {
-      "photo_id": 13106607,
-      "photographer": "Pavel Danilyuk",
-      "source_url": "https://www.pexels.com/photo/13106607/",
-      "license": "Pexels License (free for commercial use, no attribution required)"
-    }
-  },
-  "glute-bridge": {
-    "male": {
-      "photo_id": 4334848,
-      "photographer": "Miriam Alonso",
-      "source_url": "https://www.pexels.com/photo/4334848/",
-      "license": "Pexels License (free for commercial use, no attribution required)"
-    },
-    "female": {
-      "photo_id": 6516221,
-      "photographer": "Miriam Alonso",
-      "source_url": "https://www.pexels.com/photo/6516221/",
+      "photo_id": 38576473,
+      "photographer": "Fernando Capetillo",
+      "source_url": "https://www.pexels.com/photo/38576473/",
       "license": "Pexels License (free for commercial use, no attribution required)"
     }
   },
   "calf-raise": {
     "male": {
-      "photo_id": 8846487,
-      "photographer": "Pexels",
-      "source_url": "https://www.pexels.com/photo/8846487/",
+      "photo_id": 8187687,
+      "photographer": "Daria Liudnaya",
+      "source_url": "https://www.pexels.com/photo/8187687/",
       "license": "Pexels License (free for commercial use, no attribution required)"
     },
     "female": {
@@ -85,9 +71,9 @@
   },
   "burpee": {
     "male": {
-      "photo_id": 13993508,
-      "photographer": "Cats Coming",
-      "source_url": "https://www.pexels.com/photo/13993508/",
+      "photo_id": 6999016,
+      "photographer": "Pexels",
+      "source_url": "https://www.pexels.com/photo/6999016/",
       "license": "Pexels License (free for commercial use, no attribution required)"
     },
     "female": {
@@ -99,15 +85,15 @@
   },
   "jumping-jacks": {
     "male": {
-      "photo_id": 8544641,
-      "photographer": "Pexels",
-      "source_url": "https://www.pexels.com/photo/8544641/",
+      "photo_id": 6339477,
+      "photographer": "Pavel Danilyuk",
+      "source_url": "https://www.pexels.com/photo/6339477/",
       "license": "Pexels License (free for commercial use, no attribution required)"
     },
     "female": {
-      "photo_id": 6339345,
-      "photographer": "Miriam Alonso",
-      "source_url": "https://www.pexels.com/photo/6339345/",
+      "photo_id": 8401103,
+      "photographer": "RDNE Stock project",
+      "source_url": "https://www.pexels.com/photo/8401103/",
       "license": "Pexels License (free for commercial use, no attribution required)"
     }
   },
@@ -141,23 +127,23 @@
   },
   "chest-supported-row": {
     "male": {
-      "photo_id": 3888104,
-      "photographer": "Andrea Piacquadio",
-      "source_url": "https://www.pexels.com/photo/3888104/",
+      "photo_id": 4162481,
+      "photographer": "Ivan S",
+      "source_url": "https://www.pexels.com/photo/4162481/",
       "license": "Pexels License (free for commercial use, no attribution required)"
     },
     "female": {
-      "photo_id": 6539844,
-      "photographer": "Pexels",
-      "source_url": "https://www.pexels.com/photo/6539844/",
+      "photo_id": 6551081,
+      "photographer": "Andres Ayrton",
+      "source_url": "https://www.pexels.com/photo/6551081/",
       "license": "Pexels License (free for commercial use, no attribution required)"
     }
   },
   "single-arm-cable-row": {
     "male": {
-      "photo_id": 17559311,
-      "photographer": "Pexels",
-      "source_url": "https://www.pexels.com/photo/17559311/",
+      "photo_id": 5327487,
+      "photographer": "Tima Miroshnichenko",
+      "source_url": "https://www.pexels.com/photo/5327487/",
       "license": "Pexels License (free for commercial use, no attribution required)"
     },
     "female": {

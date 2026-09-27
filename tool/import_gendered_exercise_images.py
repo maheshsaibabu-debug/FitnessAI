@@ -31,19 +31,28 @@ REGISTRY_OUT = os.path.join(
 )
 
 # my_id -> {"male": (pexels_photo_id, photographer), "female": (...)}
+#
+# Every entry here was re-verified by opening the actual photo (not just
+# a thumbnail or filename) after a first pass turned up real mismatches:
+# a "female" slot that was actually a bearded man, a "calf raise" that
+# was a full-body stretch, a "chest-supported row" that was a chest
+# PRESS machine, a "row" that was a triceps pushdown. `glute-bridge` has
+# no entry — after 9 distinct searches, no honest male-presenting plain
+# glute-bridge photo (as opposed to an advanced yoga-wheel backbend) was
+# found on Pexels, so both genders fall back to the vector animation
+# rather than ship a wrong or misleading photo.
 CURATED = {
     "diamond-push-up": {"male": (4920478, "Andrea Piacquadio"), "female": (14623615, "Cats Coming")},
     "lunge": {"male": (13993813, "Cats Coming"), "female": (8770407, "Miriam Alonso")},
-    "bulgarian-split-squat": {"male": (38796260, "Pexels"), "female": (13106607, "Pavel Danilyuk")},
-    "glute-bridge": {"male": (4334848, "Miriam Alonso"), "female": (6516221, "Miriam Alonso")},
-    "calf-raise": {"male": (8846487, "Pexels"), "female": (13965339, "Pexels")},
+    "bulgarian-split-squat": {"male": (38796260, "Pexels"), "female": (38576473, "Fernando Capetillo")},
+    "calf-raise": {"male": (8187687, "Daria Liudnaya"), "female": (13965339, "Pexels")},
     "side-plank": {"male": (2294363, "Julia Larson"), "female": (8436141, "Miriam Alonso")},
-    "burpee": {"male": (13993508, "Cats Coming"), "female": (30246184, "Pexels")},
-    "jumping-jacks": {"male": (8544641, "Pexels"), "female": (6339345, "Miriam Alonso")},
+    "burpee": {"male": (6999016, "Pexels"), "female": (30246184, "Pexels")},
+    "jumping-jacks": {"male": (6339477, "Pavel Danilyuk"), "female": (8401103, "RDNE Stock project")},
     "high-knees": {"male": (8084766, "Pexels"), "female": (6339342, "Miriam Alonso")},
     "kettlebell-swing": {"male": (13106615, "Pavel Danilyuk"), "female": (14252286, "Pexels")},
-    "chest-supported-row": {"male": (3888104, "Andrea Piacquadio"), "female": (6539844, "Pexels")},
-    "single-arm-cable-row": {"male": (17559311, "Pexels"), "female": (38641894, "Pexels")},
+    "chest-supported-row": {"male": (4162481, "Ivan S"), "female": (6551081, "Andres Ayrton")},
+    "single-arm-cable-row": {"male": (5327487, "Tima Miroshnichenko"), "female": (38641894, "Pexels")},
     "cat-cow": {"male": (36764428, "Vitaly Gariev"), "female": (7663035, "Pexels")},
 }
 
