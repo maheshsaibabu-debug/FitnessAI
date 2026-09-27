@@ -36,16 +36,17 @@ REGISTRY_OUT = os.path.join(
 # a thumbnail or filename) after a first pass turned up real mismatches:
 # a "female" slot that was actually a bearded man, a "calf raise" that
 # was a full-body stretch, a "chest-supported row" that was a chest
-# PRESS machine, a "row" that was a triceps pushdown. `glute-bridge` has
-# no entry — after 9 distinct searches, no honest male-presenting plain
-# glute-bridge photo (as opposed to an advanced yoga-wheel backbend) was
-# found on Pexels, so both genders fall back to the vector animation
-# rather than ship a wrong or misleading photo.
+# PRESS machine, a "row" that was a triceps pushdown. A plain two-leg
+# male "glute-bridge" photo doesn't exist on Pexels (9 searches turned
+# up only an advanced yoga-wheel backbend), so that slot uses a
+# single-leg glute bridge instead — a real variant of the same
+# movement, not a different exercise.
 CURATED = {
     "diamond-push-up": {"male": (4920478, "Andrea Piacquadio"), "female": (14623615, "Cats Coming")},
     "lunge": {"male": (13993813, "Cats Coming"), "female": (8770407, "Miriam Alonso")},
     "bulgarian-split-squat": {"male": (38796260, "Pexels"), "female": (38576473, "Fernando Capetillo")},
-    "calf-raise": {"male": (8187687, "Daria Liudnaya"), "female": (13965339, "Pexels")},
+    "glute-bridge": {"male": (14942844, "ben sant"), "female": (6516221, "Miriam Alonso")},
+    "calf-raise": {"male": (9152547, "Gustavo Gimenez"), "female": (13965343, "Amar Preciado")},
     "side-plank": {"male": (2294363, "Julia Larson"), "female": (8436141, "Miriam Alonso")},
     "burpee": {"male": (6999016, "Pexels"), "female": (30246184, "Pexels")},
     "jumping-jacks": {"male": (6339477, "Pavel Danilyuk"), "female": (8401103, "RDNE Stock project")},

@@ -11,6 +11,7 @@ const Set<String> kGenderedExercisePhotos = {
   'cat-cow',
   'chest-supported-row',
   'diamond-push-up',
+  'glute-bridge',
   'high-knees',
   'jumping-jacks',
   'kettlebell-swing',

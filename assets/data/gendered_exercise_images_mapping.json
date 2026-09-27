@@ -41,17 +41,31 @@
       "license": "Pexels License (free for commercial use, no attribution required)"
     }
   },
-  "calf-raise": {
+  "glute-bridge": {
     "male": {
-      "photo_id": 8187687,
-      "photographer": "Daria Liudnaya",
-      "source_url": "https://www.pexels.com/photo/8187687/",
+      "photo_id": 14942844,
+      "photographer": "ben sant",
+      "source_url": "https://www.pexels.com/photo/14942844/",
       "license": "Pexels License (free for commercial use, no attribution required)"
     },
     "female": {
-      "photo_id": 13965339,
-      "photographer": "Pexels",
-      "source_url": "https://www.pexels.com/photo/13965339/",
+      "photo_id": 6516221,
+      "photographer": "Miriam Alonso",
+      "source_url": "https://www.pexels.com/photo/6516221/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    }
+  },
+  "calf-raise": {
+    "male": {
+      "photo_id": 9152547,
+      "photographer": "Gustavo Gimenez",
+      "source_url": "https://www.pexels.com/photo/9152547/",
+      "license": "Pexels License (free for commercial use, no attribution required)"
+    },
+    "female": {
+      "photo_id": 13965343,
+      "photographer": "Amar Preciado",
+      "source_url": "https://www.pexels.com/photo/13965343/",
       "license": "Pexels License (free for commercial use, no attribution required)"
     }
   },
