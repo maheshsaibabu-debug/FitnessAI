@@ -20,14 +20,18 @@ const _mealSplit = {
 /// just enough to make the diet chart a real "here's what to eat" view
 /// (salad, paneer, chicken, ...) rather than a bare macro total. Not a
 /// food database (see the Foods table's own doc comment); portions are
-/// scaled to the day's target, not looked up.
+/// scaled to the day's target, not looked up. [gramsPerServing] is a
+/// realistic as-served weight for that single serving's macros above —
+/// it's what lets the diet chart say "180g" instead of a meaningless
+/// "1.4x".
 class _FoodTemplate {
-  const _FoodTemplate(this.name, this.calories, this.protein, this.carbs, this.fat);
+  const _FoodTemplate(this.name, this.calories, this.protein, this.carbs, this.fat, this.gramsPerServing);
   final String name;
   final double calories;
   final double protein;
   final double carbs;
   final double fat;
+  final int gramsPerServing;
 }
 
 /// Keyed the same way as UserProfile.dietaryPreference and
@@ -37,87 +41,88 @@ class _FoodTemplate {
 const _mealTemplatesByDiet = <String, Map<String, List<_FoodTemplate>>>{
   'omnivore': {
     'breakfast': [
-      _FoodTemplate('Oats porridge', 150, 5, 27, 3),
-      _FoodTemplate('Boiled eggs', 78, 6, 0.6, 5),
+      _FoodTemplate('Oats porridge', 150, 5, 27, 3, 250),
+      _FoodTemplate('Boiled eggs', 78, 6, 0.6, 5, 100),
     ],
     'lunch': [
-      _FoodTemplate('Grilled chicken breast', 165, 31, 0, 3.6),
-      _FoodTemplate('Brown rice', 216, 5, 45, 1.8),
-      _FoodTemplate('Salad', 35, 2, 6, 0.3),
+      _FoodTemplate('Grilled chicken breast', 165, 31, 0, 3.6, 150),
+      _FoodTemplate('Brown rice', 216, 5, 45, 1.8, 150),
+      _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
     ],
     'snack': [
-      _FoodTemplate('Mixed nuts', 170, 6, 6, 15),
-      _FoodTemplate('Fruit bowl', 80, 1, 20, 0.3),
+      _FoodTemplate('Mixed nuts', 170, 6, 6, 15, 30),
+      _FoodTemplate('Fruit bowl', 80, 1, 20, 0.3, 150),
     ],
     'dinner': [
-      _FoodTemplate('Chicken curry', 220, 25, 6, 10),
-      _FoodTemplate('Salad', 35, 2, 6, 0.3),
+      _FoodTemplate('Chicken curry', 220, 25, 6, 10, 200),
+      _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
     ],
   },
   'vegetarian': {
     'breakfast': [
-      _FoodTemplate('Greek yogurt with berries', 150, 15, 20, 3),
-      _FoodTemplate('Mixed nuts', 85, 3, 3, 7.5),
+      _FoodTemplate('Greek yogurt with berries', 150, 15, 20, 3, 200),
+      _FoodTemplate('Mixed nuts', 85, 3, 3, 7.5, 30),
     ],
     'lunch': [
-      _FoodTemplate('Paneer curry', 265, 18, 10, 18),
-      _FoodTemplate('Brown rice', 216, 5, 45, 1.8),
-      _FoodTemplate('Salad', 35, 2, 6, 0.3),
+      _FoodTemplate('Paneer curry', 265, 18, 10, 18, 180),
+      _FoodTemplate('Brown rice', 216, 5, 45, 1.8, 150),
+      _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
     ],
     'snack': [
-      _FoodTemplate('Cottage cheese bowl', 120, 14, 6, 4),
-      _FoodTemplate('Fruit bowl', 80, 1, 20, 0.3),
+      _FoodTemplate('Cottage cheese bowl', 120, 14, 6, 4, 150),
+      _FoodTemplate('Fruit bowl', 80, 1, 20, 0.3, 150),
     ],
     'dinner': [
-      _FoodTemplate('Mixed dal', 200, 14, 30, 3),
-      _FoodTemplate('Salad', 35, 2, 6, 0.3),
+      _FoodTemplate('Mixed dal', 200, 14, 30, 3, 200),
+      _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
     ],
   },
   'vegan': {
     'breakfast': [
-      _FoodTemplate('Oats with plant milk', 160, 6, 28, 3),
-      _FoodTemplate('Mixed nuts', 85, 3, 3, 7.5),
+      _FoodTemplate('Oats with plant milk', 160, 6, 28, 3, 250),
+      _FoodTemplate('Mixed nuts', 85, 3, 3, 7.5, 30),
     ],
     'lunch': [
-      _FoodTemplate('Tofu stir-fry', 180, 16, 10, 9),
-      _FoodTemplate('Brown rice', 216, 5, 45, 1.8),
-      _FoodTemplate('Salad', 35, 2, 6, 0.3),
+      _FoodTemplate('Tofu stir-fry', 180, 16, 10, 9, 180),
+      _FoodTemplate('Brown rice', 216, 5, 45, 1.8, 150),
+      _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
     ],
     'snack': [
-      _FoodTemplate('Hummus with vegetables', 120, 5, 14, 6),
-      _FoodTemplate('Fruit bowl', 80, 1, 20, 0.3),
+      _FoodTemplate('Hummus with vegetables', 120, 5, 14, 6, 150),
+      _FoodTemplate('Fruit bowl', 80, 1, 20, 0.3, 150),
     ],
     'dinner': [
-      _FoodTemplate('Lentil curry', 200, 14, 30, 3),
-      _FoodTemplate('Salad', 35, 2, 6, 0.3),
+      _FoodTemplate('Lentil curry', 200, 14, 30, 3, 200),
+      _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
     ],
   },
   'pescatarian': {
     'breakfast': [
-      _FoodTemplate('Boiled eggs', 78, 6, 0.6, 5),
-      _FoodTemplate('Oats porridge', 150, 5, 27, 3),
+      _FoodTemplate('Boiled eggs', 78, 6, 0.6, 5, 100),
+      _FoodTemplate('Oats porridge', 150, 5, 27, 3, 250),
     ],
     'lunch': [
-      _FoodTemplate('Grilled fish', 206, 22, 0, 12),
-      _FoodTemplate('Brown rice', 216, 5, 45, 1.8),
-      _FoodTemplate('Salad', 35, 2, 6, 0.3),
+      _FoodTemplate('Grilled fish', 206, 22, 0, 12, 150),
+      _FoodTemplate('Brown rice', 216, 5, 45, 1.8, 150),
+      _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
     ],
     'snack': [
-      _FoodTemplate('Greek yogurt with berries', 150, 15, 20, 3),
+      _FoodTemplate('Greek yogurt with berries', 150, 15, 20, 3, 200),
     ],
     'dinner': [
-      _FoodTemplate('Grilled salmon', 250, 25, 0, 16),
-      _FoodTemplate('Salad', 35, 2, 6, 0.3),
+      _FoodTemplate('Grilled salmon', 250, 25, 0, 16, 150),
+      _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
     ],
   },
 };
 
 /// One concrete food item within a meal, with a portion scaled to fit
-/// that meal's calorie share of the day's target.
+/// that meal's calorie share of the day's target and expressed as a real
+/// weight (e.g. "180g") rather than an abstract serving multiplier.
 class DietItem {
   const DietItem({
     required this.name,
-    required this.quantity,
+    required this.grams,
     required this.calories,
     required this.proteinGrams,
     required this.carbsGrams,
@@ -125,7 +130,7 @@ class DietItem {
   });
 
   final String name;
-  final double quantity; // servings
+  final int grams;
   final double calories;
   final double proteinGrams;
   final double carbsGrams;
@@ -133,7 +138,7 @@ class DietItem {
 
   Map<String, Object?> toJson() => {
         'name': name,
-        'quantity': quantity,
+        'grams': grams,
         'calories': calories,
         'proteinGrams': proteinGrams,
         'carbsGrams': carbsGrams,
@@ -142,7 +147,7 @@ class DietItem {
 
   factory DietItem.fromJson(Map<String, Object?> json) => DietItem(
         name: json['name'] as String,
-        quantity: (json['quantity'] as num).toDouble(),
+        grams: (json['grams'] as num).toInt(),
         calories: (json['calories'] as num).toDouble(),
         proteinGrams: (json['proteinGrams'] as num).toDouble(),
         carbsGrams: (json['carbsGrams'] as num).toDouble(),
@@ -269,12 +274,13 @@ class NutritionRepository {
     final templates = mealsForDiet[mealType] ?? const [];
     if (templates.isEmpty) return const [];
     final baseTotal = templates.fold(0.0, (sum, t) => sum + t.calories);
-    final multiplier = double.parse((targetCalories / baseTotal).clamp(0.5, 3.0).toStringAsFixed(1));
+    final multiplier = (targetCalories / baseTotal).clamp(0.5, 3.0);
 
     return templates
         .map((t) => DietItem(
               name: t.name,
-              quantity: multiplier,
+              // Nearest 5g — a real portion size, not an abstract multiplier.
+              grams: ((t.gramsPerServing * multiplier) / 5).round() * 5,
               calories: double.parse((t.calories * multiplier).toStringAsFixed(0)),
               proteinGrams: double.parse((t.protein * multiplier).toStringAsFixed(1)),
               carbsGrams: double.parse((t.carbs * multiplier).toStringAsFixed(1)),
