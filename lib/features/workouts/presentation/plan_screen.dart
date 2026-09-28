@@ -3,12 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '../../../ai/ai_providers.dart';
-import '../../../data/repositories/profile_repository.dart';
-import '../../../data/repositories/repository_providers.dart';
 import '../../../domain/workout_engine/workout_generation_engine.dart';
 import '../../../shared/widgets/category_icon_badge.dart';
 import '../../dashboard/application/dashboard_providers.dart';
+import '../application/plan_regeneration.dart';
 
 const Map<String, IconData> _workoutTypeIcons = {
   'strength_full_body': Icons.fitness_center,
@@ -40,35 +38,8 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
   Future<void> _regenerate() async {
     setState(() => _regenerating = true);
     try {
-      final profileRepository = ref.read(profileRepositoryProvider);
-      final profile = await profileRepository.activeProfileOnce();
-      final trainingProfile = await profileRepository.currentTrainingProfile();
-      if (profile == null || trainingProfile == null) return;
-
-      final latestWeight = await ref.read(weightRepositoryProvider).latestOnce(profile.id);
-      final primaryGoal = await profileRepository.primaryGoalOnce(profile.id);
-      final nutritionInput = nutritionRequestInputForProfile(
-        profile,
-        weightKg: latestWeight?.weightKg ?? 70,
-        primaryGoal: primaryGoal,
-      );
-
-      final exerciseLibrarySeeder = ref.read(exerciseLibrarySeederProvider);
-      await exerciseLibrarySeeder.seedIfEmpty();
-      final library = await exerciseLibrarySeeder.loadSummaries();
-
-      final result = await ref.read(planGenerationServiceProvider).generate(
-            trainingProfile: trainingProfile,
-            library: library,
-            nutritionInput: nutritionInput,
-          );
-
-      await ref.read(workoutPlanRepositoryProvider).persistUpcomingPlanReplacement(
-            userId: profile.id,
-            generated: result.plan,
-            from: DateTime.now(),
-          );
-      await profileRepository.updateNutritionTargets(profile.id, result.nutrition);
+      final result = await regeneratePlanAndDiet(ref);
+      if (result == null) return;
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

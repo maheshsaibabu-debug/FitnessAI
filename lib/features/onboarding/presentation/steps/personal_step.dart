@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../application/onboarding_controller.dart';
+import '../onboarding_options.dart';
 import '../widgets/onboarding_step_scaffold.dart';
 
 class PersonalStep extends ConsumerStatefulWidget {
@@ -53,7 +54,7 @@ class _PersonalStepState extends ConsumerState<PersonalStep> {
           Text('Sex', style: Theme.of(context).textTheme.labelLarge),
           const SizedBox(height: 8),
           ChoiceChipGroup(
-            options: const [('male', 'Male'), ('female', 'Female'), ('other', 'Other / prefer not to say')],
+            options: kSexOptions,
             selected: draft.sex,
             onSelected: controller.updateSex,
           ),

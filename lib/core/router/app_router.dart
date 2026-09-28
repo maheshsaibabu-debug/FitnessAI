@@ -10,6 +10,8 @@ import '../../features/dashboard/presentation/today_screen.dart';
 import '../../features/nutrition/presentation/diet_screen.dart';
 import '../../features/onboarding/presentation/onboarding_flow_screen.dart';
 import '../../features/onboarding/presentation/onboarding_welcome_screen.dart';
+import '../../features/profile/presentation/edit_profile_screen.dart';
+import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/progress/presentation/progress_screen.dart';
 import '../../features/tracking/presentation/track_screen.dart';
 import '../../features/workouts/presentation/plan_screen.dart';
@@ -90,6 +92,16 @@ GoRouter appRouter(Ref ref) {
           ),
         ],
       ),
+      GoRoute(
+        path: '/profile/edit',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const EditProfileScreen(),
+      ),
+      GoRoute(
+        path: '/program',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProgressScreen(),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) => HomeShell(navigationShell: navigationShell),
         branches: [
@@ -103,10 +115,10 @@ GoRouter appRouter(Ref ref) {
             GoRoute(path: '/track', builder: (context, state) => const TrackScreen()),
           ]),
           StatefulShellBranch(routes: [
-            GoRoute(path: '/progress', builder: (context, state) => const ProgressScreen()),
+            GoRoute(path: '/diet', builder: (context, state) => const DietScreen()),
           ]),
           StatefulShellBranch(routes: [
-            GoRoute(path: '/diet', builder: (context, state) => const DietScreen()),
+            GoRoute(path: '/profile', builder: (context, state) => const ProfileScreen()),
           ]),
         ],
       ),

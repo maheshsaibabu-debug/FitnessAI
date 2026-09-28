@@ -5,15 +5,6 @@ import '../../application/onboarding_controller.dart';
 import '../onboarding_options.dart';
 import '../widgets/onboarding_step_scaffold.dart';
 
-const _restrictionOptions = [
-  ('dairy_free', 'Dairy-free'),
-  ('gluten_free', 'Gluten-free'),
-  ('nut_free', 'Nut-free'),
-  ('shellfish_free', 'Shellfish-free'),
-  ('halal', 'Halal'),
-  ('kosher', 'Kosher'),
-];
-
 class NutritionStep extends ConsumerWidget {
   const NutritionStep({super.key});
 
@@ -39,7 +30,7 @@ class NutritionStep extends ConsumerWidget {
           Text('Restrictions (optional)', style: Theme.of(context).textTheme.labelLarge),
           const SizedBox(height: 8),
           MultiChoiceChipGroup(
-            options: _restrictionOptions,
+            options: kDietaryRestrictionOptions,
             selectedValues: draft.dietaryRestrictions,
             onToggle: controller.toggleDietaryRestriction,
           ),

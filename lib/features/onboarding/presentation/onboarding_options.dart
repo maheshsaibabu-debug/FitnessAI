@@ -53,3 +53,18 @@ const List<(String value, String label)> kPreferredTimeOptions = [
   ('afternoon', 'Afternoon'),
   ('evening', 'Evening'),
 ];
+
+const List<(String value, String label)> kDietaryRestrictionOptions = [
+  ('dairy_free', 'Dairy-free'),
+  ('gluten_free', 'Gluten-free'),
+  ('nut_free', 'Nut-free'),
+  ('shellfish_free', 'Shellfish-free'),
+  ('halal', 'Halal'),
+  ('kosher', 'Kosher'),
+];
+
+const List<(String value, String label)> kSexOptions = [
+  ('male', 'Male'),
+  ('female', 'Female'),
+  ('other', 'Other / prefer not to say'),
+];

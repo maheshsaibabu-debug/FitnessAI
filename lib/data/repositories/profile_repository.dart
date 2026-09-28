@@ -87,6 +87,78 @@ class ProfileRepository {
     );
   }
 
+  /// The most recent baseline test result, if any was ever recorded.
+  Future<FitnessBaseline?> latestBaselineOnce(String userId) {
+    return (_db.select(_db.fitnessBaselines)
+          ..where((b) => b.userId.equals(userId))
+          ..orderBy([(b) => OrderingTerm.desc(b.baselineDate)])
+          ..limit(1))
+        .getSingleOrNull();
+  }
+
+  /// Adds a new baseline test result — a fresh row, not an update, since a
+  /// baseline is inherently a dated measurement (like [WeightRepository]'s
+  /// weight log): retesting produces a new data point, it doesn't erase
+  /// the old one.
+  Future<void> addBaseline(
+    String userId, {
+    int? pushUpsReps,
+    int? squatsReps,
+    int? pullUpsReps,
+    int? plankSeconds,
+  }) async {
+    final now = DateTime.now().toUtc();
+    await _db.into(_db.fitnessBaselines).insert(FitnessBaselinesCompanion.insert(
+          id: _uuid.v4(),
+          userId: userId,
+          baselineDate: now,
+          pushUpsReps: Value(pushUpsReps),
+          squatsReps: Value(squatsReps),
+          pullUpsReps: Value(pullUpsReps),
+          plankSeconds: Value(plankSeconds),
+          createdAt: now,
+        ));
+  }
+
+  /// Updates the editable fields collected across onboarding steps 1, 3,
+  /// 4, and 5 (personal details, training level/location/equipment,
+  /// availability, nutrition preference) on an already-onboarded profile.
+  /// Goal selection and target weight/date are edited separately
+  /// ([setGoalTarget]) since they live on [FitnessGoals], not here.
+  Future<void> updateProfile(
+    String userId, {
+    required String name,
+    required String sex,
+    required DateTime? dateOfBirth,
+    required double? heightCm,
+    required String? trainingLocation,
+    required Set<String> equipment,
+    required String? fitnessLevel,
+    required int? availabilityDaysPerWeek,
+    required int? availabilityMinutesPerSession,
+    required String? preferredTimeOfDay,
+    required String? dietaryPreference,
+    required Set<String> dietaryRestrictions,
+  }) async {
+    await (_db.update(_db.userProfiles)..where((p) => p.id.equals(userId))).write(
+      UserProfilesCompanion(
+        name: Value(name.trim()),
+        sex: Value(sex),
+        dateOfBirth: Value(dateOfBirth),
+        heightCm: Value(heightCm),
+        trainingLocation: Value(trainingLocation),
+        equipmentJson: Value(_jsonList(equipment)),
+        fitnessLevel: Value(fitnessLevel),
+        availabilityDaysPerWeek: Value(availabilityDaysPerWeek),
+        availabilityMinutesPerSession: Value(availabilityMinutesPerSession),
+        preferredTimeOfDay: Value(preferredTimeOfDay),
+        dietaryPreference: Value(dietaryPreference),
+        dietaryRestrictionsJson: Value(_jsonList(dietaryRestrictions)),
+        updatedAt: Value(DateTime.now().toUtc()),
+      ),
+    );
+  }
+
   /// Reassembles the engine's [TrainingProfile] input from what's already
   /// on disk — used to regenerate a plan against the same profile the
   /// user onboarded with, without asking them to redo onboarding.
