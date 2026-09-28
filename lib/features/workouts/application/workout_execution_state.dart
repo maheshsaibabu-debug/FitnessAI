@@ -51,6 +51,7 @@ class WorkoutExecutionState {
     bool? isFinished,
     ProgressionRecommendation? lastRecommendation,
     String? lastRecommendationExerciseName,
+    bool clearRecommendation = false,
   }) {
     return WorkoutExecutionState(
       workoutId: workoutId,
@@ -60,8 +61,9 @@ class WorkoutExecutionState {
       setIndex: setIndex ?? this.setIndex,
       restSecondsRemaining: clearRest ? null : (restSecondsRemaining ?? this.restSecondsRemaining),
       isFinished: isFinished ?? this.isFinished,
-      lastRecommendation: lastRecommendation ?? this.lastRecommendation,
-      lastRecommendationExerciseName: lastRecommendationExerciseName ?? this.lastRecommendationExerciseName,
+      lastRecommendation: clearRecommendation ? lastRecommendation : (lastRecommendation ?? this.lastRecommendation),
+      lastRecommendationExerciseName:
+          clearRecommendation ? lastRecommendationExerciseName : (lastRecommendationExerciseName ?? this.lastRecommendationExerciseName),
     );
   }
 }

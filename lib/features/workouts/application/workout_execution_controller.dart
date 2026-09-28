@@ -89,6 +89,11 @@ class WorkoutExecutionController extends _$WorkoutExecutionController {
       isFinished: finished,
       lastRecommendation: recommendation,
       lastRecommendationExerciseName: recommendationExerciseName,
+      // Always overwrite, never inherit the previous exercise's banner: a
+      // recommendation is only meaningful for the rest immediately after
+      // the exercise it came from, not every rest for the rest of the
+      // workout (the bug this fixes — see WorkoutExecutionState.copyWith).
+      clearRecommendation: true,
     ));
 
     if (restSeconds != null) _startRestTimer(restSeconds);
