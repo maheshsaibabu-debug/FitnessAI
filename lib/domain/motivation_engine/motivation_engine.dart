@@ -98,4 +98,27 @@ class MotivationEngine {
     final dayOfYear = date.difference(DateTime(date.year)).inDays;
     return _dailyQuotes[dayOfYear % _dailyQuotes.length];
   }
+
+  /// Genuine, actionable fitness/nutrition advice — distinct content from
+  /// [dailyQuote] (which is motivational copy, not instructional), cycling
+  /// the same deterministic way.
+  static const List<String> _dailyTips = [
+    'Consistent, high-protein intake aids muscle recovery. Aim for 20-30g per meal.',
+    'Drink water before you feel thirsty — thirst means you\'re already mildly dehydrated.',
+    'A 5-minute warm-up lowers injury risk more than stretching alone.',
+    'Sleep is when muscle actually repairs — aim for 7-9 hours on training days.',
+    'Progressive overload beats workout variety for long-term strength gains.',
+    'Carbs before a workout, protein after — timing matters as much as totals.',
+    'Walking counts. Daily steps add up to real cardiovascular benefit.',
+    'Rest days aren\'t wasted days — they\'re when adaptation happens.',
+    'Form before weight: a lighter, controlled rep beats a heavy, sloppy one.',
+    'Eating enough fiber keeps you fuller longer and supports steady energy.',
+  ];
+
+  /// A stable "tip of the day", cycled the same way as [dailyQuote] but
+  /// from a separate list so the two never show identical text.
+  String dailyTip(DateTime date) {
+    final dayOfYear = date.difference(DateTime(date.year)).inDays;
+    return _dailyTips[dayOfYear % _dailyTips.length];
+  }
 }
