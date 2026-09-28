@@ -137,9 +137,23 @@ class _ConnectionRow extends ConsumerWidget {
           label: const Text('Sync from Health'),
         );
       case HealthPermissionStatus.denied:
-        return Text(
-          'Health permission was denied — steps won\'t sync automatically. Log them manually below, or reconnect from Settings.',
-          style: Theme.of(context).textTheme.bodySmall,
+        // Android allows re-prompting for a denied permission indefinitely
+        // (unlike iOS, which locks out after one decline and silently
+        // no-ops a repeat request) — so a retry button here is never a dead
+        // end on Android, and merely harmless on iOS.
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Health permission was denied — steps won\'t sync automatically. Log them manually below.',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton(
+              onPressed: controller.requestAndSync,
+              child: const Text('Try Again'),
+            ),
+          ],
         );
       case HealthPermissionStatus.unavailable:
         return OutlinedButton(

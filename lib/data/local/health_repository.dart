@@ -32,11 +32,21 @@ class HealthRepository {
     try {
       final granted = await _health.hasPermissions(_stepsTypes);
       if (granted == true) return HealthPermissionStatus.granted;
-      if (granted == false) return HealthPermissionStatus.denied;
-      // null: platform can't disclose READ status (HealthKit's own
-      // privacy model) — treat as granted-if-we-can-read, resolved by
-      // actually attempting a read rather than blocking on this check.
-      return HealthPermissionStatus.granted;
+      // false and null both mean "we can't confirm READ access" here, but
+      // for different reasons the UI must not conflate: on iOS, `false` is
+      // never actually returned for a READ-only check like this one —
+      // HealthKit's privacy model always yields null (undetermined),
+      // resolved by attempting a real read rather than blocking on this
+      // check. On Android, Health Connect always answers definitively —
+      // `false` there just as often means "never asked" as "denied", since
+      // hasPermissions() can't tell those apart. Reporting that as
+      // `denied` left a fresh install permanently stuck on "permission
+      // denied — reconnect from Settings" despite the system dialog never
+      // having been shown. `unavailable` is the honest state for both:
+      // it's what drives the UI's "Connect Health" button, which actually
+      // triggers the real permission prompt — Android lets that be
+      // retried freely, unlike iOS's post-decline lockout.
+      return HealthPermissionStatus.unavailable;
     } on MissingPluginException {
       return HealthPermissionStatus.unavailable;
     } on PlatformException catch (e) {
