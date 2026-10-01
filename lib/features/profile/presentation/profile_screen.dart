@@ -147,6 +147,14 @@ class ProfileScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 24),
               Center(
+                child: FilledButton.icon(
+                  onPressed: () => _regeneratePlan(context, ref),
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Regenerate plan'),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Center(
                 child: OutlinedButton.icon(
                   onPressed: () => context.push('/program'),
                   icon: const Icon(Icons.show_chart),
@@ -224,7 +232,34 @@ class ProfileScreen extends ConsumerWidget {
       ),
     );
     if (refresh != true || !context.mounted) return;
+    await _runRegeneration(context, ref);
+  }
 
+  Future<void> _regeneratePlan(BuildContext context, WidgetRef ref) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Regenerate your plan?'),
+        content: const Text(
+          'Rebuilds your upcoming workout plan and nutrition targets from your current profile settings '
+          '(training preferences, availability, goal), starting today. Workouts already done, skipped, or '
+          'in progress are left untouched.',
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: const Text('Cancel')),
+          FilledButton(onPressed: () => Navigator.of(dialogContext).pop(true), child: const Text('Regenerate')),
+        ],
+      ),
+    );
+    if (confirm != true || !context.mounted) return;
+    await _runRegeneration(context, ref);
+  }
+
+  /// Shared by [_editGoalTarget] (after a target-weight/date change) and
+  /// the standalone "Regenerate plan" action — same loading dialog, same
+  /// outcome snackbar, so editing the goal doesn't silently behave
+  /// differently from asking to regenerate directly.
+  Future<void> _runRegeneration(BuildContext context, WidgetRef ref) async {
     showDialog<void>(
       context: context,
       barrierDismissible: false,
