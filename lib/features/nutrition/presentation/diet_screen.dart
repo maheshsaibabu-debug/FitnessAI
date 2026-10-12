@@ -18,37 +18,84 @@ class DietScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final diet = ref.watch(todaysDietProvider);
 
+    Future<void> regenerate() async {
+      final meals = diet.valueOrNull;
+      if (meals == null || meals.isEmpty) return;
+      final result = await ref
+          .read(nutritionRepositoryProvider)
+          .regenerateTodaysDiet(meals.first.meal.userId);
+      if (!context.mounted) return;
+      final message = switch (result) {
+        RegenerateDietResult.success => "Today's diet has been reshuffled.",
+        RegenerateDietResult.blockedByExistingLogs =>
+          "Can't regenerate after you've already confirmed a meal today.",
+        RegenerateDietResult.noTargetsYet =>
+          'Finish onboarding first to get calorie targets.',
+      };
+      if (result == RegenerateDietResult.success) {
+        ref.invalidate(todaysDietProvider);
+      }
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
+    }
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Diet')),
+      appBar: AppBar(
+        title: const Text('Diet'),
+        actions: [
+          IconButton(
+            onPressed: diet.valueOrNull?.isNotEmpty == true ? regenerate : null,
+            icon: const Icon(Icons.shuffle),
+            tooltip: 'Regenerate diet',
+          ),
+        ],
+      ),
       body: SafeArea(
         child: diet.when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (e, st) => Center(
-            child: Padding(padding: const EdgeInsets.all(24), child: Text('Could not load your diet chart: $e')),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Text('Could not load your diet chart: $e'),
+            ),
           ),
           data: (meals) {
             if (meals.isEmpty) {
               return const Center(
                 child: Padding(
                   padding: EdgeInsets.all(24),
-                  child: Text('Finish onboarding to get your daily calorie and macro targets first.'),
+                  child: Text(
+                    'Finish onboarding to get your daily calorie and macro targets first.',
+                  ),
                 ),
               );
             }
             final sorted = [...meals]
-              ..sort((a, b) =>
-                  _mealTypeOrder.indexOf(a.meal.mealType).compareTo(_mealTypeOrder.indexOf(b.meal.mealType)));
+              ..sort(
+                (a, b) => _mealTypeOrder
+                    .indexOf(a.meal.mealType)
+                    .compareTo(_mealTypeOrder.indexOf(b.meal.mealType)),
+              );
             return ListView(
               padding: const EdgeInsets.all(20),
               children: [
-                Text("Today's diet chart", style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
+                Text(
+                  "Today's diet chart",
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
                 const SizedBox(height: 4),
                 Text(
                   'Based on your calorie and macro targets',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 const SizedBox(height: 20),
-                for (final dietMeal in sorted) _DietMealCard(dietMeal: dietMeal),
+                for (final dietMeal in sorted)
+                  _DietMealCard(dietMeal: dietMeal),
               ],
             );
           },
@@ -70,7 +117,9 @@ class _DietMealCard extends ConsumerWidget {
     final eaten = dietMeal.eaten;
 
     Future<void> confirm(bool ate) async {
-      await ref.read(nutritionRepositoryProvider).confirmMeal(meal: meal, userId: meal.userId, eaten: ate);
+      await ref
+          .read(nutritionRepositoryProvider)
+          .confirmMeal(meal: meal, userId: meal.userId, eaten: ate);
       ref.invalidate(todaysDietProvider);
     }
 
@@ -83,29 +132,48 @@ class _DietMealCard extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Expanded(child: Text(meal.name, style: Theme.of(context).textTheme.titleMedium)),
-                Text('${meal.calories.round()} kcal', style: Theme.of(context).textTheme.bodyMedium),
+                Expanded(
+                  child: Text(
+                    meal.name,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+                Text(
+                  '${meal.calories.round()} kcal',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ],
             ),
             const SizedBox(height: 8),
             Text(
               'Protein ${meal.proteinGrams.round()}g · Carbs ${meal.carbsGrams.round()}g · Fat ${meal.fatGrams.round()}g',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
             ),
             for (final item in dietMeal.items) ...[
               const SizedBox(height: 8),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('${item.grams}g ', style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+                  Text(
+                    '${item.grams}g ',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(item.name, style: Theme.of(context).textTheme.bodyMedium),
+                        Text(
+                          item.name,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                         Text(
                           '${item.calories.round()} kcal · P ${item.proteinGrams.round()}g · C ${item.carbsGrams.round()}g · F ${item.fatGrams.round()}g',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: scheme.onSurfaceVariant),
                         ),
                       ],
                     ),
@@ -114,20 +182,35 @@ class _DietMealCard extends ConsumerWidget {
               ),
             ],
             const SizedBox(height: 12),
-            Text('Did you have this?', style: Theme.of(context).textTheme.labelLarge),
+            Text(
+              'Did you have this?',
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
             const SizedBox(height: 8),
             Row(
               children: [
                 Expanded(
                   child: eaten == true
-                      ? FilledButton(onPressed: () => confirm(true), child: const Text('Yes'))
-                      : OutlinedButton(onPressed: () => confirm(true), child: const Text('Yes')),
+                      ? FilledButton(
+                          onPressed: () => confirm(true),
+                          child: const Text('Yes'),
+                        )
+                      : OutlinedButton(
+                          onPressed: () => confirm(true),
+                          child: const Text('Yes'),
+                        ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: eaten == false
-                      ? FilledButton.tonal(onPressed: () => confirm(false), child: const Text('No'))
-                      : OutlinedButton(onPressed: () => confirm(false), child: const Text('No')),
+                      ? FilledButton.tonal(
+                          onPressed: () => confirm(false),
+                          child: const Text('No'),
+                        )
+                      : OutlinedButton(
+                          onPressed: () => confirm(false),
+                          child: const Text('No'),
+                        ),
                 ),
               ],
             ),

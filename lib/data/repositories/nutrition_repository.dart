@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
@@ -8,6 +9,8 @@ import '../../domain/nutrition_engine/nutrition_calculation_engine.dart';
 import '../../domain/progress_engine/progress_analysis_engine.dart';
 
 const _uuid = Uuid();
+
+enum RegenerateDietResult { success, blockedByExistingLogs, noTargetsYet }
 
 const _mealSplit = {
   'breakfast': 0.25,
@@ -25,7 +28,14 @@ const _mealSplit = {
 /// it's what lets the diet chart say "180g" instead of a meaningless
 /// "1.4x".
 class _FoodTemplate {
-  const _FoodTemplate(this.name, this.calories, this.protein, this.carbs, this.fat, this.gramsPerServing);
+  const _FoodTemplate(
+    this.name,
+    this.calories,
+    this.protein,
+    this.carbs,
+    this.fat,
+    this.gramsPerServing,
+  );
   final String name;
   final double calories;
   final double protein;
@@ -38,80 +48,166 @@ class _FoodTemplate {
 /// DeterministicProgramOverviewBuilder's own meal suggestions
 /// (vegetarian|vegan|pescatarian|omnivore) — a vegetarian user never
 /// sees a meat dish here, same as they never see one there.
-const _mealTemplatesByDiet = <String, Map<String, List<_FoodTemplate>>>{
+///
+/// Each meal slot now holds a few alternative combos rather than one
+/// fixed combo, so the chart isn't the same every single day — see
+/// [_scaledItems]'s `variantSeed` param for how one is picked.
+const _mealTemplatesByDiet = <String, Map<String, List<List<_FoodTemplate>>>>{
   'omnivore': {
     'breakfast': [
-      _FoodTemplate('Oats porridge', 150, 5, 27, 3, 250),
-      _FoodTemplate('Boiled eggs', 78, 6, 0.6, 5, 100),
+      [
+        _FoodTemplate('Oats porridge', 150, 5, 27, 3, 250),
+        _FoodTemplate('Boiled eggs', 78, 6, 0.6, 5, 100),
+      ],
+      [
+        _FoodTemplate('Scrambled eggs', 180, 12, 1, 14, 120),
+        _FoodTemplate('Whole wheat toast', 140, 6, 24, 2, 60),
+      ],
     ],
     'lunch': [
-      _FoodTemplate('Grilled chicken breast', 165, 31, 0, 3.6, 150),
-      _FoodTemplate('Brown rice', 216, 5, 45, 1.8, 150),
-      _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
+      [
+        _FoodTemplate('Grilled chicken breast', 165, 31, 0, 3.6, 150),
+        _FoodTemplate('Brown rice', 216, 5, 45, 1.8, 150),
+        _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
+      ],
+      [
+        _FoodTemplate('Turkey sandwich', 320, 24, 35, 9, 220),
+        _FoodTemplate('Fruit bowl', 80, 1, 20, 0.3, 150),
+      ],
     ],
     'snack': [
-      _FoodTemplate('Mixed nuts', 170, 6, 6, 15, 30),
-      _FoodTemplate('Fruit bowl', 80, 1, 20, 0.3, 150),
+      [
+        _FoodTemplate('Mixed nuts', 170, 6, 6, 15, 30),
+        _FoodTemplate('Fruit bowl', 80, 1, 20, 0.3, 150),
+      ],
+      [_FoodTemplate('Protein shake', 150, 25, 5, 3, 300)],
     ],
     'dinner': [
-      _FoodTemplate('Chicken curry', 220, 25, 6, 10, 200),
-      _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
+      [
+        _FoodTemplate('Chicken curry', 220, 25, 6, 10, 200),
+        _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
+      ],
+      [
+        _FoodTemplate('Grilled steak', 250, 26, 0, 16, 150),
+        _FoodTemplate('Steamed vegetables', 50, 3, 10, 0.3, 150),
+      ],
     ],
   },
   'vegetarian': {
     'breakfast': [
-      _FoodTemplate('Greek yogurt with berries', 150, 15, 20, 3, 200),
-      _FoodTemplate('Mixed nuts', 85, 3, 3, 7.5, 30),
+      [
+        _FoodTemplate('Greek yogurt with berries', 150, 15, 20, 3, 200),
+        _FoodTemplate('Mixed nuts', 85, 3, 3, 7.5, 30),
+      ],
+      [
+        _FoodTemplate('Vegetable omelette', 200, 14, 6, 13, 150),
+        _FoodTemplate('Whole wheat toast', 140, 6, 24, 2, 60),
+      ],
     ],
     'lunch': [
-      _FoodTemplate('Paneer curry', 265, 18, 10, 18, 180),
-      _FoodTemplate('Brown rice', 216, 5, 45, 1.8, 150),
-      _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
+      [
+        _FoodTemplate('Paneer curry', 265, 18, 10, 18, 180),
+        _FoodTemplate('Brown rice', 216, 5, 45, 1.8, 150),
+        _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
+      ],
+      [
+        _FoodTemplate('Chickpea curry', 210, 10, 30, 6, 200),
+        _FoodTemplate('Brown rice', 216, 5, 45, 1.8, 150),
+      ],
     ],
     'snack': [
-      _FoodTemplate('Cottage cheese bowl', 120, 14, 6, 4, 150),
-      _FoodTemplate('Fruit bowl', 80, 1, 20, 0.3, 150),
+      [
+        _FoodTemplate('Cottage cheese bowl', 120, 14, 6, 4, 150),
+        _FoodTemplate('Fruit bowl', 80, 1, 20, 0.3, 150),
+      ],
+      [_FoodTemplate('Roasted chickpeas', 130, 7, 18, 3, 50)],
     ],
     'dinner': [
-      _FoodTemplate('Mixed dal', 200, 14, 30, 3, 200),
-      _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
+      [
+        _FoodTemplate('Mixed dal', 200, 14, 30, 3, 200),
+        _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
+      ],
+      [
+        _FoodTemplate('Paneer tikka', 230, 16, 8, 15, 150),
+        _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
+      ],
     ],
   },
   'vegan': {
     'breakfast': [
-      _FoodTemplate('Oats with plant milk', 160, 6, 28, 3, 250),
-      _FoodTemplate('Mixed nuts', 85, 3, 3, 7.5, 30),
+      [
+        _FoodTemplate('Oats with plant milk', 160, 6, 28, 3, 250),
+        _FoodTemplate('Mixed nuts', 85, 3, 3, 7.5, 30),
+      ],
+      [
+        _FoodTemplate('Tofu scramble', 180, 14, 6, 11, 150),
+        _FoodTemplate('Whole wheat toast', 140, 6, 24, 2, 60),
+      ],
     ],
     'lunch': [
-      _FoodTemplate('Tofu stir-fry', 180, 16, 10, 9, 180),
-      _FoodTemplate('Brown rice', 216, 5, 45, 1.8, 150),
-      _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
+      [
+        _FoodTemplate('Tofu stir-fry', 180, 16, 10, 9, 180),
+        _FoodTemplate('Brown rice', 216, 5, 45, 1.8, 150),
+        _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
+      ],
+      [
+        _FoodTemplate('Chickpea curry', 210, 10, 30, 6, 200),
+        _FoodTemplate('Brown rice', 216, 5, 45, 1.8, 150),
+      ],
     ],
     'snack': [
-      _FoodTemplate('Hummus with vegetables', 120, 5, 14, 6, 150),
-      _FoodTemplate('Fruit bowl', 80, 1, 20, 0.3, 150),
+      [
+        _FoodTemplate('Hummus with vegetables', 120, 5, 14, 6, 150),
+        _FoodTemplate('Fruit bowl', 80, 1, 20, 0.3, 150),
+      ],
+      [_FoodTemplate('Roasted chickpeas', 130, 7, 18, 3, 50)],
     ],
     'dinner': [
-      _FoodTemplate('Lentil curry', 200, 14, 30, 3, 200),
-      _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
+      [
+        _FoodTemplate('Lentil curry', 200, 14, 30, 3, 200),
+        _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
+      ],
+      [
+        _FoodTemplate('Vegetable stir-fry', 150, 5, 20, 6, 200),
+        _FoodTemplate('Brown rice', 216, 5, 45, 1.8, 150),
+      ],
     ],
   },
   'pescatarian': {
     'breakfast': [
-      _FoodTemplate('Boiled eggs', 78, 6, 0.6, 5, 100),
-      _FoodTemplate('Oats porridge', 150, 5, 27, 3, 250),
+      [
+        _FoodTemplate('Boiled eggs', 78, 6, 0.6, 5, 100),
+        _FoodTemplate('Oats porridge', 150, 5, 27, 3, 250),
+      ],
+      [
+        _FoodTemplate('Greek yogurt with berries', 150, 15, 20, 3, 200),
+        _FoodTemplate('Mixed nuts', 170, 6, 6, 15, 30),
+      ],
     ],
     'lunch': [
-      _FoodTemplate('Grilled fish', 206, 22, 0, 12, 150),
-      _FoodTemplate('Brown rice', 216, 5, 45, 1.8, 150),
-      _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
+      [
+        _FoodTemplate('Grilled fish', 206, 22, 0, 12, 150),
+        _FoodTemplate('Brown rice', 216, 5, 45, 1.8, 150),
+        _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
+      ],
+      [
+        _FoodTemplate('Shrimp stir-fry', 200, 24, 8, 7, 180),
+        _FoodTemplate('Brown rice', 216, 5, 45, 1.8, 150),
+      ],
     ],
     'snack': [
-      _FoodTemplate('Greek yogurt with berries', 150, 15, 20, 3, 200),
+      [_FoodTemplate('Greek yogurt with berries', 150, 15, 20, 3, 200)],
+      [_FoodTemplate('Fruit bowl', 80, 1, 20, 0.3, 150)],
     ],
     'dinner': [
-      _FoodTemplate('Grilled salmon', 250, 25, 0, 16, 150),
-      _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
+      [
+        _FoodTemplate('Grilled salmon', 250, 25, 0, 16, 150),
+        _FoodTemplate('Salad', 35, 2, 6, 0.3, 100),
+      ],
+      [
+        _FoodTemplate('Tuna salad', 220, 26, 4, 10, 180),
+        _FoodTemplate('Whole wheat toast', 140, 6, 24, 2, 60),
+      ],
     ],
   },
 };
@@ -137,22 +233,22 @@ class DietItem {
   final double fatGrams;
 
   Map<String, Object?> toJson() => {
-        'name': name,
-        'grams': grams,
-        'calories': calories,
-        'proteinGrams': proteinGrams,
-        'carbsGrams': carbsGrams,
-        'fatGrams': fatGrams,
-      };
+    'name': name,
+    'grams': grams,
+    'calories': calories,
+    'proteinGrams': proteinGrams,
+    'carbsGrams': carbsGrams,
+    'fatGrams': fatGrams,
+  };
 
   factory DietItem.fromJson(Map<String, Object?> json) => DietItem(
-        name: json['name'] as String,
-        grams: (json['grams'] as num).toInt(),
-        calories: (json['calories'] as num).toDouble(),
-        proteinGrams: (json['proteinGrams'] as num).toDouble(),
-        carbsGrams: (json['carbsGrams'] as num).toDouble(),
-        fatGrams: (json['fatGrams'] as num).toDouble(),
-      );
+    name: json['name'] as String,
+    grams: (json['grams'] as num).toInt(),
+    calories: (json['calories'] as num).toDouble(),
+    proteinGrams: (json['proteinGrams'] as num).toDouble(),
+    carbsGrams: (json['carbsGrams'] as num).toDouble(),
+    fatGrams: (json['fatGrams'] as num).toDouble(),
+  );
 }
 
 /// One meal slot in today's diet chart, joined with the latest confirmation
@@ -168,7 +264,9 @@ class DietMeal {
 
   List<DietItem> get items {
     final decoded = jsonDecode(meal.ingredientsJson) as List;
-    return decoded.map((e) => DietItem.fromJson(e as Map<String, Object?>)).toList();
+    return decoded
+        .map((e) => DietItem.fromJson(e as Map<String, Object?>))
+        .toList();
   }
 }
 
@@ -188,43 +286,71 @@ class NutritionRepository {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
-    var meals =
-        await (_db.select(_db.meals)..where((m) => m.userId.equals(userId) & m.date.equals(today))).get();
+    var meals = await (_db.select(
+      _db.meals,
+    )..where((m) => m.userId.equals(userId) & m.date.equals(today))).get();
     if (meals.isEmpty) {
       meals = await _generateTodaysMeals(userId, today);
     }
-    if (meals.isEmpty) return const []; // no nutrition targets yet — nothing to chart
+    if (meals.isEmpty)
+      return const []; // no nutrition targets yet — nothing to chart
 
-    final logs =
-        await (_db.select(_db.mealLogs)..where((l) => l.userId.equals(userId) & l.date.equals(today))).get();
+    final logs = await (_db.select(
+      _db.mealLogs,
+    )..where((l) => l.userId.equals(userId) & l.date.equals(today))).get();
 
     return meals.map((meal) {
       final mealLogs = logs.where((l) => l.mealId == meal.id).toList()
         ..sort((a, b) => a.loggedAt.compareTo(b.loggedAt));
-      return DietMeal(meal: meal, latestLog: mealLogs.isEmpty ? null : mealLogs.last);
+      return DietMeal(
+        meal: meal,
+        latestLog: mealLogs.isEmpty ? null : mealLogs.last,
+      );
     }).toList();
   }
 
-  Future<List<Meal>> _generateTodaysMeals(String userId, DateTime today) async {
-    final targets =
-        await (_db.select(_db.nutritionGoals)..where((g) => g.userId.equals(userId))).getSingleOrNull();
+  /// [variantSeed] picks which alternative combo each meal slot shows.
+  /// Defaults to the day-of-year, so the chart varies day to day on its
+  /// own without ever needing a regenerate tap; [regenerateTodaysDiet]
+  /// passes a fresh random seed instead for an explicit reshuffle.
+  Future<List<Meal>> _generateTodaysMeals(
+    String userId,
+    DateTime today, {
+    int? variantSeed,
+  }) async {
+    final targets = await (_db.select(
+      _db.nutritionGoals,
+    )..where((g) => g.userId.equals(userId))).getSingleOrNull();
     if (targets == null) return const [];
 
-    final profile = await (_db.select(_db.userProfiles)..where((p) => p.id.equals(userId))).getSingleOrNull();
+    final profile = await (_db.select(
+      _db.userProfiles,
+    )..where((p) => p.id.equals(userId))).getSingleOrNull();
     final dietKey = profile?.dietaryPreference?.toLowerCase() ?? 'omnivore';
 
-    final calorieTarget = await _progressAdjustedCalorieTarget(userId, targets.calorieTarget);
+    final calorieTarget = await _progressAdjustedCalorieTarget(
+      userId,
+      targets.calorieTarget,
+    );
+    final seed = variantSeed ?? today.difference(DateTime(2020)).inDays;
 
     final now = DateTime.now().toUtc();
     final rows = _mealSplit.entries.map((entry) {
-      final items = _scaledItems(dietKey, entry.key, calorieTarget * entry.value);
+      final items = _scaledItems(
+        dietKey,
+        entry.key,
+        calorieTarget * entry.value,
+        seed,
+      );
       return MealsCompanion.insert(
         id: _uuid.v4(),
         userId: userId,
         date: today,
         mealType: entry.key,
         name: _titleCase(entry.key),
-        ingredientsJson: Value(jsonEncode(items.map((i) => i.toJson()).toList())),
+        ingredientsJson: Value(
+          jsonEncode(items.map((i) => i.toJson()).toList()),
+        ),
         calories: items.fold(0.0, (sum, i) => sum + i.calories),
         proteinGrams: items.fold(0.0, (sum, i) => sum + i.proteinGrams),
         carbsGrams: items.fold(0.0, (sum, i) => sum + i.carbsGrams),
@@ -234,25 +360,38 @@ class NutritionRepository {
     }).toList();
 
     await _db.batch((batch) => batch.insertAll(_db.meals, rows));
-    return (_db.select(_db.meals)..where((m) => m.userId.equals(userId) & m.date.equals(today))).get();
+    return (_db.select(
+      _db.meals,
+    )..where((m) => m.userId.equals(userId) & m.date.equals(today))).get();
   }
 
   /// Reads the user's real weight-log trend and primary goal, and nudges
   /// the stored calorie target toward what that trend implies is needed —
   /// "based on progress", not just a number frozen at onboarding.
-  Future<int> _progressAdjustedCalorieTarget(String userId, int baseCalorieTarget) async {
-    final goalRow = await (_db.select(_db.fitnessGoals)
-          ..where((g) => g.userId.equals(userId) & g.isPrimary.equals(true))
-          ..limit(1))
-        .getSingleOrNull();
+  Future<int> _progressAdjustedCalorieTarget(
+    String userId,
+    int baseCalorieTarget,
+  ) async {
+    final goalRow =
+        await (_db.select(_db.fitnessGoals)
+              ..where((g) => g.userId.equals(userId) & g.isPrimary.equals(true))
+              ..limit(1))
+            .getSingleOrNull();
     final goal = _toNutritionGoalType(goalRow?.goalType);
 
     final since = DateTime.now().subtract(const Duration(days: 21));
-    final weightRows = await (_db.select(_db.weightLogs)
-          ..where((w) => w.userId.equals(userId) & w.recordedAt.isBiggerOrEqualValue(since))
-          ..orderBy([(w) => OrderingTerm.asc(w.recordedAt)]))
-        .get();
-    final samples = weightRows.map((w) => WeightSample(w.recordedAt, w.weightKg)).toList();
+    final weightRows =
+        await (_db.select(_db.weightLogs)
+              ..where(
+                (w) =>
+                    w.userId.equals(userId) &
+                    w.recordedAt.isBiggerOrEqualValue(since),
+              )
+              ..orderBy([(w) => OrderingTerm.asc(w.recordedAt)]))
+            .get();
+    final samples = weightRows
+        .map((w) => WeightSample(w.recordedAt, w.weightKg))
+        .toList();
     final trend = const ProgressAnalysisEngine().weightTrend(samples);
 
     return const NutritionCalculationEngine().adjustForProgress(
@@ -263,49 +402,101 @@ class NutritionRepository {
   }
 
   NutritionGoalType _toNutritionGoalType(String? goal) => switch (goal) {
-        'fat_loss' => NutritionGoalType.fatLoss,
-        'muscle_gain' => NutritionGoalType.muscleGain,
-        'weight_gain' => NutritionGoalType.weightGain,
-        _ => NutritionGoalType.maintain,
-      };
+    'fat_loss' => NutritionGoalType.fatLoss,
+    'muscle_gain' => NutritionGoalType.muscleGain,
+    'weight_gain' => NutritionGoalType.weightGain,
+    _ => NutritionGoalType.maintain,
+  };
 
-  List<DietItem> _scaledItems(String dietKey, String mealType, double targetCalories) {
-    final mealsForDiet = _mealTemplatesByDiet[dietKey] ?? _mealTemplatesByDiet['omnivore']!;
-    final templates = mealsForDiet[mealType] ?? const [];
-    if (templates.isEmpty) return const [];
+  List<DietItem> _scaledItems(
+    String dietKey,
+    String mealType,
+    double targetCalories,
+    int variantSeed,
+  ) {
+    final mealsForDiet =
+        _mealTemplatesByDiet[dietKey] ?? _mealTemplatesByDiet['omnivore']!;
+    final options = mealsForDiet[mealType] ?? const [];
+    if (options.isEmpty) return const [];
+    final templates = options[variantSeed.abs() % options.length];
     final baseTotal = templates.fold(0.0, (sum, t) => sum + t.calories);
     final multiplier = (targetCalories / baseTotal).clamp(0.5, 3.0);
 
     return templates
-        .map((t) => DietItem(
-              name: t.name,
-              // Nearest 5g — a real portion size, not an abstract multiplier.
-              grams: ((t.gramsPerServing * multiplier) / 5).round() * 5,
-              calories: double.parse((t.calories * multiplier).toStringAsFixed(0)),
-              proteinGrams: double.parse((t.protein * multiplier).toStringAsFixed(1)),
-              carbsGrams: double.parse((t.carbs * multiplier).toStringAsFixed(1)),
-              fatGrams: double.parse((t.fat * multiplier).toStringAsFixed(1)),
-            ))
+        .map(
+          (t) => DietItem(
+            name: t.name,
+            // Nearest 5g — a real portion size, not an abstract multiplier.
+            grams: ((t.gramsPerServing * multiplier) / 5).round() * 5,
+            calories: double.parse(
+              (t.calories * multiplier).toStringAsFixed(0),
+            ),
+            proteinGrams: double.parse(
+              (t.protein * multiplier).toStringAsFixed(1),
+            ),
+            carbsGrams: double.parse((t.carbs * multiplier).toStringAsFixed(1)),
+            fatGrams: double.parse((t.fat * multiplier).toStringAsFixed(1)),
+          ),
+        )
         .toList();
+  }
+
+  /// Reshuffles today's meals to a different combo of the same calorie
+  /// target — the explicit "I don't want to see the same thing again"
+  /// action, on top of the automatic day-to-day variation
+  /// [_generateTodaysMeals] already does. Refuses once any meal today has
+  /// been confirmed eaten/skipped: MealLogs is an append-only record of
+  /// what really happened (see the class doc comment), so swapping out
+  /// the meals it refers to would silently orphan that history instead of
+  /// just reshuffling an unstarted plan.
+  Future<RegenerateDietResult> regenerateTodaysDiet(String userId) async {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    final existingLogs = await (_db.select(
+      _db.mealLogs,
+    )..where((l) => l.userId.equals(userId) & l.date.equals(today))).get();
+    if (existingLogs.isNotEmpty)
+      return RegenerateDietResult.blockedByExistingLogs;
+
+    await (_db.delete(
+      _db.meals,
+    )..where((m) => m.userId.equals(userId) & m.date.equals(today))).go();
+    final generated = await _generateTodaysMeals(
+      userId,
+      today,
+      variantSeed: Random().nextInt(1 << 31),
+    );
+    return generated.isEmpty
+        ? RegenerateDietResult.noTargetsYet
+        : RegenerateDietResult.success;
   }
 
   /// Always appends a new event rather than mutating a prior answer — the
   /// UI reads the latest entry per meal as the current answer.
-  Future<void> confirmMeal({required Meal meal, required String userId, required bool eaten}) {
-    return _db.into(_db.mealLogs).insert(MealLogsCompanion.insert(
-          id: _uuid.v4(),
-          userId: userId,
-          mealId: Value(meal.id),
-          date: meal.date,
-          mealType: meal.mealType,
-          quantity: Value(eaten ? 1.0 : 0.0),
-          calories: eaten ? meal.calories : 0,
-          proteinGrams: eaten ? meal.proteinGrams : 0,
-          carbsGrams: eaten ? meal.carbsGrams : 0,
-          fatGrams: eaten ? meal.fatGrams : 0,
-          eventId: _uuid.v4(),
-          loggedAt: DateTime.now().toUtc(),
-        ));
+  Future<void> confirmMeal({
+    required Meal meal,
+    required String userId,
+    required bool eaten,
+  }) {
+    return _db
+        .into(_db.mealLogs)
+        .insert(
+          MealLogsCompanion.insert(
+            id: _uuid.v4(),
+            userId: userId,
+            mealId: Value(meal.id),
+            date: meal.date,
+            mealType: meal.mealType,
+            quantity: Value(eaten ? 1.0 : 0.0),
+            calories: eaten ? meal.calories : 0,
+            proteinGrams: eaten ? meal.proteinGrams : 0,
+            carbsGrams: eaten ? meal.carbsGrams : 0,
+            fatGrams: eaten ? meal.fatGrams : 0,
+            eventId: _uuid.v4(),
+            loggedAt: DateTime.now().toUtc(),
+          ),
+        );
   }
 
   String _titleCase(String s) => '${s[0].toUpperCase()}${s.substring(1)}';
