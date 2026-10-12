@@ -292,8 +292,9 @@ class NutritionRepository {
     if (meals.isEmpty) {
       meals = await _generateTodaysMeals(userId, today);
     }
-    if (meals.isEmpty)
+    if (meals.isEmpty) {
       return const []; // no nutrition targets yet — nothing to chart
+    }
 
     final logs = await (_db.select(
       _db.mealLogs,
@@ -456,8 +457,9 @@ class NutritionRepository {
     final existingLogs = await (_db.select(
       _db.mealLogs,
     )..where((l) => l.userId.equals(userId) & l.date.equals(today))).get();
-    if (existingLogs.isNotEmpty)
+    if (existingLogs.isNotEmpty) {
       return RegenerateDietResult.blockedByExistingLogs;
+    }
 
     await (_db.delete(
       _db.meals,
